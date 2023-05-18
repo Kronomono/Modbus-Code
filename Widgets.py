@@ -6,8 +6,6 @@ class Widgets:
         self.root = root
         self.options = options
         self.modbus_client = modbus_client
-        self.root = root
-        self.options = options
         self.dropdown_menu = None
         self.entry = None
         self.submit_button = None
@@ -32,9 +30,8 @@ class Widgets:
         self.register_dropdown_menu = None
 
     def create_widgets(self):
-        self.create_register_dropdown_menu()
         self.create_dropdown_menu()
-        self.create_address_entry()
+        self.create_register_dropdown_menu()
         self.create_entry()
         self.create_submit_button()
         self.create_dark_button()
@@ -42,12 +39,7 @@ class Widgets:
     def create_dropdown_menu(self):
         self.dropdown_menu = tk.OptionMenu(self.root, self.selected_type, *self.options)
         self.dropdown_menu.config(bg="white", fg="black")
-        self.dropdown_menu.place(relx=0.2, rely=0.6, anchor=tk.CENTER)
-
-    def create_address_entry(self):
-        self.address_entry = tk.Entry(self.root, width=10)
-        self.address_entry.config(bg="white", fg="black")
-        self.address_entry.place(relx=0.4, rely=0.6, anchor=tk.CENTER)
+        self.dropdown_menu.place(relx=0.4, rely=0.6, anchor=tk.CENTER)
 
     def create_entry(self):
         self.entry = tk.Entry(self.root, width=30)
@@ -66,7 +58,7 @@ class Widgets:
     def create_register_dropdown_menu(self):
         self.register_dropdown_menu = tk.OptionMenu(self.root, self.selected_register, *self.available_registers.keys())
         self.register_dropdown_menu.config(bg="white", fg="black")
-        self.register_dropdown_menu.place(relx=0.4, rely=0.55, anchor=tk.CENTER)
+        self.register_dropdown_menu.place(relx=0.2, rely=0.6, anchor=tk.CENTER)
 
     def handle_submit(self):
         input_value = self.entry.get()
@@ -78,24 +70,18 @@ class Widgets:
         try:
             if self.selected_type.get() == "Float":
                 input_value = float(input_value)
-                print("Type is float")
-                self.modbus_client.write_float(address_value, input_value)  # Writes the float value to registers starting at selected address
+                self.modbus_client.write_float(address_value, input_value)
             elif self.selected_type.get() == "Signed 16-bit":
                 input_value = int(input_value)
-                print("Type is Signed 16 bit int")
-                self.modbus_client.write_register(address_value, input_value)  # Writes the int value to register at selected address
+                self.modbus_client.write_register(address_value, input_value)
             elif self.selected_type.get() == "Unsigned 16-bit":
                 input_value = int(input_value)
-                print("Type is Unsigned 16 bit int")
-                self.modbus_client.write_register(address_value, input_value)  # Writes the int value to register at selected address
+                self.modbus_client.write_register(address_value, input_value)
             elif self.selected_type.get() == "Boolean":
                 input_value = bool(input_value)
-                print("Type is Boolean")
-                self.modbus_client.write_register(address_value, input_value)  # Writes the boolean value to register at selected address
+                self.modbus_client.write_register(address_value, input_value)
             elif self.selected_type.get() == "ASCII":
-                print("Type is ASCII")
-                self.modbus_client.write_ascii(address_value, input_value)  # Writes the ASCII string to registers starting at selected address
-
+                self.modbus_client.write_ascii(address_value, input_value)
             else:
                 raise ValueError("Invalid selection")
 
@@ -109,13 +95,11 @@ class Widgets:
             self.root.configure(bg="black")
             self.dropdown_menu.configure(bg="black", fg="white")
             self.entry.configure(bg="black", fg="white")
-            self.address_entry.configure(bg="black", fg="white")
             self.submit_button.configure(bg="black", fg="white")
             self.dark_button.configure(text="Light Mode")
         else:
             self.root.configure(bg="white")
             self.dropdown_menu.configure(bg="white", fg="black")
             self.entry.configure(bg="white", fg="black")
-            self.address_entry.configure(bg="white", fg="black")
             self.submit_button.configure(bg="white", fg="black")
             self.dark_button.configure(text="Dark Mode")

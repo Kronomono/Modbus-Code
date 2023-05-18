@@ -14,9 +14,25 @@ class Widgets:
         self.dark_button = None
         self.selected_type = tk.StringVar(root)
         self.selected_type.set(self.options[0])
-        self.address_entry = None
+        self.available_registers = {
+            "Register 0": 0x0000,
+            "Register 1": 0x0001,
+            "Register 2": 0x0002,
+            "Register 3": 0x0003,
+            "Register 4": 0x0004,
+            "Register 5": 0x0005,
+            "Register 6": 0x0006,
+            "Register 7": 0x0007,
+            "Register 8": 0x0008,
+            "Register 9": 0x0009,
+            # ... add more registers as necessary ...
+        }
+        self.selected_register = tk.StringVar(self.root)
+        self.selected_register.set(list(self.available_registers.keys())[0])
+        self.register_dropdown_menu = None
 
     def create_widgets(self):
+        self.create_register_dropdown_menu()
         self.create_dropdown_menu()
         self.create_address_entry()
         self.create_entry()
@@ -47,9 +63,14 @@ class Widgets:
         self.dark_button = tk.Button(self.root, text="Dark Mode", command=self.toggle_dark_mode)
         self.dark_button.place(relx=0.95, rely=0.05, anchor=tk.NE)
 
+    def create_register_dropdown_menu(self):
+        self.register_dropdown_menu = tk.OptionMenu(self.root, self.selected_register, *self.available_registers.keys())
+        self.register_dropdown_menu.config(bg="white", fg="black")
+        self.register_dropdown_menu.place(relx=0.4, rely=0.55, anchor=tk.CENTER)
+
     def handle_submit(self):
         input_value = self.entry.get()
-        address_value = int(self.address_entry.get())
+        address_value = self.available_registers[self.selected_register.get()]
         print(f"Submitted value: {input_value}")
         print(f"Selected type: {self.selected_type.get()}")
         print(f"Address value: {address_value}")

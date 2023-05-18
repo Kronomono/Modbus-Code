@@ -1,5 +1,7 @@
 from pymodbus.client import ModbusTcpClient
 from pymodbus.exceptions import ModbusIOException
+from pymodbus.payload import BinaryPayloadBuilder
+from pymodbus.constants import Endian
 
 class ModbusClient:
     def __init__(self, ip_address="127.0.0.1", port=502):
@@ -45,3 +47,23 @@ class ModbusClient:
             print("Modbus connection closed.")
         else:
             print("Modbus connection is not open.")
+
+    def write_register(self, address, value, unit=1):
+        try:
+            response = self.client.write_register(address, value, unit=unit)
+            if response.isError():
+                print("Modbus response error:", response)
+            else:
+                print("Written value:", value, "to address:", address)
+        except ModbusIOException as e:
+            print("Modbus communication error:", str(e))
+
+    def write_float(self, address, value, unit=1):
+        builder = BinaryPayloadBuilder(byteorder=Endian.Big, wordorder=Endian.Little)
+        builder.add_32bit_float(value)
+        payload = builder.to_registers()
+        response = self.client.write_registers(address, payload, unit=unit)
+        if response.isError():
+            print("Modbus response error:", response)
+        else:
+            print("Written value:", value, "to address:", address)

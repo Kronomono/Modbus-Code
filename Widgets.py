@@ -2,7 +2,10 @@ import tkinter as tk
 from tkinter import messagebox
 
 class Widgets:
-    def __init__(self, root, options):
+    def __init__(self, root, options, modbus_client):
+        self.root = root
+        self.options = options
+        self.modbus_client = modbus_client
         self.root = root
         self.options = options
         self.dropdown_menu = None
@@ -46,19 +49,24 @@ class Widgets:
             if self.selected_type.get() == "Float":
                 input_value = float(input_value)
                 print("Type is float")
+                self.modbus_client.write_float(0, input_value)  # Writes the float value to registers starting at address 0
             elif self.selected_type.get() == "Signed 16-bit":
                 input_value = int(input_value)
                 print("Type is Signed 16 bit int")
+                self.modbus_client.write_register(0, input_value)  # Writes the int value to register at address 0
             elif self.selected_type.get() == "Unsigned 16-bit":
                 input_value = int(input_value)
                 print("Type is Unsigned 16 bit int")
+                self.modbus_client.write_register(0, input_value)  # Writes the int value to register at address 0
             elif self.selected_type.get() == "Boolean":
                 input_value = bool(input_value)
                 print("Type is Boolean")
+                self.modbus_client.write_register(0, input_value)  # Writes the boolean value to register at address 0
             elif self.selected_type.get() == "ASCII":
                 print("Type is ASCII")
             else:
                 raise ValueError("Invalid selection")
+
         except ValueError:
             messagebox.showerror("Error", "Invalid input value. Please try again.")
 

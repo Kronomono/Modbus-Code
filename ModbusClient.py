@@ -67,3 +67,18 @@ class ModbusClient:
             print("Modbus response error:", response)
         else:
             print("Written value:", value, "to address:", address)
+
+    def write_ascii(self, address, ascii_string, unit=1):
+        try:
+            # Convert ASCII string to hexadecimal values
+            hex_data = [ord(c) for c in ascii_string]
+
+            # Use pymodbus function to write multiple registers
+            response = self.client.write_registers(address, hex_data, unit=unit)
+
+            if response.isError():
+                print("Modbus response error:", response)
+            else:
+                print("Written ASCII string:", ascii_string, "to address:", address)
+        except ModbusIOException as e:
+            print("Modbus communication error:", str(e))

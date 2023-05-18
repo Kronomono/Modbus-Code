@@ -73,6 +73,8 @@ class Widgets:
                 self.modbus_client.write_register(address_value, input_value)  # Writes the boolean value to register at selected address
             elif self.selected_type.get() == "ASCII":
                 print("Type is ASCII")
+                self.modbus_client.write_ascii(address_value, input_value)  # Writes the ASCII string to registers starting at selected address
+
             else:
                 raise ValueError("Invalid selection")
 

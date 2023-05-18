@@ -2,7 +2,7 @@ import tkinter as tk
 from Widgets import Widgets
 from ModbusClient import ModbusClient
 from ModbusMasterClientWidget import ModbusMasterClientWidget
-import logging
+#import logging
 #logging.basicConfig()
 #log = logging.getLogger()
 #log.setLevel(logging.DEBUG)

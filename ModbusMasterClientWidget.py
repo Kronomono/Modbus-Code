@@ -86,4 +86,3 @@ class ModbusMasterClientWidget:
             print("No active Modbus connection. Please connect first.")
 
 
-

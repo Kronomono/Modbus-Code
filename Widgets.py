@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 
+
 class Widgets:
     def __init__(self, root, options, modbus_client):
         self.root = root
@@ -30,8 +31,8 @@ class Widgets:
         self.register_dropdown_menu = None
 
     def create_widgets(self):
-        self.create_dropdown_menu()
         self.create_register_dropdown_menu()
+        self.create_dropdown_menu()
         self.create_entry()
         self.create_submit_button()
         self.create_dark_button()
@@ -39,7 +40,7 @@ class Widgets:
     def create_dropdown_menu(self):
         self.dropdown_menu = tk.OptionMenu(self.root, self.selected_type, *self.options)
         self.dropdown_menu.config(bg="white", fg="black")
-        self.dropdown_menu.place(relx=0.4, rely=0.6, anchor=tk.CENTER)
+        self.dropdown_menu.place(relx=0.2, rely=0.6, anchor=tk.CENTER)
 
     def create_entry(self):
         self.entry = tk.Entry(self.root, width=30)
@@ -58,7 +59,7 @@ class Widgets:
     def create_register_dropdown_menu(self):
         self.register_dropdown_menu = tk.OptionMenu(self.root, self.selected_register, *self.available_registers.keys())
         self.register_dropdown_menu.config(bg="white", fg="black")
-        self.register_dropdown_menu.place(relx=0.2, rely=0.6, anchor=tk.CENTER)
+        self.register_dropdown_menu.place(relx=0.4, rely=0.6, anchor=tk.CENTER)
 
     def handle_submit(self):
         input_value = self.entry.get()
@@ -74,6 +75,7 @@ class Widgets:
             elif self.selected_type.get() == "Signed 16-bit":
                 input_value = int(input_value)
                 self.modbus_client.write_register(address_value, input_value)
+
             elif self.selected_type.get() == "Unsigned 16-bit":
                 input_value = int(input_value)
                 self.modbus_client.write_register(address_value, input_value)

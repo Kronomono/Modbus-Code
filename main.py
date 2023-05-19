@@ -1,3 +1,4 @@
+#main.py
 import tkinter as tk
 from Widgets import Widgets
 from ModbusClient import ModbusClient

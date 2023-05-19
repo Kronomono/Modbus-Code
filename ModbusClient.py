@@ -43,6 +43,7 @@ class ModbusClient:
                 print(f"Modbus response error: {response}")
             else:
                 print(f"Received data: {response.registers}")
+                return response.registers  # Add this line
         except ModbusIOException as e:
             print(f"Modbus communication error: {e}")
 

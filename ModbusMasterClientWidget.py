@@ -1,6 +1,7 @@
 #ModbusMasterClientWidget.py
 import tkinter as tk
 from tkinter import messagebox
+from GraphWindow import GraphWindow
 from tkinter import simpledialog
 from ModbusClient import ModbusClient
 
@@ -79,7 +80,9 @@ class ModbusMasterClientWidget:
     def retrieve_data(self):
         # Retrieve data from the Modbus server if a connection is established
         if self.connection_button["text"] == "Disconnect":
-            self.modbus_client.read_holding_registers(address=0, count=10)
+            data = self.modbus_client.read_holding_registers(address=0, count=10)
+            self.graph_window = GraphWindow(self.root)
+            self.graph_window.plot_data(data)
         else:
             print("No active Modbus connection. Please connect first.")
             messagebox.showerror("Error", "No active Modbus connection. Please connect first.")

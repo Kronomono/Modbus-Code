@@ -1,3 +1,4 @@
+#ModbusMasterClientWidget.py
 import tkinter as tk
 from tkinter import messagebox
 from GraphWindow import GraphWindow

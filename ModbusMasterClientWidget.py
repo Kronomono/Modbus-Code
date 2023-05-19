@@ -1,4 +1,3 @@
-#ModbusMasterClientWidget.py
 import tkinter as tk
 from tkinter import messagebox
 from GraphWindow import GraphWindow
@@ -12,11 +11,13 @@ class ModbusMasterClientWidget:
         self.modbus_client = modbus_client
         self.connection_button = None
         self.retrieve_button = None
+        self.graph_button = None
 
     def create_widgets(self):
-        # Create the Connect and Retrieve Data buttons
+        # Create the Connect, Retrieve Data, and Show Graph buttons
         self.create_connection_button()
         self.create_retrieve_button()
+        self.create_graph_button()
 
     def create_connection_button(self):
         # Create the Connect button and place it in the window
@@ -27,6 +28,11 @@ class ModbusMasterClientWidget:
         # Create the Retrieve Data button and place it in the window
         self.retrieve_button = tk.Button(self.root, text="Retrieve Data", command=self.retrieve_data)
         self.retrieve_button.place(relx=0.05, rely=0.08, anchor=tk.NW)
+
+    def create_graph_button(self):
+        # Create the Show Graph button and place it in the window
+        self.graph_button = tk.Button(self.root, text="Show Graph", command=self.show_graph)
+        self.graph_button.place(relx=0.05, rely=0.11, anchor=tk.NW)
 
     def show_connection_dialog(self):
         # Create and display a new connection dialog window
@@ -77,12 +83,21 @@ class ModbusMasterClientWidget:
         self.modbus_client.close()
         self.connection_button["text"] = "Connect"
 
+
     def retrieve_data(self):
         # Retrieve data from the Modbus server if a connection is established
         if self.connection_button["text"] == "Disconnect":
-            data = self.modbus_client.read_holding_registers(address=0, count=10)
-            self.graph_window = GraphWindow(self.root)
-            self.graph_window.plot_data(data)
+            self.data = self.modbus_client.read_holding_registers(address=0, count=10)
         else:
             print("No active Modbus connection. Please connect first.")
             messagebox.showerror("Error", "No active Modbus connection. Please connect first.")
+
+
+    def show_graph(self):
+        # Display the graph window
+        if hasattr(self, 'data'):
+            self.graph_window = GraphWindow(self.root)
+            self.graph_window.plot_data(self.data)
+        else:
+            print("No data available. Please retrieve data first.")
+            messagebox.showerror("Error", "No data available. Please retrieve data first.")

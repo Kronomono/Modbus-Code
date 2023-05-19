@@ -11,6 +11,8 @@ class Widgets:
         self.dropdown_menu = None
         self.entry = None
         self.submit_button = None
+        self.add_address_button = None
+        self.add_address_entry = None
 
         # Define the types and registers available
         self.selected_type = tk.StringVar(root)
@@ -38,6 +40,8 @@ class Widgets:
         self.create_dropdown_menu()
         self.create_entry()
         self.create_submit_button()
+        self.create_add_address_entry()
+        self.create_add_address_button()
 
     def create_dropdown_menu(self):
         # Create the dropdown menu for types and place it in the window
@@ -62,6 +66,18 @@ class Widgets:
         self.register_dropdown_menu = tk.OptionMenu(self.root, self.selected_register, *self.available_registers.keys())
         self.register_dropdown_menu.config(bg="white", fg="black")
         self.register_dropdown_menu.place(relx=0.4, rely=0.6, anchor=tk.CENTER)
+
+    def create_add_address_button(self):
+        # Create the Add button and place it in the window
+        self.add_address_button = tk.Button(self.root, text="Add address", command=self.add_address)
+        self.add_address_button.config(bg="white", fg="black")
+        self.add_address_button.place(relx=0.5, rely=0.75, anchor=tk.CENTER)
+
+    def create_add_address_entry(self):
+        # Create the entry field for input values and place it in the window
+        self.add_address_entry = tk.Entry(self.root, width=30)
+        self.add_address_entry.config(bg="white", fg="black")
+        self.add_address_entry.place(relx=0.5, rely=0.8, anchor=tk.CENTER)
 
     def handle_submit(self):
         # Get the input value, selected type, and selected register, and write the value to the register
@@ -91,3 +107,18 @@ class Widgets:
 
         except ValueError:
             messagebox.showerror("Error", "Invalid input value. Please try again.")
+
+    def add_address(self):
+        # Get the input address, add it to the available registers, and update the dropdown menu
+        input_address = self.add_address_entry.get()
+        print(f"Added address: {input_address}")
+
+        try:
+            address_value = int(input_address, 16)  # Converts hex string to integer
+            self.available_registers[f"Register {input_address}"] = address_value
+            self.selected_register.set(f"Register {input_address}")
+            # Destroy and recreate the dropdown menu to update it with the new addresses
+            self.register_dropdown_menu.destroy()
+            self.create_register_dropdown_menu()
+        except ValueError:
+            messagebox.showerror("Error", "Invalid input address. Please try again.")

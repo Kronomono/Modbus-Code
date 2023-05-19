@@ -4,6 +4,7 @@ from pymodbus.exceptions import ModbusIOException
 from pymodbus.payload import BinaryPayloadBuilder
 from pymodbus.constants import Endian
 
+
 class ModbusClient:
     def __init__(self, ip_address="127.0.0.1", port=502):
         # Initialize the modbus client with the provided IP address and port

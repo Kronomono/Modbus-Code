@@ -7,3 +7,7 @@ class Tab1:
         self.frame = tk.Frame(notebook)
         self.widgets = Widgets(self.frame, options, modbus_client)
         self.widgets.create_widgets()
+
+    def update(self):
+        # Update the frame when a new address is added
+        self.frame.update()

@@ -1,3 +1,4 @@
+#Widget.py
 import tkinter as tk
 from tkinter import messagebox, ttk
 
@@ -106,16 +107,23 @@ class Widgets:
         except ValueError:
             messagebox.showerror("Error", "Invalid input value. Please try again.")
 
+
     def add_address(self):
         # Get the input address, add it to the available registers, and update the dropdown menu
         input_address = self.add_address_entry.get()
         print(f"Added address: {input_address}")
 
         try:
-            address_value = int(input_address, 16)  # Converts hex string to integer
+            if input_address.startswith('0x'):  # Hexadecimal input
+                address_value = int(input_address, 16)  # Converts hex string to integer
+                print(f"Hex value to inter: {address_value}")
+            else:  # Integer input
+                address_value = int(input_address)
+
             self.available_registers[f"Register {input_address}"] = address_value
             self.selected_register.set(f"Register {input_address}")
             # Update the values in the dropdown menu to include the new addresses
             self.register_dropdown_menu['values'] = list(self.available_registers.keys())
         except ValueError:
             messagebox.showerror("Error", "Invalid input address. Please try again.")
+

@@ -73,6 +73,10 @@ class Widgets:
         self.add_address_button.place(relx=0.4, rely=0.5, anchor=tk.CENTER)
 
     def create_add_address_entry(self):
+        #Create instructions for Hexdecimal input
+        hexdecimal_label = tk.Label(self.root, text = "To add Hexadecimal input start with 0x")
+        #hexdecimal_label.config(bg="white", fg="black")
+        hexdecimal_label.place(relx=0.6, rely=0.45, anchor=tk.CENTER)
         # Create the entry field for input values and place it in the window
         self.add_address_entry = tk.Entry(self.root, width=30)
         self.add_address_entry.config(bg="white", fg="black")

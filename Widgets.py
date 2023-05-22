@@ -1,7 +1,9 @@
 #Widget.py
 import tkinter as tk
 from tkinter import messagebox, ttk
-
+from pymodbus.payload import BinaryPayloadDecoder
+from pymodbus.constants import Endian
+from pymodbus.payload import BinaryPayloadBuilder
 class Widgets:
     def __init__(self, root, options, modbus_client):
         # Initialize the widget with a root window, options, and a Modbus client
@@ -130,3 +132,4 @@ class Widgets:
             self.register_dropdown_menu['values'] = list(self.available_registers.keys())
         except ValueError:
             messagebox.showerror("Error", "Invalid input address. Please try again.")
+

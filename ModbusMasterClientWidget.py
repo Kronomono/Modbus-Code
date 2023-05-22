@@ -5,6 +5,7 @@ from GraphWindow import GraphWindow
 from tkinter import simpledialog
 from ModbusClient import ModbusClient
 from pymodbus.payload import BinaryPayloadDecoder
+import struct
 
 class ModbusMasterClientWidget:
     def __init__(self, root, modbus_client):

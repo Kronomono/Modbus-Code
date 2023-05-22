@@ -1,4 +1,3 @@
-#ModbusMasterClientWidget.py
 import tkinter as tk
 from tkinter import messagebox
 from GraphWindow import GraphWindow
@@ -51,9 +50,8 @@ class ModbusMasterClientWidget:
             port_entry = tk.Entry(dialog)
             port_entry.pack()
 
-
             def connect():
-                # Retrieve the host and port from the dialog and attempt to connect
+                # Retrieve the host and port from the dialog
                 host = host_entry.get()
                 port = port_entry.get()
 
@@ -61,10 +59,18 @@ class ModbusMasterClientWidget:
                 print(f"Retrieved port from dialog: {port}")
 
                 if host and port:
-                    self.modbus_client.update_host_port(host, int(port))
-                    if self.modbus_client.connect():
-                        self.connection_button["text"] = "Disconnect"
-                    dialog.destroy()
+                    if port.isdigit():
+                        self.modbus_client.update_host_port(host, int(port))
+                        if self.modbus_client.connect():
+                            self.connection_button["text"] = "Disconnect"
+                            messagebox.showinfo("Connected", "Connection successful")
+                        else:
+                            messagebox.showerror("Error", "Failed to establish Modbus connection.")
+                        dialog.destroy()
+                    else:
+                        messagebox.showerror("Error", "Invalid port. Please enter a valid number.")
+                else:
+                    messagebox.showerror("Error", "Please enter both the host IP address and port.")
 
             connect_button = tk.Button(dialog, text="Connect", command=connect)
             connect_button.pack()
@@ -86,16 +92,14 @@ class ModbusMasterClientWidget:
         self.modbus_client.close()
         self.connection_button["text"] = "Connect"
 
-
     def retrieve_data(self):
         # Retrieve data from the Modbus server if a connection is established
         if self.connection_button["text"] == "Disconnect":
             self.data = self.modbus_client.read_holding_registers(address=0, count=10)
-
+            messagebox.showinfo("Data Retrieved", "Data successfully retrieved.")
         else:
             print("No active Modbus connection. Please connect first.")
             messagebox.showerror("Error", "No active Modbus connection. Please connect first.")
-
 
     def show_graph(self):
         # Display the graph window

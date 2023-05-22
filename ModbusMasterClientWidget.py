@@ -51,6 +51,7 @@ class ModbusMasterClientWidget:
             port_entry = tk.Entry(dialog)
             port_entry.pack()
 
+
             def connect():
                 # Retrieve the host and port from the dialog and attempt to connect
                 host = host_entry.get()
@@ -72,6 +73,7 @@ class ModbusMasterClientWidget:
             dialog.grab_set()
             self.root.wait_window(dialog)
 
+
     def toggle_connection(self):
         # Toggle the Modbus connection based on the current state
         if self.connection_button["text"] == "Connect":
@@ -89,6 +91,7 @@ class ModbusMasterClientWidget:
         # Retrieve data from the Modbus server if a connection is established
         if self.connection_button["text"] == "Disconnect":
             self.data = self.modbus_client.read_holding_registers(address=0, count=10)
+
         else:
             print("No active Modbus connection. Please connect first.")
             messagebox.showerror("Error", "No active Modbus connection. Please connect first.")

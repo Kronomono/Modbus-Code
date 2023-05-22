@@ -63,7 +63,7 @@ class Widgets:
     def create_register_dropdown_menu(self):
         # Create the dropdown menu for registers and place it in the window
         self.register_dropdown_menu = ttk.Combobox(self.root, textvariable=self.selected_register, values=list(self.available_registers.keys()), state='readonly')
-        self.register_dropdown_menu.place(relx=0.35, rely=0.6, anchor=tk.CENTER)
+        self.register_dropdown_menu.place(relx=0.37, rely=0.6, anchor=tk.CENTER)
 
     def create_add_address_button(self):
         # Create the Add button and place it in the window

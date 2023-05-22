@@ -60,6 +60,7 @@ class ModbusMasterClientWidget:
                 print(f"Retrieved port from dialog: {port}")
 
                 if host and port:
+                    # Check if the port enter is an int
                     if port.isdigit():
                         self.modbus_client.update_host_port(host, int(port))
                         if self.modbus_client.connect():

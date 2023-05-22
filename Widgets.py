@@ -14,6 +14,7 @@ class Widgets:
         self.add_address_button = None
         self.add_address_entry = None
         self.manual_address_entry = None
+        #self.multple_registry_entry = None
 
         # Define the types and registers available
         self.selected_type = tk.StringVar(root)
@@ -44,6 +45,7 @@ class Widgets:
         self.create_add_address_entry()
         self.create_add_address_button()
         self.create_manual_address_entry()
+        #self.create_multiple_registry_entry()
 
     def create_dropdown_menu(self):
         # Create the dropdown menu for types and place it in the window
@@ -93,21 +95,30 @@ class Widgets:
         self.manual_address_entry.config(bg="white", fg="black")
         self.manual_address_entry.place(relx=0.4, rely=0.67, anchor=tk.CENTER)
 
+    #def create_multiple_registry_entry(self):
+        #self.create_manual_address_entry() =tk.Button(self.root,text="Multiple Registry Entry")
+
+    # Executed when submit button is hit
     def handle_submit(self):
         # Get the input value and selected type
         input_value = self.entry.get()
         selected_type = self.selected_type.get()
 
-        # If the manual address entry is not empty, use it
+        # If the manual address entry is not empty, use it over drop down menu
         manual_address = self.manual_address_entry.get()
         if manual_address != '':
-            if manual_address.startswith('0x'):  # Hexadecimal input
-                address_value = int(manual_address, 16)  # Converts hex string to integer
+            # Hexadecimal input
+            if manual_address.startswith('0x'):
+                # Converts hex string to integer
+                address_value = int(manual_address, 16)
+                #print to confirm value to console
                 print(f"Manual address (hex): {address_value}")
-            else:  # Integer input
+        # other wise use Integer input
+            else:
                 address_value = int(manual_address)
                 print(f"Manual address: {address_value}")
-        else:  # If the manual address entry is empty, use the dropdown menu
+        # If the manual address entry is empty, use the dropdown menu
+        else:
             address_value = self.available_registers[self.selected_register.get()]
             print(f"Address from dropdown: {address_value}")
 

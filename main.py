@@ -9,7 +9,7 @@ from Tab2 import Tab2
 
 root = tk.Tk()  # Root instance for your Tkinter application
 root.geometry("768x768")  # Size of the tkinter window
-root.configure(bg="white")  # Background color of the tkinter window
+root.configure(bg="white")  # Background color of the tkinter windowa
 
 notebook = ttk.Notebook(root)  # Create the notebook (tabbed window)
 

@@ -13,8 +13,6 @@ class Widgets:
         self.submit_button = None
         self.add_address_button = None
         self.add_address_entry = None
-        self.manual_address_entry = None
-        #self.multple_registry_entry = None
 
         # Define the types and registers available
         self.selected_type = tk.StringVar(root)
@@ -44,8 +42,6 @@ class Widgets:
         self.create_submit_button()
         self.create_add_address_entry()
         self.create_add_address_button()
-        self.create_manual_address_entry()
-        #self.create_multiple_registry_entry()
 
     def create_dropdown_menu(self):
         # Create the dropdown menu for types and place it in the window
@@ -63,7 +59,7 @@ class Widgets:
         # Create the Submit button and place it in the window
         self.submit_button = tk.Button(self.root, text="Submit", command=self.handle_submit)
         self.submit_button.config(bg="white", fg="black")
-        self.submit_button.place(relx=0.77, rely=0.6, anchor=tk.CENTER)
+        self.submit_button.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
 
     def create_register_dropdown_menu(self):
         # Create the dropdown menu for registers and place it in the window
@@ -86,66 +82,35 @@ class Widgets:
         self.add_address_entry.config(bg="white", fg="black")
         self.add_address_entry.place(relx=0.6, rely=0.5, anchor=tk.CENTER)
 
-    def create_manual_address_entry(self):
-        #Create instructions for Manual address input
-        manual_address_label = tk.Label(self.root,text="Manual address input")
-        manual_address_label.place(relx=0.4,rely=0.64,anchor=tk.CENTER)
-        # Create the entry field for manual address input and place it in the window
-        self.manual_address_entry = tk.Entry(self.root, width=30)
-        self.manual_address_entry.config(bg="white", fg="black")
-        self.manual_address_entry.place(relx=0.4, rely=0.67, anchor=tk.CENTER)
-
-    #def create_multiple_registry_entry(self):
-        #self.create_manual_address_entry() =tk.Button(self.root,text="Multiple Registry Entry")
-
-    # Executed when submit button is hit
     def handle_submit(self):
-        # Get the input value and selected type
+        # Get the input value, selected type, and selected register, and write the value to the register
         input_value = self.entry.get()
-        selected_type = self.selected_type.get()
-
-        # If the manual address entry is not empty, use it over drop down menu
-        manual_address = self.manual_address_entry.get()
-        if manual_address != '':
-            # Hexadecimal input
-            if manual_address.startswith('0x'):
-                # Converts hex string to integer
-                address_value = int(manual_address, 16)
-                #print to confirm value to console
-                print(f"Manual address (hex): {address_value}")
-        # other wise use Integer input
-            else:
-                address_value = int(manual_address)
-                print(f"Manual address: {address_value}")
-        # If the manual address entry is empty, use the dropdown menu
-        else:
-            address_value = self.available_registers[self.selected_register.get()]
-            print(f"Address from dropdown: {address_value}")
-
+        address_value = self.available_registers[self.selected_register.get()]
         print(f"Submitted value: {input_value}")
-        print(f"Selected type: {selected_type}")
+        print(f"Selected type: {self.selected_type.get()}")
         print(f"Address value: {address_value}")
 
         try:
-            if selected_type == "Float":
+            if self.selected_type.get() == "Float":
                 input_value = float(input_value)
                 self.modbus_client.write_float(address_value, input_value)
-            elif selected_type == "Signed 16-bit":
+            elif self.selected_type.get() == "Signed 16-bit":
                 input_value = int(input_value)
                 self.modbus_client.write_register(address_value, input_value)
-            elif selected_type == "Unsigned 16-bit":
+            elif self.selected_type.get() == "Unsigned 16-bit":
                 input_value = int(input_value)
                 self.modbus_client.write_register(address_value, input_value)
-            elif selected_type == "Boolean":
+            elif self.selected_type.get() == "Boolean":
                 input_value = bool(input_value)
                 self.modbus_client.write_register(address_value, input_value)
-            elif selected_type == "ASCII":
+            elif self.selected_type.get() == "ASCII":
                 self.modbus_client.write_ascii(address_value, input_value)
             else:
                 raise ValueError("Invalid selection")
 
         except ValueError:
             messagebox.showerror("Error", "Invalid input value. Please try again.")
+
 
     def add_address(self):
         # Get the input address, add it to the available registers, and update the dropdown menu
@@ -165,4 +130,3 @@ class Widgets:
             self.register_dropdown_menu['values'] = list(self.available_registers.keys())
         except ValueError:
             messagebox.showerror("Error", "Invalid input address. Please try again.")
-

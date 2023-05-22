@@ -1,9 +1,10 @@
 #ModbusMasterClientWidget.py
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 from GraphWindow import GraphWindow
 from tkinter import simpledialog
 from ModbusClient import ModbusClient
+from pymodbus.payload import BinaryPayloadDecoder
 
 class ModbusMasterClientWidget:
     def __init__(self, root, modbus_client):
@@ -13,6 +14,18 @@ class ModbusMasterClientWidget:
         self.connection_button = None
         self.retrieve_button = None
         self.graph_button = None
+        # Create the table
+        self.table = ttk.Treeview(self.root, columns=("Address", "Type", "Registry"), show='headings')
+        self.table.heading("Address", text="Address")
+        self.table.heading("Type", text="Type")
+        self.table.heading("Registry", text="Registry")
+        self.table.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        # Create the data type dropdown
+        self.data_type_var = tk.StringVar(self.root)
+        self.data_type_options = ['holding', 'Float', 'ASCII', 'Epoch']
+        self.data_type_var.set(self.data_type_options[0])
+        self.data_type_dropdown = tk.OptionMenu(self.root, self.data_type_var, *self.data_type_options)
+        self.data_type_dropdown.place(relx=0.15, rely=0.08, anchor=tk.NW)
 
     def create_widgets(self):
         # Create the Connect, Retrieve Data, and Show Graph buttons
@@ -97,7 +110,17 @@ class ModbusMasterClientWidget:
     def retrieve_data(self):
         # Retrieve data from the Modbus server if a connection is established
         if self.connection_button["text"] == "Disconnect":
-            self.data = self.modbus_client.read_holding_registers(address=0, count=10)
+            data_type = self.data_type_var.get()
+            self.data = self.modbus_client.read_holding_registers(address=0, count=10, data_type=data_type)
+
+            # Clear the old data from the table
+            for i in self.table.get_children():
+                self.table.delete(i)
+
+            # Insert the new data into the table
+            for index, value in enumerate(self.data):
+                self.table.insert("", tk.END, values=(index, data_type, value))
+
             messagebox.showinfo("Data Retrieved", "Data successfully retrieved.")
         else:
             print("No active Modbus connection. Please connect first.")

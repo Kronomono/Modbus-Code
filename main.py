@@ -6,6 +6,11 @@ from ModbusClient import ModbusClient
 from ModbusMasterClientWidget import ModbusMasterClientWidget
 from Tab1 import Tab1  # Import the classes for the tabs
 from Tab2 import Tab2
+import logging
+logging.basicConfig()
+log = logging.getLogger()
+log.setLevel(logging.DEBUG)
+
 
 root = tk.Tk()  # Root instance for your Tkinter application
 root.geometry("768x768")  # Size of the tkinter window

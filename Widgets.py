@@ -148,4 +148,3 @@ class Widgets:
             self.register_dropdown_menu['values'] = list(self.available_registers.keys())
         except ValueError:
             messagebox.showerror("Error", "Invalid input address. Please try again.")
-

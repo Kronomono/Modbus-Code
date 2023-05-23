@@ -7,7 +7,7 @@ from pymodbus.payload import BinaryPayloadDecoder
 import time
 from pymodbus.constants import Endian
 
-
+unit = 10
 class ModbusClient:
     def __init__(self, ip_address="127.0.0.1", port=502):
         # Initialize the modbus client with the provided IP address and port
@@ -39,7 +39,7 @@ class ModbusClient:
             print(f"Exception while connecting to Modbus slave: {e}")
             return False
 
-    def read_holding_registers(self, address, count, unit=1, data_type='holding'):
+    def read_holding_registers(self, address, count, unit= unit, data_type='holding'):
         try:
             if data_type == 'holding':
                 response = self.client.read_holding_registers(address=address, count=count, unit=unit)
@@ -88,7 +88,7 @@ class ModbusClient:
         else:
             print("Modbus connection is not open.")
 
-    def write_register(self, address, value, unit=1, data_type='holding'):
+    def write_register(self, address, value, unit= unit, data_type='holding'):
         try:
             if data_type == 'holding':
                 response = self.client.write_register(address, value, unit=unit)
@@ -111,10 +111,15 @@ class ModbusClient:
                 response = self.client.write_registers(address, payload, unit=unit)
             else:
                 print(f"Written value: {value} to address: {address}")
+            if response.isError():
+                print("Error writing to register: ", response)
+            else:
+                print("Successful write operation")
+
         except ModbusIOException as e:
             print(f"Modbus communication error: {e}")
 
-    def write_float(self, address, value, unit=1):
+    def write_float(self, address, value, unit= unit):
         # Attempt to write a float value to a specific register
         builder = BinaryPayloadBuilder(byteorder=Endian.Big, wordorder=Endian.Little)
         builder.add_32bit_float(value)
@@ -125,7 +130,7 @@ class ModbusClient:
         else:
             print(f"Written value: {value} to address: {address}")
 
-    def write_ascii(self, address, ascii_string, unit=1):
+    def write_ascii(self, address, ascii_string, unit= unit ):
         # Attempt to write an ASCII string to a specific register
         try:
             hex_data = [ord(c) for c in ascii_string]

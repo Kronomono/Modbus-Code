@@ -2,10 +2,14 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
 from GraphWindow import GraphWindow
+import string
 from tkinter import simpledialog
 from ModbusClient import ModbusClient
 from pymodbus.payload import BinaryPayloadDecoder
 import struct
+from pymodbus.constants import Endian
+import unicodedata
+
 
 class ModbusMasterClientWidget:
     def __init__(self, root, modbus_client):
@@ -119,8 +123,22 @@ class ModbusMasterClientWidget:
                 self.table.delete(i)
 
             # Insert the new data into the table
-            for index, value in enumerate(self.data):
-                self.table.insert("", tk.END, values=(index, data_type, value))
+            if data_type == 'ASCII':
+                ascii_string = ""
+                for value in self.data:
+                    try:
+                        int_value = int(value)
+                        if 0 <= int_value <= 127:
+                            ascii_string += chr(int_value)
+                        else:
+                            ascii_string += "[Non-ASCII Character]"
+                    except (ValueError, OverflowError):
+                        ascii_string += "[Error]"
+                self.table.insert("", tk.END, values=(0, data_type, ascii_string))
+            else:
+                # Insert the new data into the table
+                for index, value in enumerate(self.data):
+                    self.table.insert("", tk.END, values=(index, data_type, value))
 
             messagebox.showinfo("Data Retrieved", "Data successfully retrieved.")
         else:

@@ -5,6 +5,8 @@ from pymodbus.payload import BinaryPayloadBuilder
 from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder
 import time
+from pymodbus.constants import Endian
+
 
 class ModbusClient:
     def __init__(self, ip_address="127.0.0.1", port=502):
@@ -41,37 +43,37 @@ class ModbusClient:
         try:
             if data_type == 'holding':
                 response = self.client.read_holding_registers(address=address, count=count, unit=unit)
-                # data is already in 16-bit register values
+                if response.isError():
+                    print(f"Modbus response error: {response}")
+                else:
+                    print(f"Received data: {response.registers}")
+                    return response.registers
             elif data_type == 'Float':
                 response = self.client.read_holding_registers(address=address, count=2, unit=unit)
-                # Convert the register values to float
-                decoder = BinaryPayloadDecoder.fromRegisters(response.registers, byteorder=Endian.Big,
-                                                                     wordorder=Endian.Little)
-                return [decoder.decode_32bit_float()]
-                return decoder.decode_32bit_float()
+                if response.isError():
+                    print(f"Modbus response error: {response}")
+                else:
+                    # Convert the register values to float
+                    decoder = BinaryPayloadDecoder.fromRegisters(response.registers, byteorder=Endian.Big,
+                                                                 wordorder=Endian.Little)
+                    return [decoder.decode_32bit_float()]
             elif data_type == 'ASCII':
                 response = self.client.read_holding_registers(address=address, count=count, unit=unit)
-                # Convert the register values to ASCII
-                decoder = BinaryPayloadDecoder.fromRegisters(response.registers, byteorder=Endian.Big,
-                                                             wordorder=Endian.Little)
-                try:
-                    return [decoder.decode_string(len(response.registers)).decode('ascii')]
-                except UnicodeDecodeError:
-                    print("Error: Non-ASCII character encountered in the register.")
-                    return ["Non-ASCII Character"]
-
+                if response.isError():
+                    print(f"Modbus response error: {response}")
+                else:
+                    # Convert the register values to ASCII
+                    ascii_string = ''.join(chr(value & 0xFF) for value in response.registers)
+                    return [ascii_string]
             elif data_type == 'Epoch':
                 response = self.client.read_holding_registers(address=address, count=2, unit=unit)
-                # Convert the register values to Epoch (assuming the time is stored in Unix format)
-                decoder = BinaryPayloadDecoder.fromRegisters(response.registers, byteorder=Endian.Big,
-                                                                     wordorder=Endian.Little)
-                return time.ctime(decoder.decode_32bit_uint())
-
-            if response.isError():
-                print(f"Modbus response error: {response}")
-            else:
-                print(f"Received data: {response.registers}")
-                return response.registers
+                if response.isError():
+                    print(f"Modbus response error: {response}")
+                else:
+                    # Convert the register values to Epoch (assuming the time is stored in Unix format)
+                    decoder = BinaryPayloadDecoder.fromRegisters(response.registers, byteorder=Endian.Big,
+                                                                 wordorder=Endian.Little)
+                    return [time.ctime(decoder.decode_32bit_uint())]
         except ModbusIOException as e:
             print(f"Modbus communication error: {e}")
 

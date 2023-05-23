@@ -2,7 +2,6 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
 from GraphWindow import GraphWindow
-
 import string
 from tkinter import simpledialog
 from ModbusClient import ModbusClient
@@ -32,12 +31,21 @@ class ModbusMasterClientWidget:
         self.data_type_var.set(self.data_type_options[0])
         self.data_type_dropdown = tk.OptionMenu(self.root, self.data_type_var, *self.data_type_options)
         self.data_type_dropdown.place(relx=0.15, rely=0.08, anchor=tk.NW)
+        #self.unit_entry = self.create_unit_entry()  # Store the unit_entry widget
 
     def create_widgets(self):
         # Create the Connect, Retrieve Data, and Show Graph buttons
         self.create_connection_button()
         self.create_retrieve_button()
         self.create_graph_button()
+        #self.create_unit_entry()
+
+    '''def create_unit_entry(self):
+        # Create a unit slave entry
+        unit_entry = tk.Entry(self.root, width=10)
+        unit_entry.config(bg="white", fg="black")
+        unit_entry.place(relx=0.2, rely=0.07, anchor=tk.CENTER)
+        return unit_entry'''
 
     def create_connection_button(self):
         # Create the Connect button and place it in the window
@@ -96,7 +104,10 @@ class ModbusMasterClientWidget:
             connect_button = tk.Button(dialog, text="Connect", command=connect)
             connect_button.pack()
 
+
             dialog.transient(self.root)
+            dialog.title("Modbus Connection Settings")
+            dialog.geometry("400x200")  # Set the width and height of the dialog window
             dialog.grab_set()
             self.root.wait_window(dialog)
 
@@ -117,7 +128,15 @@ class ModbusMasterClientWidget:
         # Retrieve data from the Modbus server if a connection is established
         if self.connection_button["text"] == "Disconnect":
             data_type = self.data_type_var.get()
+            '''unit = self.unit_entry.get()  # Get the unit value from the unit_entry widget'''
             self.data = self.modbus_client.read_holding_registers(address=0, count=10, data_type=data_type)
+
+            # If data is None (in case of error), show an error message
+            if self.data is None:
+                print("No data received. Please check your connection or the server.")
+                messagebox.showerror("Error", "No data received. Please check your connection or the server.")
+
+                return
 
             # Clear the old data from the table
             for i in self.table.get_children():
@@ -141,6 +160,7 @@ class ModbusMasterClientWidget:
         else:
             print("No active Modbus connection. Please connect first.")
             messagebox.showerror("Error", "No active Modbus connection. Please connect first.")
+
 
     def show_graph(self):
         # Display the graph window

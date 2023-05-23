@@ -15,6 +15,8 @@ class Widgets:
         self.submit_button = None
         self.add_address_button = None
         self.add_address_entry = None
+        self.create_address_entry()
+
 
         # Define the types and registers available
         self.selected_type = tk.StringVar(root)
@@ -74,6 +76,12 @@ class Widgets:
         self.add_address_button.config(bg="white", fg="black")
         self.add_address_button.place(relx=0.4, rely=0.5, anchor=tk.CENTER)
 
+    def create_address_entry(self):
+        # Create the entry field for manually inputting register addresses
+        self.address_entry = tk.Entry(self.root, width=30)
+        self.address_entry.config(bg="white", fg="black")
+        self.address_entry.place(relx=0.35, rely=0.65, anchor=tk.CENTER)
+
     def create_add_address_entry(self):
         #Create instructions for Hexdecimal input
         hexdecimal_label = tk.Label(self.root, text = "To add Hexadecimal input start with 0x")
@@ -87,7 +95,15 @@ class Widgets:
     def handle_submit(self):
         # Get the input value, selected type, and selected register, and write the value to the register
         input_value = self.entry.get()
-        address_value = self.available_registers[self.selected_register.get()]
+        manual_input_address = self.address_entry.get()
+        if manual_input_address:  # Check if there is manual input
+            if manual_input_address.startswith('0x'):  # Hexadecimal input
+                address_value = int(manual_input_address, 16)  # Converts hex string to integer
+            else:  # Integer input
+                address_value = int(manual_input_address)
+        else:
+            address_value = self.available_registers[self.selected_register.get()]
+
         print(f"Submitted value: {input_value}")
         print(f"Selected type: {self.selected_type.get()}")
         print(f"Address value: {address_value}")

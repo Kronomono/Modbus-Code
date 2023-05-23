@@ -113,6 +113,14 @@ class ModbusMasterClientWidget:
         self.connection_button["text"] = "Connect"
 
     def retrieve_data(self):
+        Ascii_dictionary = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
+                            'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+                            'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+                            'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+                            'Y', 'Z', '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-',
+                            '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`',
+                            '{', '|', '}', '~', ' ', '\t', '\n', '\r', '\x0b', '\x0c']
+
         # Retrieve data from the Modbus server if a connection is established
         if self.connection_button["text"] == "Disconnect":
             data_type = self.data_type_var.get()
@@ -125,20 +133,26 @@ class ModbusMasterClientWidget:
             # Insert the new data into the table
             if data_type == 'ASCII':
                 ascii_string = ""
+
                 for value in self.data:
+                    value = value.strip()
+                    value = ''.join(char for char in value if char in string.printable)  # Remove non-printable characters
+                    print(f'This is the value: "{value}"')
                     try:
                         int_value = int(value)
                         if 0 <= int_value <= 127:
-                            ascii_string += chr(int_value)
+                            ascii_string += Ascii_dictionary[int_value]
                         else:
                             ascii_string += "[Non-ASCII Character]"
                     except (ValueError, OverflowError):
                         ascii_string += "[Error]"
+                    print(f'This is the value: "{ascii_string}"')
                 self.table.insert("", tk.END, values=(0, data_type, ascii_string))
             else:
                 # Insert the new data into the table
                 for index, value in enumerate(self.data):
                     self.table.insert("", tk.END, values=(index, data_type, value))
+                    print(f'This is the value: {value}')
 
             messagebox.showinfo("Data Retrieved", "Data successfully retrieved.")
         else:

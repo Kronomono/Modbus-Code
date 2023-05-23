@@ -56,11 +56,14 @@ class ModbusClient:
                 # Convert the register values to ASCII
                 decoder = BinaryPayloadDecoder.fromRegisters(response.registers, byteorder=Endian.Big,
                                                              wordorder=Endian.Little)
-                try:
-                    return [decoder.decode_string(len(response.registers)).decode('ascii')]
-                except UnicodeDecodeError:
-                    print("Error: Non-ASCII character encountered in the register.")
-                    return ["Non-ASCII Character"]
+                ascii_strings = []
+                for i in range(0, len(response.registers), 2):  # assuming ASCII strings of length 2
+                    try:
+                        ascii_strings.append(decoder.decode_string(2).decode('ascii'))
+                    except UnicodeDecodeError:
+                        print("Error: Non-ASCII character encountered in the register.")
+                        ascii_strings.append("Non-ASCII Character")
+                return ascii_strings
 
             elif data_type == 'Epoch':
                 response = self.client.read_holding_registers(address=address, count=2, unit=unit)

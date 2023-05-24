@@ -111,7 +111,10 @@ class Widgets:
         try:
             if self.selected_type.get() == "Float":
                 input_value = float(input_value)
-                self.modbus_client.write_float(address_value, input_value)
+                builder = BinaryPayloadBuilder(byteorder=Endian.Big)
+                builder.add_32bit_float(input_value)
+                payload = builder.build()
+                self.modbus_client.write_registers(address_value, payload)
             elif self.selected_type.get() == "Signed 16-bit":
                 input_value = int(input_value)
                 self.modbus_client.write_register(address_value, input_value)
@@ -120,9 +123,10 @@ class Widgets:
                 self.modbus_client.write_register(address_value, input_value)
             elif self.selected_type.get() == "Boolean":
                 input_value = bool(input_value)
-                self.modbus_client.write_register(address_value, input_value)
+                self.modbus_client.write_coil(address_value, input_value)
             elif self.selected_type.get() == "ASCII":
-                self.modbus_client.write_ascii(address_value, input_value)
+                input_value = ord(input_value)  # Convert ASCII character to integer
+                self.modbus_client.write_register(address_value, input_value)
             else:
                 raise ValueError("Invalid selection")
 

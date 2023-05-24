@@ -31,26 +31,38 @@ class ModbusMasterClientWidget:
         self.data_type_var.set(self.data_type_options[0])
         self.data_type_dropdown = tk.OptionMenu(self.root, self.data_type_var, *self.data_type_options)
         self.data_type_dropdown.place(relx=0.15, rely=0.08, anchor=tk.NW)
-        #self.unit_entry = self.create_unit_entry()  # Store the unit_entry widget
+        self.unit_entry = self.create_unit_entry()  # Store the unit_entry widget
+        self.address_entry = self.create_address_entry()
 
     def create_widgets(self):
         # Create the Connect, Retrieve Data, and Show Graph buttons
         self.create_connection_button()
         self.create_retrieve_button()
         self.create_graph_button()
-        #self.create_unit_entry()
 
-    '''def create_unit_entry(self):
-        # Create a unit slave entry
-        unit_entry = tk.Entry(self.root, width=10)
-        unit_entry.config(bg="white", fg="black")
-        unit_entry.place(relx=0.2, rely=0.07, anchor=tk.CENTER)
-        return unit_entry'''
+
 
     def create_connection_button(self):
         # Create the Connect button and place it in the window
         self.connection_button = tk.Button(self.root, text="Connect", command=self.toggle_connection)
         self.connection_button.place(relx=0.05, rely=0.05, anchor=tk.NW)
+
+    def create_address_entry(self):
+        address_entry = tk.Label(self.root, text="Enter address #")
+        address_entry.place(relx=0.23, rely=0.03, anchor=tk.CENTER)
+        # Create an address entry field and place it in the window
+        address_entry = tk.Entry(self.root, width=10)
+        address_entry.config(bg="white", fg="black")
+        address_entry.place(relx=0.2, rely=0.05, anchor=tk.NW)
+        return address_entry
+    def create_unit_entry(self):
+        # Create an address entry field and place it in the window
+        unit_entry = tk.Entry(self.root, width=10)
+        unit_entry_label = tk.Label(self.root, text="Enter unit #")
+        unit_entry_label.place(relx=0.43, rely=0.03, anchor=tk.CENTER)
+
+        unit_entry.place(relx=0.4, rely=0.05, anchor=tk.NW)
+        return unit_entry
 
     def create_retrieve_button(self):
         # Create the Retrieve Data button and place it in the window
@@ -128,8 +140,11 @@ class ModbusMasterClientWidget:
         # Retrieve data from the Modbus server if a connection is established
         if self.connection_button["text"] == "Disconnect":
             data_type = self.data_type_var.get()
-            '''unit = self.unit_entry.get()  # Get the unit value from the unit_entry widget'''
-            self.data = self.modbus_client.read_holding_registers(address=0, count=10, data_type=data_type)
+            unit = int(self.unit_entry.get())  # Get the unit value from the unit_entry widget'''
+            #set count to 572 readings when connected to device
+            address = int(self.address_entry.get())
+            #Try make address 1 when connecting to device or 10
+            self.data = self.modbus_client.read_holding_registers(address=address, count=10, data_type=data_type)
 
             # If data is None (in case of error), show an error message
             if self.data is None:

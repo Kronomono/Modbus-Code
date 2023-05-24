@@ -9,10 +9,11 @@ from pymodbus.constants import Endian
 
 unit = 10
 class ModbusClient:
-    def __init__(self, ip_address="127.0.0.1", port=502):
+    def __init__(self, ip_address="127.0.0.1", port=502, unit = 1):
         # Initialize the modbus client with the provided IP address and port
         self.ip_address = ip_address
         self.port = port
+        self.unit = unit
         self.client = ModbusTcpClient(self.ip_address, port=self.port)
 
     def update_host_port(self, ip_address, port):
@@ -40,16 +41,15 @@ class ModbusClient:
             print(f"Exception while connecting to Modbus slave: {e}")
             return False
 
-    def read_holding_registers(self, address, count, unit=unit, data_type='holding'):
+    def read_holding_registers(self, address, count, data_type='holding'):
         try:
             if data_type == 'holding':
                 response = self.client.read_holding_registers(address=address, count=count, unit=unit)
                 # data is already in 16-bit register values
             elif data_type == 'Float':
-                response = self.client.read_holding_registers(address=address, count=2, unit=unit)
+                response = self.client.read_holding_registers(address=address, count=10, unit=unit)
                 # Convert the register values to float
-                decoder = BinaryPayloadDecoder.fromRegisters(response.registers, byteorder=Endian.Big,
-                                                                     wordorder=Endian.Little)
+                decoder = BinaryPayloadDecoder.fromRegisters(response.registers, byteorder=Endian.Big,wordorder=Endian.Little)
                 return [decoder.decode_32bit_float()]
                 return decoder.decode_32bit_float()
             elif data_type == 'ASCII':
@@ -89,16 +89,37 @@ class ModbusClient:
         else:
             print("Modbus connection is not open.")
 
-    def write_register(self, address, value, unit= unit, data_type='holding'):
+    def write_float(self, address, value):
+        # Attempt to write a float value to a specific register
+        builder = BinaryPayloadBuilder(byteorder=Endian.Big, wordorder=Endian.Little)
+        builder.add_32bit_float(value)
+        payload = builder.to_registers()
+        response = self.client.write_registers(address, payload, unit=unit)
+        if response.isError():
+            print(f"Modbus response error: {response}")
+        else:
+            print(f"Written value: {value} to address: {address}")
+
+    def write_ascii(self, address, ascii_string ):
+        # Attempt to write an ASCII string to a specific register
+        try:
+            hex_data = [ord(c) for c in ascii_string]
+            response = self.client.write_registers(address, hex_data, unit=unit)
+            if response.isError():
+                print(f"Modbus response error: {response}")
+            else:
+                print(f"Written ASCII string: {ascii_string} to address: {address}")
+        except ModbusIOException as e:
+            print(f"Modbus communication error: {e}")
+
+    def write_register(self, address, value, data_type='holding'):
         try:
             if data_type == 'holding':
                 response = self.client.write_register(address, value, unit=unit)
             elif data_type == 'Float':
-                # Convert the float to register values
-                builder = BinaryPayloadBuilder(byteorder=Endian.Big, wordorder=Endian.Little)
-                builder.add_32bit_float(value)
-                payload = builder.to_registers()
-                response = self.client.write_registers(address, payload, unit=unit)
+                # Directly use the write_float function for float values
+                self.write_float(address, value, unit)
+                return  # No further processing required, so return from the function
             elif data_type == 'ASCII':
                 # Convert the ASCII to register values
                 hex_data = [ord(c) for c in value]
@@ -117,28 +138,5 @@ class ModbusClient:
             else:
                 print("Successful write operation")
 
-        except ModbusIOException as e:
-            print(f"Modbus communication error: {e}")
-
-    def write_float(self, address, value, unit= unit):
-        # Attempt to write a float value to a specific register
-        builder = BinaryPayloadBuilder(byteorder=Endian.Big, wordorder=Endian.Little)
-        builder.add_32bit_float(value)
-        payload = builder.to_registers()
-        response = self.client.write_registers(address, payload, unit=unit)
-        if response.isError():
-            print(f"Modbus response error: {response}")
-        else:
-            print(f"Written value: {value} to address: {address}")
-
-    def write_ascii(self, address, ascii_string, unit= unit ):
-        # Attempt to write an ASCII string to a specific register
-        try:
-            hex_data = [ord(c) for c in ascii_string]
-            response = self.client.write_registers(address, hex_data, unit=unit)
-            if response.isError():
-                print(f"Modbus response error: {response}")
-            else:
-                print(f"Written ASCII string: {ascii_string} to address: {address}")
         except ModbusIOException as e:
             print(f"Modbus communication error: {e}")

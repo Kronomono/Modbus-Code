@@ -144,7 +144,7 @@ class ModbusMasterClientWidget:
             #set count to 572 readings when connected to device
             address = int(self.address_entry.get())
             #Try make address 1 when connecting to device or 10
-            self.data = self.modbus_client.read_holding_registers(address=address, count=10, data_type=data_type)
+            self.data = self.modbus_client.read_holding_registers(address=address, count=572, data_type=data_type)
 
             # If data is None (in case of error), show an error message
             if self.data is None:

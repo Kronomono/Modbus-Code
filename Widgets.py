@@ -114,7 +114,7 @@ class Widgets:
                 builder = BinaryPayloadBuilder(byteorder=Endian.Big)
                 builder.add_32bit_float(input_value)
                 payload = builder.build()
-                self.modbus_client.write_registers(address_value, payload)
+                self.modbus_client.write_register(address_value, payload)
             elif self.selected_type.get() == "Signed 16-bit":
                 input_value = int(input_value)
                 self.modbus_client.write_register(address_value, input_value)

@@ -40,7 +40,7 @@ class ModbusClient:
             print(f"Exception while connecting to Modbus slave: {e}")
             return False
 
-    def read_holding_registers(self, address, count, unit=1, data_type='holding'):
+    def read_holding_registers(self, address, count, unit=unit, data_type='holding'):
         try:
             if data_type == 'holding':
                 response = self.client.read_holding_registers(address=address, count=count, unit=unit)

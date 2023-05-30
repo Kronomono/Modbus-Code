@@ -170,15 +170,26 @@ class ModbusMasterClientWidget:
                 # Clear the table
                 for i in self.table.get_children():
                     self.table.delete(i)
+                # Read and process the data based on the selected type
+                selected_type = self.data_type_var.get()
 
                 # Add the data to the table
-                for i, value in enumerate(result.registers):
-                    #print raw value
-                    print(f"Retrieved raw value at address {address + i}: {value}")
-                    translated_value = self.translate_value(value)
-                    self.table.insert('', 'end', values=(address + i, 'holding', translated_value))
-                    # Print the retrieved value
-                    print(f"Retrieved translated value at address {address + i}: {translated_value}")
+                if selected_type == "Float":
+                    # Group the registers in pairs of two for float values
+                    float_registers = [result.registers[i:i + 2] for i in range(0, len(result.registers), 2)]
+                    for i, registers in enumerate(float_registers):
+                        # Combine the two registers and decode as a 32-bit float
+                        value = registers[0] << 16 | registers[1]
+                        decoded_value = struct.unpack('>f', struct.pack('>I', value))[0]
+                        self.table.insert('', 'end', values=(address + i, selected_type, decoded_value))
+                else:
+                    for i, value in enumerate(result.registers):
+                        # Print raw value
+                        print(f"Retrieved raw value at address {address + i}: {value}")
+                        translated_value = self.translate_value(value)
+                        self.table.insert('', 'end', values=(address + i, 'holding', translated_value))
+                        # Print the retrieved value
+                        print(f"Retrieved translated value at address {address + i}: {translated_value}")
             else:
                 print("Failed to read data from Modbus server.")
                 messagebox.showerror("Error", "Failed to read data from Modbus server.")

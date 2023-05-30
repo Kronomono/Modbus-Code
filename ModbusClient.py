@@ -48,7 +48,7 @@ class ModbusClient:
         else:
             print("Modbus connection is not open.")
 
-    def write_register(self, address, value, unit=1):
+    def write_register(self, address, value, unit= unit):
         # Attempt to write a value to a specific register
         try:
             response = self.client.write_register(address, value, unit=unit)
@@ -59,7 +59,7 @@ class ModbusClient:
         except ModbusIOException as e:
             print(f"Modbus communication error: {e}")
 
-    def write_float(self, address, value, unit=1):
+    def write_float(self, address, value, unit= unit):
         # Attempt to write a float value to a specific register
         builder = BinaryPayloadBuilder(byteorder=Endian.Big, wordorder=Endian.Little)
         builder.add_32bit_float(value)
@@ -70,7 +70,7 @@ class ModbusClient:
         else:
             print(f"Written value: {value} to address: {address}")
 
-    def write_ascii(self, address, ascii_string, unit=1):
+    def write_ascii(self, address, ascii_string, unit= unit):
         # Attempt to write an ASCII string to a specific register
         try:
             hex_data = [ord(c) for c in ascii_string]

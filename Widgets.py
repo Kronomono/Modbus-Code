@@ -96,6 +96,7 @@ class Widgets:
         # Get the input value, selected type, and selected register, and write the value to the register
         input_value = self.entry.get()
         manual_input_address = self.address_entry.get()
+
         if manual_input_address:  # Check if there is manual input
             if manual_input_address.startswith('0x'):  # Hexadecimal input
                 address_value = int(manual_input_address, 16)  # Converts hex string to integer
@@ -111,28 +112,25 @@ class Widgets:
         try:
             if self.selected_type.get() == "Float":
                 input_value = float(input_value)
-                builder = BinaryPayloadBuilder(byteorder=Endian.Big)
-                builder.add_32bit_float(input_value)
-                payload = builder.build()
-                self.modbus_client.write_register(address_value, payload)
+                self.modbus_client.write_register(int(address_value), input_value,
+                                                  number_of_decimals=2)  # Convert address_value to integer
             elif self.selected_type.get() == "Signed 16-bit":
                 input_value = int(input_value)
-                self.modbus_client.write_register(address_value, input_value)
+                self.modbus_client.write_register(int(address_value), input_value)  # Convert address_value to integer
             elif self.selected_type.get() == "Unsigned 16-bit":
                 input_value = int(input_value)
-                self.modbus_client.write_register(address_value, input_value)
+                self.modbus_client.write_register(int(address_value), input_value)  # Convert address_value to integer
             elif self.selected_type.get() == "Boolean":
                 input_value = bool(input_value)
-                self.modbus_client.write_coil(address_value, input_value)
+                self.modbus_client.write_coil(int(address_value), input_value)  # Convert address_value to integer
             elif self.selected_type.get() == "ASCII":
                 input_value = ord(input_value)  # Convert ASCII character to integer
-                self.modbus_client.write_register(address_value, input_value)
+                self.modbus_client.write_register(int(address_value), input_value)  # Convert address_value to integer
             else:
                 raise ValueError("Invalid selection")
 
         except ValueError:
             messagebox.showerror("Error", "Invalid input value. Please try again.")
-
 
     def add_address(self):
         # Get the input address, add it to the available registers, and update the dropdown menu

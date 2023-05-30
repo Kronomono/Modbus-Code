@@ -48,3 +48,13 @@ class ModbusClient:
         else:
             print("Modbus connection is not open.")
 
+    def write_register(self, address, value):
+        # Write a value to a register using Modbus protocol
+        try:
+            self.client.write_register(address, value, unit=self.unit)
+            print(f"Register write successful. Address: {address}, Value: {value}")
+        except ModbusIOException as e:
+            print(f"Modbus IO exception: {e}")
+        except Exception as e:
+            print(f"Exception while writing register: {e}")
+

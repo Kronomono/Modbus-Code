@@ -214,12 +214,3 @@ class ModbusMasterClientWidget:
             return binary_string
         else:
             return value
-
-
-
-
-
-
-
-
-

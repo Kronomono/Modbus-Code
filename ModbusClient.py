@@ -48,13 +48,36 @@ class ModbusClient:
         else:
             print("Modbus connection is not open.")
 
-    def write_register(self, address, value):
-        # Write a value to a register using Modbus protocol
+    def write_register(self, address, value, unit=1):
+        # Attempt to write a value to a specific register
         try:
-            self.client.write_register(address, value, unit=self.unit)
-            print(f"Register write successful. Address: {address}, Value: {value}")
+            response = self.client.write_register(address, value, unit=unit)
+            if response.isError():
+                print(f"Modbus response error: {response}")
+            else:
+                print(f"Written value: {value} to address: {address}")
         except ModbusIOException as e:
-            print(f"Modbus IO exception: {e}")
-        except Exception as e:
-            print(f"Exception while writing register: {e}")
+            print(f"Modbus communication error: {e}")
 
+    def write_float(self, address, value, unit=1):
+        # Attempt to write a float value to a specific register
+        builder = BinaryPayloadBuilder(byteorder=Endian.Big, wordorder=Endian.Little)
+        builder.add_32bit_float(value)
+        payload = builder.to_registers()
+        response = self.client.write_registers(address, payload, unit=unit)
+        if response.isError():
+            print(f"Modbus response error: {response}")
+        else:
+            print(f"Written value: {value} to address: {address}")
+
+    def write_ascii(self, address, ascii_string, unit=1):
+        # Attempt to write an ASCII string to a specific register
+        try:
+            hex_data = [ord(c) for c in ascii_string]
+            response = self.client.write_registers(address, hex_data, unit=unit)
+            if response.isError():
+                print(f"Modbus response error: {response}")
+            else:
+                print(f"Written ASCII string: {ascii_string} to address: {address}")
+        except ModbusIOException as e:
+            print(f"Modbus communication error: {e}")

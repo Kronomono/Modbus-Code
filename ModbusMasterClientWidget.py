@@ -42,7 +42,7 @@ class ModbusMasterClientWidget:
 
         # Create the data type dropdown
         self.data_type_var = tk.StringVar(self.root)
-        self.data_type_options = ['holding', 'Float', 'ASCII', 'Epoch']
+        self.data_type_options = ['holding', 'Float', 'ASCII', 'Epoch', 'Binary']
         self.data_type_var.set(self.data_type_options[0])
         self.data_type_dropdown = tk.OptionMenu(self.root, self.data_type_var, *self.data_type_options)
         self.data_type_dropdown.place(relx=0.15, rely=0.08, anchor=tk.NW)
@@ -173,13 +173,50 @@ class ModbusMasterClientWidget:
 
                 # Add the data to the table
                 for i, value in enumerate(result.registers):
-                    self.table.insert('', 'end', values=(address + i, 'holding', value))
+                    #print raw value
+                    print(f"Retrieved raw value at address {address + i}: {value}")
+                    translated_value = self.translate_value(value)
+                    self.table.insert('', 'end', values=(address + i, 'holding', translated_value))
+                    # Print the retrieved value
+                    print(f"Retrieved translated value at address {address + i}: {translated_value}")
             else:
                 print("Failed to read data from Modbus server.")
                 messagebox.showerror("Error", "Failed to read data from Modbus server.")
         except Exception as e:
             print(f"Exception while reading data from Modbus server: {e}")
             messagebox.showerror("Error", f"Exception while reading data from Modbus server: {e}")
+
+    def translate_value(self, value):
+        # Translate the value based on the selected data type
+        data_type = self.data_type_var.get()
+
+        if data_type == "holding":
+            return value
+        elif data_type == "Float":
+            # Assuming the value is a 32-bit float
+            binary_data = struct.pack('>H', value)
+            decoded_value = struct.unpack('>f', binary_data)[0]
+            return decoded_value
+        elif data_type == "ASCII":
+            # Assuming the value is a 16-bit value representing an ASCII character
+            ascii_value = value & 0xFF
+            decoded_value = chr(ascii_value)
+            return decoded_value
+
+        elif data_type == "Epoch":
+            # Assuming the value is a 32-bit epoch timestamp
+            binary_data = struct.pack('>I', value)
+            decoded_value = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(struct.unpack('>I', binary_data)[0]))
+            return decoded_value
+        elif data_type == "Binary":
+            # Assuming the value is a binary string
+            binary_string = bin(value)[2:]  # Remove '0b' prefix
+            return binary_string
+        else:
+            return value
+
+
+
 
 
 

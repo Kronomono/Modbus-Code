@@ -5,6 +5,7 @@ from pymodbus.payload import BinaryPayloadBuilder
 from pymodbus.payload import BinaryPayloadDecoder
 import time
 from pymodbus.constants import Endian
+import struct
 
 unit = 10
 class ModbusClient:
@@ -59,16 +60,15 @@ class ModbusClient:
         except ModbusIOException as e:
             print(f"Modbus communication error: {e}")
 
-    def write_float(self, address, value, unit= unit):
-        # Attempt to write a float value to a specific register
-        builder = BinaryPayloadBuilder(byteorder=Endian.Big, wordorder=Endian.Little)
-        builder.add_32bit_float(value)
-        payload = builder.to_registers()
-        response = self.client.write_registers(address, payload, unit=unit)
-        if response.isError():
-            print(f"Modbus response error: {response}")
-        else:
-            print(f"Written value: {value} to address: {address}")
+    def write_float(self, address, value, unit=unit):
+        # Convert the float value to a 32-bit integer
+        float_as_int = struct.unpack('<I', struct.pack('<f', value))[0]
+
+        # Write the high-order word of the integer value to the first register
+        self.write_register(address, float_as_int >> 16, unit)
+
+        # Write the low-order word of the integer value to the next register
+        self.write_register(address + 1, float_as_int & 0xFFFF, unit)
 
     def write_ascii(self, address, ascii_string, unit= unit):
         # Attempt to write an ASCII string to a specific register

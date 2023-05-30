@@ -123,8 +123,11 @@ class Widgets:
 
         try:
             if self.selected_type.get() == "Float":
-                input_value = float(input_value)
-                self.modbus_client.write_float(address_value, input_value)
+                # Split the input values by whitespace and convert each value to a float
+                input_values = [float(value) for value in input_value.split()]
+                # Write each float value to consecutive registers
+                for i, value in enumerate(input_values):
+                    self.modbus_client.write_float(address_value + i, value)
             elif self.selected_type.get() == "Signed 16-bit":
                 input_value = int(input_value)
                 self.modbus_client.write_register(address_value, input_value)

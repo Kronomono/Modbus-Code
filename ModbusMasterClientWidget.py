@@ -165,7 +165,8 @@ class ModbusMasterClientWidget:
             # Assuming you are reading holding registers starting from address 0 and reading 10 registers
             address = int(self.address_entry.get())
             unit = int(self.unit_entry.get())
-            result = self.modbus_client.client.read_holding_registers(address, 10, unit=unit)
+
+            result = self.modbus_client.client.read_holding_registers(address, count = 10, unit=unit)
             if not result.isError():
                 # Clear the table
                 for i in self.table.get_children():

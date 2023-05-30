@@ -9,6 +9,7 @@ from pymodbus.payload import BinaryPayloadDecoder
 import struct
 from pymodbus.constants import Endian
 import unicodedata
+import time
 
 
 class ModbusMasterClientWidget:
@@ -19,12 +20,26 @@ class ModbusMasterClientWidget:
         self.connection_button = None
         self.retrieve_button = None
         self.graph_button = None
+
+        # Create a frame to hold the table and the scrollbar
+        self.frame = tk.Frame(self.root)
+        self.frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+
         # Create the table
         self.table = ttk.Treeview(self.root, columns=("Address", "Type", "Registry"), show='headings')
         self.table.heading("Address", text="Address")
         self.table.heading("Type", text="Type")
         self.table.heading("Registry", text="Registry")
         self.table.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+
+        # Create a scrollbar
+        scrollbar = tk.Scrollbar(self.frame)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Link the scrollbar to the table
+        self.table.configure(yscrollcommand=scrollbar.set)
+        scrollbar.configure(command=self.table.yview)
+
         # Create the data type dropdown
         self.data_type_var = tk.StringVar(self.root)
         self.data_type_options = ['holding', 'Float', 'ASCII', 'Epoch']
@@ -119,7 +134,7 @@ class ModbusMasterClientWidget:
 
             dialog.transient(self.root)
             dialog.title("Modbus Connection Settings")
-            dialog.geometry("400x200")  # Set the width and height of the dialog window
+            dialog.geometry("400x400")  # Set the width and height of the dialog window
             dialog.grab_set()
             self.root.wait_window(dialog)
 
@@ -134,48 +149,6 @@ class ModbusMasterClientWidget:
     def disconnect_modbus(self):
         # Disconnect the Modbus connection and update the Connect button text
         self.modbus_client.close()
-        self.connection_button["text"] = "Connect"
-
-    def retrieve_data(self):
-        # Retrieve data from the Modbus server if a connection is established
-        if self.connection_button["text"] == "Disconnect":
-            data_type = self.data_type_var.get()
-            unit = int(self.unit_entry.get())  # Get the unit value from the unit_entry widget'''
-            #set count to 572 readings when connected to device
-            address = int(self.address_entry.get())
-            #Try make address 1 when connecting to device or 10
-            self.data = self.modbus_client.read_holding_registers(address=address, count=572, data_type=data_type)
-
-            # If data is None (in case of error), show an error message
-            if self.data is None:
-                print("No data received. Please check your connection or the server.")
-                messagebox.showerror("Error", "No data received. Please check your connection or the server.")
-
-                return
-
-            # Clear the old data from the table
-            for i in self.table.get_children():
-                self.table.delete(i)
-
-            # Insert the new data into the table
-            if data_type == 'ASCII':
-                for index, value_str in enumerate(self.data):
-                    # Check if the string is printable
-                    if all(32 <= ord(c) <= 126 for c in value_str):
-                        self.table.insert("", tk.END, values=(index, data_type, value_str))
-                    else:
-                        self.table.insert("", tk.END, values=(index, data_type, "[Non-ASCII Character]"))
-
-            # Add this else block to handle other data types
-            else:
-                for index, value in enumerate(self.data):
-                    self.table.insert("", tk.END, values=(index, data_type, value))
-
-            messagebox.showinfo("Data Retrieved", "Data successfully retrieved.")
-        else:
-            print("No active Modbus connection. Please connect first.")
-            messagebox.showerror("Error", "No active Modbus connection. Please connect first.")
-
 
     def show_graph(self):
         # Display the graph window
@@ -185,3 +158,31 @@ class ModbusMasterClientWidget:
         else:
             print("No data available. Please retrieve data first.")
             messagebox.showerror("Error", "No data available. Please retrieve data first.")
+
+    def retrieve_data(self):
+        # Retrieve data from the Modbus server
+        try:
+            # Assuming you are reading holding registers starting from address 0 and reading 10 registers
+            address = int(self.address_entry.get())
+            unit = int(self.unit_entry.get())
+            result = self.modbus_client.client.read_holding_registers(address, 10, unit=unit)
+            if not result.isError():
+                # Clear the table
+                for i in self.table.get_children():
+                    self.table.delete(i)
+
+                # Add the data to the table
+                for i, value in enumerate(result.registers):
+                    self.table.insert('', 'end', values=(address + i, 'holding', value))
+            else:
+                print("Failed to read data from Modbus server.")
+                messagebox.showerror("Error", "Failed to read data from Modbus server.")
+        except Exception as e:
+            print(f"Exception while reading data from Modbus server: {e}")
+            messagebox.showerror("Error", f"Exception while reading data from Modbus server: {e}")
+
+
+
+
+
+

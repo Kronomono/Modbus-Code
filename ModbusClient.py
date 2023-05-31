@@ -7,8 +7,9 @@ import time
 from pymodbus.constants import Endian
 import struct
 
-unit = 10
+
 class ModbusClient:
+    unit = 10
     def __init__(self, ip_address="127.0.0.1", port=502, unit = 1):
         # Initialize the modbus client with the provided IP address and port
         self.ip_address = ip_address

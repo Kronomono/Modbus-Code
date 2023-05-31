@@ -48,6 +48,7 @@ class ModbusMasterClientWidget:
         self.data_type_dropdown.place(relx=0.15, rely=0.08, anchor=tk.NW)
         self.unit_entry = self.create_unit_entry()  # Store the unit_entry widget
         self.address_entry = self.create_address_entry()
+        self.count_entry = self.create_count_entry()
 
     def create_widgets(self):
         # Create the Connect, Retrieve Data, and Show Graph buttons
@@ -63,7 +64,7 @@ class ModbusMasterClientWidget:
         self.connection_button.place(relx=0.05, rely=0.05, anchor=tk.NW)
 
     def create_address_entry(self):
-        address_entry = tk.Label(self.root, text="Enter address #")
+        address_entry = tk.Label(self.root, text="Enter starting address #")
         address_entry.place(relx=0.23, rely=0.03, anchor=tk.CENTER)
         # Create an address entry field and place it in the window
         address_entry = tk.Entry(self.root, width=10)
@@ -71,13 +72,21 @@ class ModbusMasterClientWidget:
         address_entry.place(relx=0.2, rely=0.05, anchor=tk.NW)
         return address_entry
     def create_unit_entry(self):
-        # Create an address entry field and place it in the window
+        # Create a unit entry field and place it in the window
         unit_entry = tk.Entry(self.root, width=10)
         unit_entry_label = tk.Label(self.root, text="Enter unit #")
-        unit_entry_label.place(relx=0.43, rely=0.03, anchor=tk.CENTER)
-
-        unit_entry.place(relx=0.4, rely=0.05, anchor=tk.NW)
+        unit_entry_label.place(relx=0.38, rely=0.03, anchor=tk.CENTER)
+        unit_entry.place(relx=0.35, rely=0.05, anchor=tk.NW)
         return unit_entry
+    def create_count_entry(self):
+        # create a count entry field and place in window
+        count_entry_label = tk.Label(self.root, text="Enter # of addresses to read")
+        count_entry = tk.Entry(self.root,width=10)
+
+        # placements
+        count_entry_label.place(relx=0.55, rely=0.03, anchor=tk.CENTER)
+        count_entry.place(relx=0.5, rely=0.05, anchor=tk.NW)
+        return count_entry
 
     def create_retrieve_button(self):
         # Create the Retrieve Data button and place it in the window
@@ -165,8 +174,9 @@ class ModbusMasterClientWidget:
             # Assuming you are reading holding registers starting from address 0 and reading 10 registers
             address = int(self.address_entry.get())
             unit = int(self.unit_entry.get())
+            count = int(self.count_entry.get())
 
-            result = self.modbus_client.client.read_holding_registers(address, count = 10, unit=unit)
+            result = self.modbus_client.client.read_holding_registers(address, count, unit=unit)
             if not result.isError():
                 # Clear the table
                 for i in self.table.get_children():

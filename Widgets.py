@@ -15,7 +15,7 @@ class Widgets:
         self.submit_button = None
         self.add_address_button = None
         self.add_address_entry = None
-        self.create_address_entry()
+        '''self.create_address_entry()'''
 
 
         # Define the types and registers available
@@ -86,11 +86,11 @@ class Widgets:
         self.add_address_button.config(bg="white", fg="black")
         self.add_address_button.place(relx=0.4, rely=0.5, anchor=tk.CENTER)
 
-    def create_address_entry(self):
+    '''def create_address_entry(self):
         # Create the entry field for manually inputting register addresses
         self.address_entry = tk.Entry(self.root, width=30)
         self.address_entry.config(bg="white", fg="black")
-        self.address_entry.place(relx=0.35, rely=0.65, anchor=tk.CENTER)
+        self.address_entry.place(relx=0.35, rely=0.65, anchor=tk.CENTER)'''
 
     def create_add_address_entry(self):
         #Create instructions for Hexdecimal input

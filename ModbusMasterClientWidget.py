@@ -40,7 +40,7 @@ class ModbusMasterClientWidget:
 
         # Create the data type dropdown
         self.data_type_var = tk.StringVar(self.root)
-        self.data_type_options = ['holding', 'Float', 'ASCII', 'Epoch', 'Binary','Signed Int','Unsigned Int']
+        self.data_type_options = ['holding', 'Float 32 bit', 'ASCII 16 bit', 'Epoch 32 bit', 'Binary 16 bit','Signed Int 16 bit','Unsigned Int 16 bit']
         self.data_type_var.set(self.data_type_options[0])
         self.data_type_dropdown = tk.OptionMenu(self.root, self.data_type_var, *self.data_type_options)
         self.data_type_dropdown.place(relx=0.15, rely=0.08, anchor=tk.NW)
@@ -184,7 +184,7 @@ class ModbusMasterClientWidget:
                 selected_type = self.data_type_var.get()
 
                 # Add the data to the table
-                if selected_type == "Float":
+                if selected_type == "Float 32 bit":
                     # Group the registers in pairs of two for float values
                     float_registers = [result.registers[i:i + 2] for i in range(0, len(result.registers), 2)]
                     for i, registers in enumerate(float_registers):
@@ -213,28 +213,28 @@ class ModbusMasterClientWidget:
 
         if data_type == "holding":
             return value
-        elif data_type == "Float":
+        elif data_type == "Float 32 bit":
             # Assuming the value is a 32-bit float
             binary_data = struct.pack('>H', value)
             decoded_value = struct.unpack('>f', binary_data)[0]
             return decoded_value
-        elif data_type == "ASCII":
+        elif data_type == "ASCII 16 bit":
             # Assuming the value is a 16-bit value representing an ASCII character
             ascii_value = value & 0xFF
             decoded_value = chr(ascii_value)
             return decoded_value
-        elif data_type == "Unsigned Int":
+        elif data_type == "Unsigned Int 16 bit":
             # Interpret as unsigned int
             return value
-        elif data_type == "Signed Int":
+        elif data_type == "Signed Int 16 bit":
             # Interpret as signed int
             return struct.unpack('>h', struct.pack('>H', value))[0]
-        elif data_type == "Epoch":
+        elif data_type == "Epoch 32 bit":
             # Assuming the value is a 32-bit epoch timestamp
             binary_data = struct.pack('>I', value)
             decoded_value = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(struct.unpack('>I', binary_data)[0]))
             return decoded_value
-        elif data_type == "Binary":
+        elif data_type == "Binary 16 bit":
             # Assuming the value is a binary string
             binary_string = bin(value)[2:]  # Remove '0b' prefix
             return binary_string

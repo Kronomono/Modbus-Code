@@ -40,7 +40,7 @@ root.mainloop()  # This is the main event loop for the tkinter application.
 # Boolean 40569
 # Float MS2B 40570
 # Float LS2B 40571
-# When typing addresses substract 40001
+# When typing addresses subtract 40001
 # Make so table reads off like excel sheet
 # Have drop down menu with options to display whole table, or justa table pertaining to a different type
 # Types needed to integrate

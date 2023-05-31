@@ -40,7 +40,7 @@ class ModbusMasterClientWidget:
 
         # Create the data type dropdown
         self.data_type_var = tk.StringVar(self.root)
-        self.data_type_options = ['holding', 'Float', 'ASCII', 'Epoch', 'Binary']
+        self.data_type_options = ['holding', 'Float', 'ASCII', 'Epoch', 'Binary','Signed Int','Unsigned Int']
         self.data_type_var.set(self.data_type_options[0])
         self.data_type_dropdown = tk.OptionMenu(self.root, self.data_type_var, *self.data_type_options)
         self.data_type_dropdown.place(relx=0.15, rely=0.08, anchor=tk.NW)
@@ -223,7 +223,12 @@ class ModbusMasterClientWidget:
             ascii_value = value & 0xFF
             decoded_value = chr(ascii_value)
             return decoded_value
-
+        elif data_type == "Unsigned Int":
+            # Interpret as unsigned int
+            return value
+        elif data_type == "Signed Int":
+            # Interpret as signed int
+            return struct.unpack('>h', struct.pack('>H', value))[0]
         elif data_type == "Epoch":
             # Assuming the value is a 32-bit epoch timestamp
             binary_data = struct.pack('>I', value)

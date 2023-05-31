@@ -43,3 +43,10 @@ root.mainloop()  # This is the main event loop for the tkinter application.
 # When typing addresses substract 40001
 # Make so table reads off like excel sheet
 # Have drop down menu with options to display whole table, or justa table pertaining to a different type
+# Types needed to integrate
+# signed 32 bit integer
+# boolean
+# byte
+# unsigned 32 bit
+# unsigned 8 bit
+# confusing epochs

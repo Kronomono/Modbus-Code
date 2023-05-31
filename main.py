@@ -29,7 +29,7 @@ tab1 = Tab1(notebook, options, modbus_client)  # Pass any necessary arguments to
 tab2 = Tab2(notebook, options, modbus_client)
 
 notebook.add(tab1.frame, text='Registry')  # Add the frames to the notebook with their respective labels
-notebook.add(tab2.frame, text='Data')
+notebook.add(tab2.frame, text='Data Testing')
 
 notebook.pack(fill=tk.BOTH, expand=True)  # Add the notebook to the root window
 
@@ -43,10 +43,5 @@ root.mainloop()  # This is the main event loop for the tkinter application.
 # When typing addresses subtract 40001
 # Make so table reads off like excel sheet
 # Have drop down menu with options to display whole table, or justa table pertaining to a different type
-# Types needed to integrate
-# signed 32 bit integer
-# boolean
-# byte
-# unsigned 32 bit
-# unsigned 8 bit
+# all integrated besides epochs and input
 # confusing epochs

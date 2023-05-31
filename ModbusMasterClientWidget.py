@@ -41,7 +41,7 @@ class ModbusMasterClientWidget:
         # Create the data type dropdown
         self.data_type_var = tk.StringVar(self.root)
         self.data_type_options = ['holding', 'Float 32 bit', 'ASCII 16 bit', 'Epoch 32 bit', 'Binary 16 bit','Signed Int 16 bit','Unsigned Int 16 bit',
-                                  'Boolean']
+                                  'Boolean','Byte']
         self.data_type_var.set(self.data_type_options[0])
         self.data_type_dropdown = tk.OptionMenu(self.root, self.data_type_var, *self.data_type_options)
         self.data_type_dropdown.place(relx=0.15, rely=0.08, anchor=tk.NW)
@@ -247,5 +247,9 @@ class ModbusMasterClientWidget:
                 return True
             else:
                 return 'Not a Boolean'
+        elif data_type == "Byte":
+            # Assuming the value is a byte (8 bits)
+            byte_value = value & 0xFF
+            return byte_value
         else:
             return value

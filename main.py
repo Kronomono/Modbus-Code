@@ -7,9 +7,9 @@ from ModbusMasterClientWidget import ModbusMasterClientWidget
 from Tab1 import Tab1  # Import the classes for the tabs
 from Tab2 import Tab2
 import logging
-logging.basicConfig()
-log = logging.getLogger()
-log.setLevel(logging.DEBUG)
+#logging.basicConfig()
+#log = logging.getLogger()
+#log.setLevel(logging.DEBUG)
 
 
 root = tk.Tk()  # Root instance for your Tkinter application
@@ -45,3 +45,7 @@ root.mainloop()  # This is the main event loop for the tkinter application.
 # Have drop down menu with options to display whole table, or justa table pertaining to a different type
 # all integrated besides epochs and input
 # confusing epochs
+
+#problems
+# py mod bus only allows up to 125 registries per request. Hard to display
+# need to display multiple types in different formats while keeping track of everything

@@ -156,11 +156,27 @@ class ModbusMasterClientWidget:
         else:
             self.disconnect_modbus()
 
+    '''def toggle_connection(self):
+    # Toggle the Modbus connection based on the current state
+    if self.connection_button["text"] == "Connect":
+        self.show_connection_dialog()
+        if self.modbus_client.client.is_socket_open():  # Check if the connection is open
+            self.discover_registers()
+    else:
+        self.disconnect_modbus()
+'''
 
     def disconnect_modbus(self):
         # Disconnect the Modbus connection and update the Connect button text
         self.modbus_client.close()
         self.connection_button["text"] = "Connect"
+
+    '''def disconnect_modbus(self):
+    # Disconnect the Modbus connection and update the Connect button text
+    if self.modbus_client.client.is_socket_open():  # Check if the connection is open
+        self.modbus_client.close()
+    self.connection_button["text"] = "Connect"
+'''
 
     def show_graph(self):
         # Display the graph window
@@ -171,6 +187,16 @@ class ModbusMasterClientWidget:
             print("No data available. Please retrieve data first.")
             messagebox.showerror("Error", "No data available. Please retrieve data first.")
 
+    ''' def discover_registers(self):
+        # Assuming you are reading holding registers
+        unit = int(self.unit_entry.get())
+        for address in range(65536):  # Modbus address space is 0-65535
+            try:
+                result = self.modbus_client.client.read_holding_registers(address, 1, unit=unit)
+                if not result.isError():
+                    print(f"Register at address {address} is readable.")
+            except Exception as e:
+                print(f"Exception while reading register at address {address}: {e}")'''
 
     def retrieve_data(self):
         # Retrieve data from the Modbus server

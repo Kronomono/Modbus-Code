@@ -41,7 +41,9 @@ class ModbusMasterClientWidget:
         # Create the data type dropdown
         self.data_type_var = tk.StringVar(self.root)
         self.data_type_options = ['holding', 'Float 32 bit', 'ASCII 16 bit', 'Epoch 32 bit', 'Binary 16 bit',
-                                  'Signed Int 16 bit', 'Unsigned Int 16 bit', 'Boolean', 'Byte', 'Signed Int 32 bit']
+                                  'Signed Int 16 bit', 'Unsigned Int 16 bit', 'Boolean', 'Byte', 'Signed Int 32 bit',
+                                  'Unsigned Int 32 bit']
+
         self.data_type_var.set(self.data_type_options[0])
         self.data_type_dropdown = tk.OptionMenu(self.root, self.data_type_var, *self.data_type_options)
         self.data_type_dropdown.place(relx=0.15, rely=0.08, anchor=tk.NW)
@@ -198,6 +200,12 @@ class ModbusMasterClientWidget:
                             decoded_value = \
                             struct.unpack('>l', struct.pack('>l', (value << 16) | result.registers[i + 1]))[0]
                             self.table.insert('', 'end', values=(address + i, selected_type, decoded_value))
+                    elif selected_type == "Unsigned Int 32 bit":
+                        # Group the registers in pairs of two for unsigned int values
+                        if i % 2 == 0:
+                            decoded_value = \
+                            struct.unpack('>L', struct.pack('>L', (value << 16) | result.registers[i + 1]))[0]
+                            self.table.insert('', 'end', values=(address + i, selected_type, decoded_value))
                     else:
                         # Translate the value based on the selected data type
                         translated_value = self.translate_value(value)
@@ -257,6 +265,10 @@ class ModbusMasterClientWidget:
             binary_data = struct.pack('>l', value)
             decoded_value = struct.unpack('>l', binary_data)[0]
             return decoded_value
-
+        elif data_type == "Unsigned Int 32 bit":
+            # Assuming the value is an unsigned 32-bit integer
+            binary_data = struct.pack('>L', value)
+            decoded_value = struct.unpack('>L', binary_data)[0]
+            return decoded_value
         else:
             return value

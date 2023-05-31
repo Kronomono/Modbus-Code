@@ -158,6 +158,7 @@ class ModbusMasterClientWidget:
     def disconnect_modbus(self):
         # Disconnect the Modbus connection and update the Connect button text
         self.modbus_client.close()
+        self.connection_button["text"] = "Connect"
 
     def show_graph(self):
         # Display the graph window

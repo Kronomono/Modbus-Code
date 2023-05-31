@@ -21,6 +21,7 @@ class Widgets:
         # Define the types and registers available
         self.selected_type = tk.StringVar(root)
         self.selected_type.set(self.options[0])
+        self.selected_type.trace("w", self.create_entry)  # Bind create_entry to selected_type change
         self.available_registers = {
             "Register 0": 0x0000,
             "Register 1": 0x0001,
@@ -54,10 +55,18 @@ class Widgets:
         self.dropdown_menu.config(bg="white", fg="black")
         self.dropdown_menu.place(relx=0.2, rely=0.6, anchor=tk.CENTER)
 
-    def create_entry(self):
-        # Create the entry field for input values and place it in the window
-        self.entry = tk.Entry(self.root, width=30)
-        self.entry.config(bg="white", fg="black")
+    def create_entry(self, *args):
+        # Destroy the existing entry widget if it exists
+        if self.entry is not None:
+            self.entry.destroy()
+
+        # Create the entry field or dropdown menu for input values and place it in the window
+        if self.selected_type.get() == "Boolean":
+            self.entry = ttk.Combobox(self.root, values=["True", "False"], state="readonly")
+        else:
+            self.entry = tk.Entry(self.root, width=30)
+
+        self.entry.configure(background="white", foreground="black")
         self.entry.place(relx=0.6, rely=0.6, anchor=tk.CENTER)
 
     def create_submit_button(self):
@@ -122,6 +131,15 @@ class Widgets:
         print(f"Address value: {address_value}")
 
         try:
+            if self.selected_type.get() == "Boolean":
+                input_value = input_value.lower()  # Convert input to lowercase for case-insensitive comparison
+                if input_value == "true":
+                    input_value = 1
+                elif input_value == "false":
+                    input_value = 0
+                else:
+                    raise ValueError("Invalid boolean value")
+
             if self.selected_type.get() == "Float":
                 # Split the input values by whitespace and convert each value to a float
                 input_values = [float(value) for value in input_value.split()]

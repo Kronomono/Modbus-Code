@@ -2,8 +2,6 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
 from GraphWindow import GraphWindow
-import string
-from tkinter import simpledialog
 from ModbusClient import ModbusClient
 from pymodbus.payload import BinaryPayloadDecoder
 import struct

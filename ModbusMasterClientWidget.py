@@ -40,8 +40,8 @@ class ModbusMasterClientWidget:
 
         # Create the data type dropdown
         self.data_type_var = tk.StringVar(self.root)
-        self.data_type_options = ['holding', 'Float 32 bit', 'ASCII 16 bit', 'Epoch 32 bit', 'Binary 16 bit','Signed Int 16 bit','Unsigned Int 16 bit',
-                                  'Boolean','Byte']
+        self.data_type_options = ['holding', 'Float 32 bit', 'ASCII 16 bit', 'Epoch 32 bit', 'Binary 16 bit',
+                                  'Signed Int 16 bit', 'Unsigned Int 16 bit', 'Boolean', 'Byte', 'Signed Int 32 bit']
         self.data_type_var.set(self.data_type_options[0])
         self.data_type_dropdown = tk.OptionMenu(self.root, self.data_type_var, *self.data_type_options)
         self.data_type_dropdown.place(relx=0.15, rely=0.08, anchor=tk.NW)
@@ -193,6 +193,14 @@ class ModbusMasterClientWidget:
                         value = registers[0] << 16 | registers[1]
                         decoded_value = struct.unpack('>f', struct.pack('>I', value))[0]
                         self.table.insert('', 'end', values=(address + i, selected_type, decoded_value))
+                elif selected_type == "Signed Int 32 bit":
+                    # Group the registers in pairs of two for signed int values
+                    int_registers = [result.registers[i:i + 2] for i in range(0, len(result.registers), 2)]
+                    for i, registers in enumerate(int_registers):
+                        # Combine the two registers and decode as a 32-bit signed integer
+                        value = registers[0] << 16 | registers[1]
+                        decoded_value = struct.unpack('>l', struct.pack('>l', value))[0]
+                        self.table.insert('', 'end', values=(address + i, selected_type, decoded_value))
                 else:
                     for i, value in enumerate(result.registers):
                         # Print raw value
@@ -251,5 +259,11 @@ class ModbusMasterClientWidget:
             # Assuming the value is a byte (8 bits)
             byte_value = value & 0xFF
             return byte_value
+        elif data_type == "Signed Int 32 bit":
+            # Assuming the value is a 32-bit signed integer
+            binary_data = struct.pack('>l', value)
+            decoded_value = struct.unpack('>l', binary_data)[0]
+            return decoded_value
+
         else:
             return value

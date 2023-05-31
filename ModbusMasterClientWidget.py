@@ -179,36 +179,29 @@ class ModbusMasterClientWidget:
             result = self.modbus_client.client.read_holding_registers(address, count, unit=unit)
             if not result.isError():
                 # Clear the table
-                for i in self.table.get_children():
-                    self.table.delete(i)
+                self.table.delete(*self.table.get_children())
+
                 # Read and process the data based on the selected type
                 selected_type = self.data_type_var.get()
 
                 # Add the data to the table
-                if selected_type == "Float 32 bit":
-                    # Group the registers in pairs of two for float values
-                    float_registers = [result.registers[i:i + 2] for i in range(0, len(result.registers), 2)]
-                    for i, registers in enumerate(float_registers):
-                        # Combine the two registers and decode as a 32-bit float
-                        value = registers[0] << 16 | registers[1]
-                        decoded_value = struct.unpack('>f', struct.pack('>I', value))[0]
-                        self.table.insert('', 'end', values=(address + i, selected_type, decoded_value))
-                elif selected_type == "Signed Int 32 bit":
-                    # Group the registers in pairs of two for signed int values
-                    int_registers = [result.registers[i:i + 2] for i in range(0, len(result.registers), 2)]
-                    for i, registers in enumerate(int_registers):
-                        # Combine the two registers and decode as a 32-bit signed integer
-                        value = registers[0] << 16 | registers[1]
-                        decoded_value = struct.unpack('>l', struct.pack('>l', value))[0]
-                        self.table.insert('', 'end', values=(address + i, selected_type, decoded_value))
-                else:
-                    for i, value in enumerate(result.registers):
-                        # Print raw value
-                        print(f"Retrieved raw value at address {address + i}: {value}")
+                for i, value in enumerate(result.registers):
+                    if selected_type == "Float 32 bit":
+                        # Group the registers in pairs of two for float values
+                        if i % 2 == 0:
+                            decoded_value = \
+                            struct.unpack('>f', struct.pack('>I', (value << 16) | result.registers[i + 1]))[0]
+                            self.table.insert('', 'end', values=(address + i, selected_type, decoded_value))
+                    elif selected_type == "Signed Int 32 bit":
+                        # Group the registers in pairs of two for signed int values
+                        if i % 2 == 0:
+                            decoded_value = \
+                            struct.unpack('>l', struct.pack('>l', (value << 16) | result.registers[i + 1]))[0]
+                            self.table.insert('', 'end', values=(address + i, selected_type, decoded_value))
+                    else:
+                        # Translate the value based on the selected data type
                         translated_value = self.translate_value(value)
                         self.table.insert('', 'end', values=(address + i, 'holding', translated_value))
-                        # Print the retrieved value
-                        print(f"Retrieved translated value at address {address + i}: {translated_value}")
             else:
                 print("Failed to read data from Modbus server.")
                 messagebox.showerror("Error", "Failed to read data from Modbus server.")

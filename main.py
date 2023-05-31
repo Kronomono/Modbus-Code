@@ -34,3 +34,12 @@ notebook.add(tab2.frame, text='Data')
 notebook.pack(fill=tk.BOTH, expand=True)  # Add the notebook to the root window
 
 root.mainloop()  # This is the main event loop for the tkinter application.
+
+#Task to do
+# Create a work mode where the only writable registries are a Boolean and a float at memory address
+# Boolean 40569
+# Float MS2B 40570
+# Float LS2B 40571
+# When typing addresses substract 40001
+# Make so table reads off like excel sheet
+# Have drop down menu with options to display whole table, or justa table pertaining to a different type

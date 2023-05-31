@@ -156,7 +156,6 @@ class ModbusMasterClientWidget:
         else:
             self.disconnect_modbus()
 
-
     def disconnect_modbus(self):
         # Disconnect the Modbus connection and update the Connect button text
         self.modbus_client.close()
@@ -170,7 +169,6 @@ class ModbusMasterClientWidget:
         else:
             print("No data available. Please retrieve data first.")
             messagebox.showerror("Error", "No data available. Please retrieve data first.")
-
 
     def retrieve_data(self):
         # Retrieve data from the Modbus server
@@ -211,7 +209,7 @@ class ModbusMasterClientWidget:
                     else:
                         # Translate the value based on the selected data type
                         translated_value = self.translate_value(value)
-                        self.table.insert('', 'end', values=(address + i, 'holding', translated_value))
+                        self.table.insert('', 'end', values=(address + i, selected_type, translated_value))
             else:
                 print("Failed to read data from Modbus server.")
                 messagebox.showerror("Error", "Failed to read data from Modbus server.")

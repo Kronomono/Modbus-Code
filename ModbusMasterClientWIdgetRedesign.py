@@ -1,7 +1,7 @@
 # ModbusMasterClientWidget.py
 import tkinter as tk
 from tkinter import messagebox, ttk
-from GraphWindow import GraphWindow
+
 from ModbusClient import ModbusClient
 from pymodbus.payload import BinaryPayloadDecoder
 import struct
@@ -9,6 +9,7 @@ from pymodbus.constants import Endian
 import unicodedata
 import time
 from ratelimiter import RateLimiter
+import threading
 
 
 class ModbusMasterClientWidget:
@@ -18,7 +19,6 @@ class ModbusMasterClientWidget:
         self.modbus_client = modbus_client
         self.connection_button = None
         self.retrieve_button = None
-        self.graph_button = None
 
         # Create a frame to hold the table and the scrollbar
         self.frame = tk.Frame(self.root)
@@ -41,7 +41,7 @@ class ModbusMasterClientWidget:
 
         # Create the data type dropdown
         self.data_type_var = tk.StringVar(self.root)
-        self.data_type_options = ['holding', 'Float 32 bit', 'ASCII 16 bit', 'Epoch 32 bit', 'Binary 16 bit',
+        self.data_type_options = ['holding', 'Float 32 bit', 'ASCII 16 bit', 'Epoch 32 bit', 'Binary',
                                   'Signed Int 16 bit', 'Unsigned Int 16 bit', 'Boolean', 'Byte', 'Signed Int 32 bit',
                                   'Unsigned Int 32 bit', 'ALL']
 
@@ -51,12 +51,15 @@ class ModbusMasterClientWidget:
         self.unit_entry = self.create_unit_entry()  # Store the unit_entry widget
         self.address_entry = self.create_address_entry()
         self.count_entry = self.create_count_entry()
+        self.progress = ttk.Progressbar(self.root, length=200, mode='determinate')
+        self.progress.place(relx=0.5, rely=0.2, relwidth=0.8, anchor=tk.CENTER)
+        self.progress_label = tk.Label(self.root, text="")
+        self.progress_label.place(relx=0.5, rely=0.15, anchor=tk.CENTER)
 
     def create_widgets(self):
         # Create the Connect, Retrieve Data, and Show Graph buttons
         self.create_connection_button()
         self.create_retrieve_button()
-        self.create_graph_button()
 
     def create_connection_button(self):
         # Create the Connect button and place it in the window
@@ -94,11 +97,6 @@ class ModbusMasterClientWidget:
         # Create the Retrieve Data button and place it in the window
         self.retrieve_button = tk.Button(self.root, text="Retrieve Data", command=self.retrieve_data)
         self.retrieve_button.place(relx=0.05, rely=0.08, anchor=tk.NW)
-
-    def create_graph_button(self):
-        # Create the Show Graph button and place it in the window
-        self.graph_button = tk.Button(self.root, text="Show Graph", command=self.show_graph)
-        self.graph_button.place(relx=0.05, rely=0.11, anchor=tk.NW)
 
     def show_connection_dialog(self):
         # Create and display a new connection dialog window
@@ -160,16 +158,10 @@ class ModbusMasterClientWidget:
         self.modbus_client.close()
         self.connection_button["text"] = "Connect"
 
-    def show_graph(self):
-        # Display the graph window
-        if hasattr(self, 'data'):
-            self.graph_window = GraphWindow(self.root)
-            self.graph_window.plot_data(self.data)
-        else:
-            print("No data available. Please retrieve data first.")
-            messagebox.showerror("Error", "No data available. Please retrieve data first.")
-
     def retrieve_data(self):
+        threading.Thread(target=self.retrieve_data_thread).start()
+
+    def retrieve_data_thread(self):
         # Define the maximum number of requests per second
         MAX_REQUESTS_PER_SECOND = 20  # Increase this number to increase the polling rate
         # Retrieve data from the Modbus server
@@ -183,12 +175,18 @@ class ModbusMasterClientWidget:
             raw_values = []  # Initialize raw_values outside the loop
             self.table.delete(*self.table.get_children())
             selected_type = self.data_type_var.get()  # Define selected_type before using it
+            self.progress[
+                'maximum'] = count  # Set the maximum value of the progress bar to the total number of addresses to read
+            self.progress['value'] = 0  # Reset the progress bar
             for address in range(count):  # Modbus address space is 0-65535
                 with rate_limiter:
                     try:
                         result = self.modbus_client.client.read_holding_registers(address, 1, unit=unit)
                         if not result.isError():
                             raw_values.append(result.registers[0])
+                            self.progress['value'] += 1  # Increment the progress bar
+                            self.progress_label['text'] = f"{self.progress['value']}/{count}"  # Update the label text
+                            self.root.update_idletasks()  # Update the GUI
                     except Exception as e:
                         print(f"Exception while reading register at address {address}: {e}")
 
@@ -209,6 +207,78 @@ class ModbusMasterClientWidget:
                     translated_value = self.translate_value("Float 32 bit", value1, value2)
                     translated_value = round(translated_value, 2)
                     self.table.insert('', 'end', values=(index1, "Float 32 bit", translated_value))
+
+                ASCII16bit_indices = [205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219,
+                                      220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
+                                      235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249,
+                                      250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264,
+                                      265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279,
+                                      280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294,
+                                      295, 296, 297, 298, 299, 300, 301, 302,
+                                      303]  # The indices of the values you want to read
+                for i in range(0, len(ASCII16bit_indices)):
+                    index1 = ASCII16bit_indices[i]
+                    value1 = raw_values[index1]
+                    translated_value = self.translate_value("ASCII 16 bit", value1)
+                    # translated_value =   round(translated_value,2)
+                    self.table.insert('', 'end', values=(index1, "ASCII 16 bit", translated_value))
+
+                Signed32Int_indices = [6, 7, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
+                                       44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62,
+                                       63, 64, 65, 66, 67, 68, 69, 70]  # The indices of the values you want to read
+                for i in range(0, len(Signed32Int_indices), 2):  # Step by 2
+                    index1 = Signed32Int_indices[i]
+                    index2 = Signed32Int_indices[i + 1] if i + 1 < len(
+                        Signed32Int_indices) else index1  # Use index1 if there's no second index
+                    value1 = raw_values[index1]
+                    value2 = raw_values[index2]
+
+                    translated_value = self.translate_value("Signed Int 32 bit", value1, value2)
+                    # translated_value =   round(translated_value,2)
+                    self.table.insert('', 'end', values=(index1, "Signed Int 32 bit", translated_value))
+
+                UnsignedInt16bit_indices = [12, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
+                                            98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112,
+                                            113, 114, 115, 116, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171,
+                                            172, 173, 306, 312, 418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428,
+                                            429,
+                                            430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441, 442, 443, 444,
+                                            445, 446, 447, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459,
+                                            460, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474,
+                                            475, 476, 477, 478, 479, 480, 481, 482, 483, 484, 485, 486, 487, 488, 489,
+                                            490, 491, 492, 493, 494, 495, 496, 497, 498, 499, 500, 501, 502, 503, 504,
+                                            505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519,
+                                            520, 521, 522, 523, 524, 525, 526, 527, 528, 529, 530, 531, 532, 533, 534,
+                                            535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 547, 548, 549,
+                                            550, 551, 552, 553, 554, 555, 556, 557,
+                                            566]  # The indices of the values you want to read
+                for i in range(0, len(UnsignedInt16bit_indices)):
+                    index1 = UnsignedInt16bit_indices[i]
+                    value1 = raw_values[index1]
+                    translated_value = self.translate_value("Unsigned Int 16 bit", value1)
+                    self.table.insert('', 'end', values=(index1, "Unsigned Int 16 bit", translated_value))
+
+                Unsigned32Int_indices = [315, 316, 558, 559, 560, 561, 562, 563, 564,
+                                         565]  # The indices of the values you want to read
+                for i in range(0, len(Unsigned32Int_indices), 2):  # Step by 2
+                    index1 = Unsigned32Int_indices[i]
+                    index2 = Unsigned32Int_indices[i + 1] if i + 1 < len(
+                        Unsigned32Int_indices) else index1  # Use index1 if there's no second index
+                    value1 = raw_values[index1]
+                    value2 = raw_values[index2]
+
+                    translated_value = self.translate_value("Unsigned Int 32 bit", value1, value2)
+                    # translated_value =   round(translated_value,2)
+                    self.table.insert('', 'end', values=(index1, "Unsigned Int 32 bit", translated_value))
+
+                boolean_indices = [175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190,
+                                   191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 567,
+                                   568]  # The indices of the values you want to read
+                for i in range(0, len(boolean_indices)):
+                    index1 = boolean_indices[i]
+                    value1 = raw_values[index1]
+                    translated_value = self.translate_value("Boolean", value1)
+                    self.table.insert('', 'end', values=(index1, "Boolean", translated_value))
             elif selected_type == "Float 32 bit":
                 float_indices = [0, 1, 2, 3, 4, 5, 25, 26, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
                                  117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128,
@@ -298,6 +368,12 @@ class ModbusMasterClientWidget:
                     value1 = raw_values[index1]
                     translated_value = self.translate_value("Boolean", value1)
                     self.table.insert('', 'end', values=(index1, "Boolean", translated_value))
+            elif selected_type == "Binary":
+                # Insert raw_values into the table
+                for i, value in enumerate(raw_values):
+                    translated_value = self.translate_value("Binary", value)  # Translate the value
+                    self.table.insert('', 'end',
+                                      values=(i, selected_type, translated_value))  # Use the translated value
             else:
                 # Insert raw_values into the table
                 for i, value in enumerate(raw_values):
@@ -307,10 +383,10 @@ class ModbusMasterClientWidget:
         except Exception as e:
             print(f"Exception while reading data from Modbus server: {e}")
             messagebox.showerror("Error", f"Exception while reading data from Modbus server: {e}")
+        self.progress['value'] = 0  # Reset the progress bar
 
     def translate_value(self, data_type, value1, value2=None):
         # Translate the value based on the selected data type
-
         if data_type == "holding":
             return value1
         elif data_type == "Float 32 bit":
@@ -340,7 +416,7 @@ class ModbusMasterClientWidget:
             binary_data = struct.pack('>HH', value1, value2)  # Combine two 16-bit values
             decoded_value = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(struct.unpack('>I', binary_data)[0]))
             return decoded_value
-        elif data_type == "Binary 16 bit":
+        elif data_type == "Binary":
             # Assuming the value is a binary string
             binary_string = bin(value1)[2:]  # Remove '0b' prefix
             return binary_string

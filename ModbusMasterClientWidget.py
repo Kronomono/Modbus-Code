@@ -1,7 +1,6 @@
 #ModbusMasterClientWidget.py
 import tkinter as tk
 from tkinter import messagebox, ttk
-
 from ModbusClient import ModbusClient
 from pymodbus.payload import BinaryPayloadDecoder
 import struct
@@ -26,10 +25,11 @@ class ModbusMasterClientWidget:
         self.frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
         # Create the table
-        self.table = ttk.Treeview(self.root, columns=("Address", "Type", "Registry"), show='headings')
+        self.table = ttk.Treeview(self.root, columns=("Name","Address", "Type", "Registry"), show='headings')
         self.table.heading("Address", text="Address")
         self.table.heading("Type", text="Type")
         self.table.heading("Registry", text="Registry")
+        self.table.heading("Name", text="Name")
         self.table.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
         # Create a scrollbar
@@ -48,9 +48,11 @@ class ModbusMasterClientWidget:
 
         self.data_type_var.set(self.data_type_options[0])
         self.data_type_dropdown = tk.OptionMenu(self.root, self.data_type_var, *self.data_type_options)
-        self.data_type_dropdown.place(relx=0.15, rely=0.08, anchor=tk.NW)
+        self.data_type_dropdown.place(relx=0.17, rely=0.075, anchor=tk.NW)
+        # Add a trace to the data_type_var
+        self.data_type_var.trace('w', self.retrieve_data)
+
         self.unit_entry = self.create_unit_entry()  # Store the unit_entry widget
-        self.address_entry = self.create_address_entry()
         self.count_entry = self.create_count_entry()
         self.progress = ttk.Progressbar(self.root, length=200, mode='determinate')
         self.progress.place(relx=0.5, rely=0.2, relwidth=0.8, anchor=tk.CENTER)
@@ -63,22 +65,11 @@ class ModbusMasterClientWidget:
         self.create_connection_button()
         self.create_retrieve_button()
 
-
-
-
     def create_connection_button(self):
         # Create the Connect button and place it in the window
         self.connection_button = tk.Button(self.root, text="Connect", command=self.toggle_connection)
         self.connection_button.place(relx=0.05, rely=0.05, anchor=tk.NW)
 
-    def create_address_entry(self):
-        address_entry = tk.Label(self.root, text="Enter starting address #")
-        address_entry.place(relx=0.23, rely=0.03, anchor=tk.CENTER)
-        # Create an address entry field and place it in the window
-        address_entry = tk.Entry(self.root, width=10)
-        address_entry.config(bg="white", fg="black")
-        address_entry.place(relx=0.2, rely=0.05, anchor=tk.NW)
-        return address_entry
     def create_unit_entry(self):
         # Create a unit entry field and place it in the window
         unit_entry = tk.Entry(self.root, width=10)
@@ -162,18 +153,41 @@ class ModbusMasterClientWidget:
         # Disconnect the Modbus connection and update the Connect button text
         self.modbus_client.close()
         self.connection_button["text"] = "Connect"
-    def retrieve_data(self):
+
+    def get_name(self,index):
+        self.index_to_name = {
+            0: "Control Signal",2:"Position",4:"Deviation",6:"Torque/Thrust",8:"Delta Pressure",9:"Open Pressure",10:"Close Pressure",11:"Pst Status",
+            12:"Accumulator Pressure",13:"System Mode",14:"Last Event",15:"System Status",16:"Active Feedback",17:"Active Warnings",21:"Active Alarms",
+            25:"Average Position Last 90 Days",27:"Max  Torque/Thrust Per Poll",29:"Min Torque/ Thrust Per Poll",31:"Max CW Torque Last 1hr",
+            33:"Min CW Torque Last 1hr",35:"Max CCW Torque Last 1hr",37:"Min CCW Torque Last 1hr",39:"Max CW Torque Last 4hr",41:"Min CW Torque Last 4hr",
+            43:"Max CCW Torque Last 4hr",45:"Min CCW Torque Last 4hr",47:"Max CW Torque Last 8hr", 49:"Min CW Torque Last 8hr",51:"Max CCW Torque Last 8hr",
+            53:"Min CCW Torque Last 8hr",55:"Max CW Torque Last 12hr",57:"Min Cw Torque Last 12hr",59:"Max CCW Torque Last 12 hr",61:"Min CCW Torque Last 12hr",
+            63:"Max CW Torque Last 24 hr",65:"Min CW Torque Last 24hr",67:"Max CCW Torque Last 24hr",69:"Min CCW Torque Last 24hr",71:"Max Deviation Last 1hr",
+            73:"Max Deviation Last 4hr",75:"Max Deviation Last 8hr",77:"Max Deviation Last 12hr",79:"Max Deviation Last 24hr",81:"Current Position Sensor Noise",
+            82:"Actuator Drift Events Last 1hr",83:"Seating Events Last 1hr",84:"Primary Motor Starts Last 1hr",85:"Strokes Last 1hr",86:"Online Motor Starts Last 1hr",
+            87:"Online Recharge Time Last 1hr",88:"Boost Motor Starts Last 1hr",89:"Actuator Drift Events Last 4hrs",90:"Seating Events Last 4hrs",
+            91:"Primary Motor Starts Last 4hrs",92:"Strokes Last 4hrs",93:"Online Motor Starts Last 4hrs",94:"Online Recharge Time Last 4hrs",
+            95:"Boost Motor Starts Last 4hrs",96:"Actuator Drift Events Last 8 hrs",97:"Seating Events Last 8hrs", 98:"Primary Motor Starts Last 8hrs",
+            99:"Stroke Last 8hrs",100:"Online Motor Starts Last 8hrs",101:"Online Recharge Time Last 8hrs",102:"Boost Motor Starts Lst 8 hrs",
+            103:"Actuator Drift Events Last 12hrs",104:"Seating Events Last 12hrs",105:"Primary Motor Starts Last 12hrs",106:"Strokes Last 12hrs",
+            107:"Online Motor Starts Last 12hrs",108:"Online Recharge TIme Last 12hrs",109:"Boost Motor Starts Last 12hrs",110:"Actuator Drift Events Last 24hrs",
+            111:"Seating Events last 24hrs",112:""
+
+
+
+        }
+        return self.index_to_name.get(index, "No Name")
+
+    def retrieve_data(self, *args):
         threading.Thread(target=self.retrieve_data_thread).start()
 
     def retrieve_data_thread(self):
         # Define the maximum number of requests per second
-        MAX_REQUESTS_PER_SECOND = 20  # Increase this number to increase the polling rate
+        MAX_REQUESTS_PER_SECOND = 5  # Increase this number to increase the polling rate
         # Retrieve data from the Modbus server
         # Create a rate limiter
         rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=1.0)
         try:
-            # Assuming you are reading holding registers starting from address 0 and reading 10 registers
-            address = int(self.address_entry.get())
             unit = int(self.unit_entry.get())
             count = int(self.count_entry.get())
             raw_values = []  # Initialize raw_values outside the loop
@@ -182,7 +196,7 @@ class ModbusMasterClientWidget:
             self.progress[
                 'maximum'] = count  # Set the maximum value of the progress bar to the total number of addresses to read
             self.progress['value'] = 0  # Reset the progress bar
-            for address in range(count):  # Modbus address space is 0-65535
+            for address in range(0, count):  # Modbus address space is 0-65535
                 with rate_limiter:
                     try:
                         result = self.modbus_client.client.read_holding_registers(address, 1, unit=unit)
@@ -282,9 +296,12 @@ class ModbusMasterClientWidget:
                     elif index in boolean_indices:
                         translated_value = self.translate_value("Boolean", value)
                         data_type = "Boolean"
+                    else:
+                        translated_value = self.translate_value("holding", value)
+                        data_type = "holding"
 
                     # Insert the translated value into the table
-                    self.table.insert('', 'end', values=(index, data_type, translated_value))
+                    self.table.insert('', 'end', values=(self.get_name(index),index, data_type, translated_value))
 
             elif selected_type == "Float 32 bit":
                 float_indices = [0, 1, 2, 3, 4, 5, 25, 26, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
@@ -316,7 +333,7 @@ class ModbusMasterClientWidget:
                     value1 = raw_values[index1]
                     translated_value = self.translate_value("ASCII 16 bit", value1)
                     # translated_value =   round(translated_value,2)
-                    self.table.insert('', 'end', values=(index1, "ASCII 16 bit", translated_value))
+                    self.table.insert('', 'end', values=(self.get_name(index1),index1, "ASCII 16 bit", translated_value))
             elif selected_type == "Signed Int 32 bit":
                 Signed32Int_indices = [6,7,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,
                                        44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,
@@ -330,7 +347,7 @@ class ModbusMasterClientWidget:
 
                     translated_value = self.translate_value("Signed Int 32 bit", value1, value2)
                     # translated_value =   round(translated_value,2)
-                    self.table.insert('', 'end', values=(index1, "Signed Int 32 bit", translated_value))
+                    self.table.insert('', 'end', values=(self.get_name(index1),index1, "Signed Int 32 bit", translated_value))
             elif selected_type == "Unsigned Int 16 bit":
                 UnsignedInt16bit_indices = [12,81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
                                             98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112,
@@ -349,7 +366,7 @@ class ModbusMasterClientWidget:
                     index1 = UnsignedInt16bit_indices[i]
                     value1 = raw_values[index1]
                     translated_value = self.translate_value("Unsigned Int 16 bit", value1)
-                    self.table.insert('', 'end', values=(index1, "Unsigned Int 16 bit", translated_value))
+                    self.table.insert('', 'end', values=(self.get_name(index1),index1, "Unsigned Int 16 bit", translated_value))
             elif selected_type == "Unsigned Int 32 bit":
                 Unsigned32Int_indices = [315,316,558,559,560,561,562,563,564,565]  # The indices of the values you want to read
                 for i in range(0, len(Unsigned32Int_indices), 2):  # Step by 2
@@ -361,7 +378,7 @@ class ModbusMasterClientWidget:
 
                     translated_value = self.translate_value("Unsigned Int 32 bit", value1, value2)
                     # translated_value =   round(translated_value,2)
-                    self.table.insert('', 'end', values=(index1, "Unsigned Int 32 bit", translated_value))
+                    self.table.insert('', 'end', values=(self.get_name(index1),index1, "Unsigned Int 32 bit", translated_value))
             elif selected_type == "Boolean":
                 boolean_indices = [175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190,
                                    191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 567, 568]  # The indices of the values you want to read
@@ -369,18 +386,18 @@ class ModbusMasterClientWidget:
                     index1 = boolean_indices[i]
                     value1 = raw_values[index1]
                     translated_value = self.translate_value("Boolean", value1)
-                    self.table.insert('', 'end', values=(index1, "Boolean", translated_value))
+                    self.table.insert('', 'end', values=(self.get_name(index1),index1, "Boolean", translated_value))
             elif selected_type == "Binary":
                 # Insert raw_values into the table
                 for i, value in enumerate(raw_values):
                     translated_value = self.translate_value("Binary", value)  # Translate the value
                     self.table.insert('', 'end',
-                                      values=(i, selected_type, translated_value))  # Use the translated value
+                                      values=(self.get_name(i),i, selected_type, translated_value))  # Use the translated value
             else:
                 # Insert raw_values into the table
                 for i, value in enumerate(raw_values):
                     translated_value = self.translate_value("holding",value)  # Translate the value
-                    self.table.insert('', 'end',values=(i, selected_type, translated_value))  # Use the translated value
+                    self.table.insert('', 'end',values=(self.get_name(i),i, selected_type, translated_value))  # Use the translated value
         except Exception as e:
             print(f"Exception while reading data from Modbus server: {e}")
             messagebox.showerror("Error", f"Exception while reading data from Modbus server: {e}")

@@ -13,7 +13,7 @@ import logging
 
 
 root = tk.Tk()  # Root instance for your Tkinter application
-root.geometry("768x768")  # Size of the tkinter window
+root.geometry("1080x1080")  # Size of the tkinter window
 root.configure(bg="white")  # Background color of the tkinter window
 
 notebook = ttk.Notebook(root)  # Create the notebook (tabbed window)

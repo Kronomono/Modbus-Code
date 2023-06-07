@@ -20,21 +20,27 @@ class ModbusMasterClientWidget:
         self.retrieve_button = None
 
 
-        # Create a frame to hold the table and the scrollbar
-        self.frame = tk.Frame(self.root)
-        self.frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        # Create a main frame to take up the entire window
+        self.main_frame = tk.Frame(self.root)
+        self.main_frame.pack(fill='both', expand=True)
 
-        # Create the table
-        self.table = ttk.Treeview(self.root, columns=("Name","Address", "Type", "Registry"), show='headings')
-        self.table.heading("Address", text="Address")
-        self.table.heading("Type", text="Type")
-        self.table.heading("Registry", text="Registry")
-        self.table.heading("Name", text="Name")
-        self.table.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        # Create a second frame to hold the table and the scrollbar
+        self.frame = tk.Frame(self.main_frame)
+        self.frame.pack(side='bottom', fill='x', expand=True)
 
         # Create a scrollbar
         scrollbar = tk.Scrollbar(self.frame)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Create the table
+        self.table = ttk.Treeview(self.frame, columns=("Name", "Address", "Type", "Registry"), show='headings')
+        self.table.heading("Address", text="Address")
+        self.table.heading("Type", text="Type")
+        self.table.heading("Registry", text="Registry")
+        self.table.heading("Name", text="Name")
+        self.table.pack(fill='both', expand=True)
+
+
 
         # Link the scrollbar to the table
         self.table.configure(yscrollcommand=scrollbar.set)

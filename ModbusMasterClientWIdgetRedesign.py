@@ -22,7 +22,8 @@ class ModbusMasterClientWidget:
 
         # Create a frame to hold the table and the scrollbar
         self.frame = tk.Frame(self.root)
-        self.frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        #self.frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        self.frame.place(relx=0.5, rely=0.75, anchor=tk.CENTER, relwidth=1.0, relheight=0.5)
 
         # Create the table
         self.table = ttk.Treeview(self.root, columns=("Name","Address", "Type", "Registry"), show='headings')
@@ -30,7 +31,8 @@ class ModbusMasterClientWidget:
         self.table.heading("Type", text="Type")
         self.table.heading("Registry", text="Registry")
         self.table.heading("Name", text="Name")
-        self.table.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        self.table.place(relx=0.5, rely=0.5, anchor=tk.CENTER, width = 1000, height = 500)
+        #self.table.pack(fill='both', expand=False)
 
         # Create a scrollbar
         scrollbar = tk.Scrollbar(self.frame)
@@ -157,22 +159,122 @@ class ModbusMasterClientWidget:
 
     def get_name(self,index):
         self.index_to_name = {
-            0: "Control Signal",2:"Position",4:"Deviation",6:"Torque/Thrust",8:"Delta Pressure",9:"Open Pressure",10:"Close Pressure",11:"Pst Status",
-            12:"Accumulator Pressure",13:"System Mode",14:"Last Event",15:"System Status",16:"Active Feedback",17:"Active Warnings",21:"Active Alarms",
-            25:"Average Position Last 90 Days",27:"Max  Torque/Thrust Per Poll",29:"Min Torque/ Thrust Per Poll",31:"Max CW Torque Last 1hr",
-            33:"Min CW Torque Last 1hr",35:"Max CCW Torque Last 1hr",37:"Min CCW Torque Last 1hr",39:"Max CW Torque Last 4hr",41:"Min CW Torque Last 4hr",
-            43:"Max CCW Torque Last 4hr",45:"Min CCW Torque Last 4hr",47:"Max CW Torque Last 8hr", 49:"Min CW Torque Last 8hr",51:"Max CCW Torque Last 8hr",
-            53:"Min CCW Torque Last 8hr",55:"Max CW Torque Last 12hr",57:"Min Cw Torque Last 12hr",59:"Max CCW Torque Last 12 hr",61:"Min CCW Torque Last 12hr",
-            63:"Max CW Torque Last 24 hr",65:"Min CW Torque Last 24hr",67:"Max CCW Torque Last 24hr",69:"Min CCW Torque Last 24hr",71:"Max Deviation Last 1hr",
-            73:"Max Deviation Last 4hr",75:"Max Deviation Last 8hr",77:"Max Deviation Last 12hr",79:"Max Deviation Last 24hr",81:"Current Position Sensor Noise",
-            82:"Actuator Drift Events Last 1hr",83:"Seating Events Last 1hr",84:"Primary Motor Starts Last 1hr",85:"Strokes Last 1hr",86:"Online Motor Starts Last 1hr",
-            87:"Online Recharge Time Last 1hr",88:"Boost Motor Starts Last 1hr",89:"Actuator Drift Events Last 4hrs",90:"Seating Events Last 4hrs",
-            91:"Primary Motor Starts Last 4hrs",92:"Strokes Last 4hrs",93:"Online Motor Starts Last 4hrs",94:"Online Recharge Time Last 4hrs",
-            95:"Boost Motor Starts Last 4hrs",96:"Actuator Drift Events Last 8 hrs",97:"Seating Events Last 8hrs", 98:"Primary Motor Starts Last 8hrs",
-            99:"Stroke Last 8hrs",100:"Online Motor Starts Last 8hrs",101:"Online Recharge Time Last 8hrs",102:"Boost Motor Starts Lst 8 hrs",
-            103:"Actuator Drift Events Last 12hrs",104:"Seating Events Last 12hrs",105:"Primary Motor Starts Last 12hrs",106:"Strokes Last 12hrs",
-            107:"Online Motor Starts Last 12hrs",108:"Online Recharge TIme Last 12hrs",109:"Boost Motor Starts Last 12hrs",110:"Actuator Drift Events Last 24hrs",
-            111:"Seating Events last 24hrs",112:""
+            1: "Control Signal",2:"Control Signal LS2B",3:"Position",4:"Position LS2B",5:"Deviation",6:"Deviation LS2B",7:"Torque/Thrust",9:"Delta Pressure",10:"Open Pressure",11:"Close Pressure",12:"Pst Status",
+            13:"Accumulator Pressure",14:"System Mode",15:"Last Event",16:"System Status",17:"Active Feedback",18:"Active Warnings",22:"Active Alarms",
+            26:"Average Position Last 90 Days",28:"Max  Torque/Thrust Per Poll",30:"Min Torque/ Thrust Per Poll",32:"Max CW Torque Last 1hr",33:"Max CW Torque Last 1hr LS2B",
+            34:"Min CW Torque Last 1hr",36:"Max CCW Torque Last 1hr",38:"Min CCW Torque Last 1hr",40:"Max CW Torque Last 4hr",42:"Min CW Torque Last 4hr",
+            44:"Max CCW Torque Last 4hr",46:"Min CCW Torque Last 4hr",48:"Max CW Torque Last 8hr", 50:"Min CW Torque Last 8hr",52:"Max CCW Torque Last 8hr",
+            54:"Min CCW Torque Last 8hr",56:"Max CW Torque Last 12hr",58:"Min Cw Torque Last 12hr",60:"Max CCW Torque Last 12 hr",62:"Min CCW Torque Last 12hr",
+            64:"Max CW Torque Last 24 hr",66:"Min CW Torque Last 24hr",68:"Max CCW Torque Last 24hr",70:"Min CCW Torque Last 24hr",72:"Max Deviation Last 1hr",
+            74:"Max Deviation Last 4hr",76:"Max Deviation Last 8hr",78:"Max Deviation Last 12hr",80:"Max Deviation Last 24hr",82:"Current Position Sensor Noise",
+            83:"Actuator Drift Events Last 1hr",84:"Seating Events Last 1hr",85:"Primary Motor Starts Last 1hr",86:"Strokes Last 1hr",87:"Online Motor Starts Last 1hr",
+            88:"Online Recharge Time Last 1hr",89:"Boost Motor Starts Last 1hr",90:"Actuator Drift Events Last 4hrs",91:"Seating Events Last 4hrs",
+            92:"Primary Motor Starts Last 4hrs",93:"Strokes Last 4hrs",94:"Online Motor Starts Last 4hrs",95:"Online Recharge Time Last 4hrs",
+            96:"Boost Motor Starts Last 4hrs",97:"Actuator Drift Events Last 8 hrs",98:"Seating Events Last 8hrs", 99:"Primary Motor Starts Last 8hrs",
+            100:"Stroke Last 8hrs",101:"Online Motor Starts Last 8hrs",102:"Online Recharge Time Last 8hrs",103:"Boost Motor Starts Lst 8 hrs",
+            104:"Actuator Drift Events Last 12hrs",105:"Seating Events Last 12hrs",106:"Primary Motor Starts Last 12hrs",107:"Strokes Last 12hrs",
+            108:"Online Motor Starts Last 12hrs",109:"Online Recharge TIme Last 12hrs",110:"Boost Motor Starts Last 12hrs",111:"Actuator Drift Events Last 24hrs",
+            112:"Seating Events last 24hrs",113:"Primary Motor Starts Last 24hrs",114:"Strokes Last 24hrs",115:"Online Motor Starts Last 24hrs",
+            116:"Online Recharge Time Last 24hrs",117:"Boost Motor Starts Last 24hrs",118:"Position Low",120:"Position High",122:"Position Low 2",124:"Position High 2",
+            126:"Signal Low",128:"Signal High",130:"Failsafe Position",132:"Min. Mod. Position",134:"Calibrated Stroke",136:"Booster Breakpoint",138:"Deadband",
+            140:"Speed Breakpoint",142:"Surge Breakpoint",144:"Surge Offpoint",146:"Relay 1 Setpoint",148:"Relay 2 Setpoint",150:"PST Increment",152:"PST Large Increment",
+            154:"PST Signal Deviation",156:"PST Offpoint",158:"PST Target",160:"PST Max Target",162:"Transmitter Low",163:"Transmitter High",164:"Accumulator Recharge Time",
+            165:"Accumulator Warning Pressure",166:"Accumulator Recharge Pressure",167:"Gain",168:"Max Down Speed",169:"Max Up Speed",170:"Max Manual Speed",
+            171:"Delta Alarm Pressure",172:"Delta Warning Pressure",173:"PST Schedule Time",174:"PST Max RunTime",175:"Trip Mode",176:"Analog CS Enabled",
+            177:"One-Contact Enabled",178:"Two-Contact Enabled",179:"Power-up Last Enabled",180:"Power-up Local Enabled",181:"Failsafe Position Enabled",
+            182:"Failsafe In-Place Enabled",183:"Bumpless Transfer Enabled",184:"Minimum Modulation Enabled",185:"Solenoid Seating Enabled",
+            186:"Contact Board Present",187:"Booster Motor Enabled",188:"Power Fail Accumulator Mode",189:"Power Fail In-Place Mode",190:"Accumulator Direction PL",
+            191:"Accumulator Direction PH",192:"Two Speed Up/ Down Mode",193:"Two SPeed Breakpoint Mode",194:"Surge Enabled",195:"Surge Direction PL",
+            196:"Surge Direction PH",197:"Surge Bi-Direction",198:"Mid-Point Relay Enabled",199:"Redundant CPU Present",200:"Reverse Acting Display",
+            201:"Reverse Acting Transmitter",202:"PST Mode Contact Power",203:"PST MOde Signal Deviation",204:"PST Mode Schedule/Auto",205:"PSt Mode Contact Unpowered",
+            206:"Model Character 1",207:"Model Character 2",208:"Model Character 3",209:"Model Character 4",210:"Model Character 5",211:"Model Character 6",
+            212:"Model Character 7",213:"Model Character 8",214:"Model Character 9",215:"Model Character 10",216:"Model Character 11",217:"Model Character 12",
+            218:"Model Character 13",219:"Model Character 14",220:"Model Character 15",221:"Model Character 16",222:"Model Character 17",223:"Model Character 18",
+            224:"Model Character 19",225:"Model Character 20",226:"Model Character 21",227:"Model Character 22",228:"Model Character 23",229:"Model Character 24",
+            230:"Model Character 25",231:"Tag Character 1",232:"Tag Character 2",233:"Tag Character 3",234:"Tag Character 4",235:"Tag Character 5",236:"Tag Character 6",
+            237:"Tag Character 7",238:"Tag Character 8",239:"Tag Character 9",240:"Tag Character 10",241:"Tag Character 11",242:"Tag Character 12",243:"Tag Character 13",
+            244:"Tag Character 14",245:"Tag Character 15",246:"Tag Character 16",247:"Tag Character 17",248:"Tag Character 18",249:"Tag Character 19",
+            250:"Tag Character 20",251:"Tag Character 21",252:"Tag Character 22",253:"Tag Character 23",254:"Tag Character 24",255:"Tag Character 25",
+            256:"Tag Character 26",257:"Tag Character 27",258:"Tag Character 28",259:"Tag Character 29",260:"Tag Character 30",261:"Tag Character 31",
+            262:"Tag Character 32",263:"Serial Number Character 1",264:"Serial Number Character 2",265:"Serial Number Character 3",266:"Serial Number Character 4",
+            267:"Serial Number Character 5",268:"Serial Number Character 6",269:"Serial Number Character 7",270:"Serial Number Character 8",
+            271:"Serial Number Character 9",272:"Serial Number Character 10",273:"Serial Number Character 11",274:"Serial Number Character 12",
+            275:"Serial Number Character 13",276:"Serial Number Character 14",277:"Software Version Character 1",278:"Software Version Character 2",
+            279:"Software Version Character 3",280:"Software Version Character 4",281:"Software Version Character 5",282:"Software Version Character 6",
+            283:"Software Version Character 7",284:"Software Version Character 8",285:"Software Version Character 9",286:"Software Version Character 10",
+            287:"Software Version Character 11",288:"Software Version Character 12",289:"Software Version Character 13",290:"Software Version Character 14",
+            291:"Display Version Character 1",292:"Display Version Character 2",293:"Display Version Character 3",294:"Display Version Character 4",
+            295:"Display Version Character 5",296:"Display Version Character 6",297:"Display Version Character 7",298:"Display Version Character 8",
+            299:"Display Version Character 9",300:"Display Version Character 10",301:"Display Version Character 11",302:"Display Version Character 12",
+            303:"Display Version Character 13",304:"Display Version Character 14",305:"Current Day",306:"Current Month",307:"Current Year",308:"Current Hour",
+            309:"Current Minute",310:"Current Second",311:"Commission Day",312:"Commission Month",313:"Commission Year",314:"Rated Rotation or Length",
+            315:"Rated Rotation or Length LS2B",316:"Rated Output",317:"Rated Output LS2B",318:"Torque or Thrust",319:"Fault #1",320:"Fault #2",321:"Fault #3",
+            322:"Fault #4",323:"Fault #5",324:"Fault #6",325:"Fault #7",326:"Fault #8",327:"Fault #9",328:"Fault #10",329:"Fault Time Stamp #1",330:"Fault Time Stamp #1 Next 2 Bytes",
+            331:"Fault Time Stamp #1 Next 2 Bytes",332:"Fault Time Stamp #1 LS2B",333:"Fault Time Stamp #2",334:"Fault Time Stamp #2 Next 2 Bytes",
+            335:"Fault Time Stamp #2 Next 2 Bytes",336:"Fault Time Stamp #2 LS2B",337:"Fault Time Stamp #3",338:"Fault Time Stamp #3 Next 2 Bytes",
+            339:"Fault Time Stamp #3 Next 2 Bytes",340:"Fault Time Stamp #3 LS2B",341:"Fault Time Stamp #4",342:"Fault Time Stamp #4 Next 2 Bytes",
+            343:"Fault Time Stamp #4 Next 2 Bytes",344:"Fault Time Stamp #4 LS2B",345:"Fault Time Stamp #5",346:"Fault Time Stamp #5 Next 2 Bytes",
+            347:"Fault Time Stamp #5 Next 2 Bytes",348:"Fault Time Stamp #5 LS2B",349:"Fault Time Stamp #6",350:"Fault Time Stamp #6 Next 2 Bytes",
+            351:"Fault Time Stamp #6 Next 2 Bytes",352:"Fault Time Stamp #6 LS2B",353:"Fault Time Stamp #7",354:"Fault Time Stamp #7 Next 2 Bytes",
+            355:"Fault Time Stamp #7 Next 2 Bytes",356:"Fault Time Stamp #7 LS2B",357:"Fault Time Stamp #8",358:"Fault Time Stamp #8 Next 2 Bytes",
+            359:"Fault Time Stamp #8 Next 2 Bytes",360:"Fault Time Stamp #8 LS2B",361:"Fault Time Stamp #9",362:"Fault Time Stamp #9 Next 2 Bytes",
+            363:"Fault Time Stamp #9 Next 2 Bytes",364:"Fault Time Stamp #9 LS2B",
+            365:"Fault Time Stamp #10",366:"Fault Time Stamp #10 Next 2 Bytes",367:"Fault Time Stamp #10 Next 2 Bytes",368:"Fault Time Stamp #10 LS2B",
+            369:"Model Change #1",370:"Model Change #2",371:"Model Change #3",372:"Model Change #4",373:"Model Change #5",374:"Model Change #6",
+            375:"Model Change #7",376:"Model Change #8",377:"Model Change #9",378:"Model Change #10",379:"Mode Change Time Stamp #1",
+            380:"Mode Change Time Stamp #1 Next 2 Bytes",381:"Mode Change Time Stamp #1 Next 2 Bytes",382:"Mode Change Time Stamp #1 LS2B",
+            383:"Mode Change Time Stamp #2",384:"Mode Change Time Stamp #2 Next 2 Bytes",385:"Mode Change Time Stamp #2 Next 2 Bytes",
+            386:"Mode Change Time Stamp #2 LS2B",387:"Mode Change Time Stamp #3",388:"Mode Change Time Stamp #3 Next 2 Bytes",
+            389:"Mode Change Time Stamp #3 Next 2 Bytes",390:"Mode Change Time Stamp #3 LS2B",391:"Mode Change Time Stamp #4",
+            392:"Mode Change Time Stamp #4 Next 2 Bytes",393:"Mode Change Time Stamp #4 Next 2 Bytes",394:"Mode Change Time Stamp #4 LS2B",
+            395:"Mode Change Time Stamp #5",396:"Mode Change Time Stamp #5 Next 2 Bytes",397:"Mode Change Time Stamp #5 Next 2 Bytes",
+            398:"Mode Change Time Stamp #5 LS2B",399:"Mode Change Time Stamp #6",400:"Mode Change Time Stamp #6 Next 2 Bytes",
+            401:"Mode Change Time Stamp #6 Next 2 Bytes",402:"Mode Change Time Stamp #6 LS2B",403:"Mode Change Time Stamp #7",
+            404:"Mode Change Time Stamp #7 Next 2 Bytes",405:"Mode Change Time Stamp #7 Next 2 Bytes",406:"Mode Change Time Stamp #7 LS2B",
+            407:"Mode Change Time Stamp #8",408:"Mode Change Time Stamp #8 Next 2 Bytes",409:"Mode Change Time Stamp #8 Next 2 Bytes",
+            410:"Mode Change Time Stamp #8 LS2B",411:"Mode Change Time Stamp #9",412:"Mode Change Time Stamp #9 Next 2 Bytes",
+            413:"Mode Change Time Stamp #9 Next 2 Bytes",414:"Mode Change Time Stamp #9 LS2B",
+            415:"Mode Change Time Stamp #10",416:"Mode Change Time Stamp #10 Next 2 Bytes",417:"Mode Change Time Stamp #10 Next 2 Bytes",
+            418:"Mode Change Time Stamp #10 LS2B",419:"Primary Servo Faults",420:"Dual Servo Faults",421:"Accumulator Servo Faults",
+            422:"Boost Servo Faults",423:"Primary Stepper Faults",424:"Dual Stepper Faults",425:"Accumulator Stepper Faults",426:"Boost Induction Faults",
+            427:"Dual Boost Induction Faults",428:"Primary Induction Faults",429:"Primary Feedback Bad",430:"Redundant Feedback Bad",431:"Control Signal Bad",
+            432:"Stalls",433:"Direction Error",434:"+15V Failure",435:"-5V Failure",436:"Accumulator Pressure Bad",437:"Accumulator Pressure Low",
+            438:"Output Limit Warning",439:"Accumulator Timeout",440:"Open Pressure Bad",441:"Closed Pressure Bad",442:"Seat Load Cylinder Feedback Bad",
+            443:"Seat Load Cylinder Stop",444:"AC Voltage High",445:"Ac Voltage Low",446:"Clock Battery Low",447:"Output Limit Alarm",448:"Redundant Feedback Offset",
+            449:"Invalid Hardware",450:"Invalid PST",451:"PST Time Elapsed",452:"Primary Servo Low Voltage  Faults",453:"Primary Servo Reokace Motor Faults",
+            454:"Primary Servo Motor Temp Faults",455:"Primary Servo Resolver Faults",456:"Primary Servo Drive Temp Faults",457:"Primary Servo High Voltage Faults",
+            458:"Primary Servo Overspeed Faults",459:"Primary Servo Motor Short Faults",460:"Primary Servo Replace Drive Faults",
+            461:"Dual Servo Low Voltage Faults",462:"Dual Servo Replace Motor Faults",463:"Dual Servo Motor Temp Faults",464:"Dual Servo Resolver Faults",
+            465:"Dual Servo Drive Temp Faults",466:"Dual Servo High Voltage Faults",467:"Dual Servo Overspeed Faults",468:"Dual Servo Motor Short Faults",
+            469:"Dual Servo Replace Drive Faults",470:"Accumulator Servo Low Voltage Faults",471:"Accumulator Servo Replace Motor Faults",
+            472:"Accumulator Servo Motor Temp Faults",473:"Accumulator Servo Resolver Faults",474:"Accumulator Servo Drive Temp Faults",
+            475:"Accumulator Servo High Voltage Faults",476:"Accumulator Overspeed Faults",477:"Accumulator Servo Motor Short Faults",
+            478:"Accumulator Servo Replace Drive Faults",479:"Boost Servo Low Voltage Faults",480:"Boost Servo Replace Motor Faults",
+            481:"Boost Servo Motor Temp Faults",482:"Boost Servo Resolver Faults",483:"Boost Servo Resolver Faults",484:"Boost Servo High Voltage Faults",
+            485:"Boost Servo Overspeed Faults",486:"Boost Servo Motor Short Faults",487:"Boost Servo Replace Drive Faults",488:"Comm Loss Faults",
+            489:"Lifetime Primary Servo Faults",490:"Lifetime Dual Servo Faults",491:"Lifetime Accumulator Servo Faults",492:"Lifetime Boost Servo Faults",
+            493:"Lifetime Primary Stepper Faults",494:"Lifetime Dual Stepper Faults",495:"Lifetime Accumulator Stepper Faults",
+            496:"Lifetime Boost Induction Faults",497:"Lifetime Dual Boost Induction Faults",498:"Lifetime Primary Induction Faults",
+            499:"Lifetime Primary Feedback Bad",500:"Lifetime Redundant Feedback Bad",501:"Lifetime Control Signal Bad",502:"Lifetime Stalls",
+            503:"Lifetime Direction Error",504:"Lifetime +15V Failure",505:"Lifetime -5V Failure",506:"Lifetime Accumulator Pressure Bad",
+            507:"Lifetime Accumulator Pressure Low",508:"Lifetime Output Limit Warning",509:"Lifetime Accumulator Timeout",510:"Lifetime Open Pressure Bad",
+            511:"Lifetime Closed Pressure Bad",512:"Lifetime Seat Load Cylinder Feedback Bad",513:"Lifetime Seat Load Cylinder Stop",514:"Lifetime AC Voltage High",
+            515:"Lifetime AC Voltage Low",516:"Lifetime Clock Battery Low",517:"Lifetime Output Limit Alarm",518:"Lifetime Redundant Feedback Offset",
+            519:"Life Invalid Hardware",520:"Lifetime Invalid PST",521:"Lifetime PST Time Elapsed",522:"LifeTime Primary Servo Low Voltage Faults",
+            523:"LifeTime Primary Servo Reokace Motor Faults",524:"Lifetime Primary Servo Motor Temp Faults",525:"Lifetime Primary Servo Resolver Faults",
+            526:"Life Primary Servo Drive Temp Faults",527:"Lifetime primary Servo High Voltage Faults",528:"Lifetime Primary Servo Overspeed Faults",
+            529:"Lifetime Primary Servo Motor Short Faults",530:"Lifetime Primary Servo Replace Drive Faults",531:"Lifetime Dual Servo Low Voltage Faults",
+            532:"Lifetime Dual Servo Replace Motor Faults",533:"Lifetime Dual Servo Motor Temp Faults",534:"LifeTime Dual Servo resolver Faults",
+            535:"Lifetime Dual Servo Drive Temp Faults",536:"Lifetime Dual Servo High Voltage Faults",537:"Lifetime Dual Servo Overspeed Faults",
+            538:"Lifetime Dual Servo Motor Short Faults",539:"Lifetime Dual Servo Replace Drive Faults",540:"Lifetime Accumulator Servo Low Voltage Finds",
+            541:"Lifetime Accumulator Servo Replace Motor Faults",542:"Lifetime Accumulator Servo Motor Temp Faults",543:"Lifetime Accumulator Servo Resolver Faults",
+            544:"Lifetime Accumulator Servo Drive Temp Faults",545:"Lifetime Accumulator Servo High Voltage Faults",546:"Lifetime Accumulator Servo Overspeed Faults",
+            547:"Lifetime Accumulator Servo Motor Short Faults",548:"Lifetime Accumulator Servo Replace Drive Faults",549:"Lifetime Boost Servo Low Voltage Faults",
+            550:"Lifetime Boost Servo Replace Motor Faults",551:"Lifetime Boost Servo Motor Temp Faults",552:"Lifetime Boost Servo Reesolver Faults",
+            553:"Lifetime Boost Servo Drive Temp Faults",554:"Lifetime Boost Servo High Voltage Faults",555:"Lifetime Boost Servo Overspeed Faults",
+            556:"Lifetime Boost Servo Motor Short Faults",557:"Lifetime Boost Servo Replace Drive Faults",558:"Lifetime Comm Loss Faults",559:"Current Strokes 1K",
+            560:"Current Strokes 1k LS2B",561:"Lifetime Strokes 1K",562:"Lifetime Strokes 1K LS2B",563:"Current Starts 1K",564:"Current Starts 1K LS2B",
+            565:"Lifetime Starts 1K",566:"Lifetime Starts 1K LS2B",567:"Up Counter",568:"X3 Communication Active",569:"Host Write Enable",570:"Host Write Target"
 
 
 
@@ -184,7 +286,7 @@ class ModbusMasterClientWidget:
 
     def retrieve_data_thread(self):
         # Define the maximum number of requests per second
-        MAX_REQUESTS_PER_SECOND = 5  # Increase this number to increase the polling rate
+        MAX_REQUESTS_PER_SECOND = 20  # Increase this number to increase the polling rate
         # Retrieve data from the Modbus server
         # Create a rate limiter
         rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=1.0)
@@ -312,7 +414,7 @@ class ModbusMasterClientWidget:
                     data_type = "holding"
 
                 # Insert the translated value into the table
-                self.table.insert('', 'end', values=(self.get_name(index), index, data_type, translated_value))
+                self.table.insert('', 'end', values=(self.get_name(index+1), index+1, data_type, translated_value))
 
         elif selected_type == "Float 32 bit":
             float_indices = [0, 1, 2, 3, 4, 5, 25, 26, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
@@ -329,8 +431,8 @@ class ModbusMasterClientWidget:
                 value2 = raw_values[index2]
 
                 translated_value = self.translate_value("Float 32 bit", value1, value2)
-                # translated_value =   round(translated_value,2)
-                self.table.insert('', 'end', values=(self.get_name(index1),index1, "Float 32 bit", translated_value))
+                translated_value =   round(translated_value,3)
+                self.table.insert('', 'end', values=(self.get_name(index1+1),index1+1, "Float 32 bit", translated_value))
         elif selected_type == "ASCII 16 bit":
             ASCII16bit_indices = [205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219,
                                   220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
@@ -345,7 +447,7 @@ class ModbusMasterClientWidget:
                 value1 = raw_values[index1]
                 translated_value = self.translate_value("ASCII 16 bit", value1)
                 # translated_value =   round(translated_value,2)
-                self.table.insert('', 'end', values=(self.get_name(index1), index1, "ASCII 16 bit", translated_value))
+                self.table.insert('', 'end', values=(self.get_name(index1+1), index1+1, "ASCII 16 bit", translated_value))
         elif selected_type == "Signed Int 32 bit":
             Signed32Int_indices = [6, 7, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
                                    44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62,
@@ -360,7 +462,7 @@ class ModbusMasterClientWidget:
                 translated_value = self.translate_value("Signed Int 32 bit", value1, value2)
                 # translated_value =   round(translated_value,2)
                 self.table.insert('', 'end',
-                                  values=(self.get_name(index1), index1, "Signed Int 32 bit", translated_value))
+                                  values=(self.get_name(index1+1), index1+1, "Signed Int 32 bit", translated_value))
         elif selected_type == "Unsigned Int 16 bit":
             UnsignedInt16bit_indices = [12, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
                                         98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112,
@@ -381,7 +483,7 @@ class ModbusMasterClientWidget:
                 value1 = raw_values[index1]
                 translated_value = self.translate_value("Unsigned Int 16 bit", value1)
                 self.table.insert('', 'end',
-                                  values=(self.get_name(index1), index1, "Unsigned Int 16 bit", translated_value))
+                                  values=(self.get_name(index1+1), index1+1, "Unsigned Int 16 bit", translated_value))
         elif selected_type == "Unsigned Int 32 bit":
             Unsigned32Int_indices = [315, 316, 558, 559, 560, 561, 562, 563, 564,
                                      565]  # The indices of the values you want to read
@@ -395,7 +497,7 @@ class ModbusMasterClientWidget:
                 translated_value = self.translate_value("Unsigned Int 32 bit", value1, value2)
                 # translated_value =   round(translated_value,2)
                 self.table.insert('', 'end',
-                                  values=(self.get_name(index1), index1, "Unsigned Int 32 bit", translated_value))
+                                  values=(self.get_name(index1+1), index1+1, "Unsigned Int 32 bit", translated_value))
         elif selected_type == "Boolean":
             boolean_indices = [175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190,
                                191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 567,
@@ -404,20 +506,19 @@ class ModbusMasterClientWidget:
                 index1 = boolean_indices[i]
                 value1 = raw_values[index1]
                 translated_value = self.translate_value("Boolean", value1)
-                self.table.insert('', 'end', values=(self.get_name(index1), index1, "Boolean", translated_value))
+                self.table.insert('', 'end', values=(self.get_name(index1+1), index1+1, "Boolean", translated_value))
         elif selected_type == "Binary":
             # Insert raw_values into the table
             for i, value in enumerate(raw_values):
                 translated_value = self.translate_value("Binary", value)  # Translate the value
                 self.table.insert('', 'end',
                                   values=(
-                                  self.get_name(i), i, selected_type, translated_value))  # Use the translated value
+                                  self.get_name(i+1), i+1, selected_type, translated_value))  # Use the translated value
         else:
             # Insert raw_values into the table
             for i, value in enumerate(raw_values):
                 translated_value = self.translate_value("holding", value)  # Translate the value
-                self.table.insert('', 'end', values=(
-                self.get_name(i), i, selected_type, translated_value))  # Use the translated value
+                self.table.insert('', 'end', values=(self.get_name(i+1), i+1, selected_type, translated_value))  # Use the translated value
 
     def translate_value(self, data_type, value1, value2=None):
         # Translate the value based on the selected data type

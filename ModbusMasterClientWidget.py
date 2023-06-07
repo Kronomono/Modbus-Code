@@ -47,7 +47,7 @@ class ModbusMasterClientWidget:
         # Create the data type dropdown
         self.data_type_var = tk.StringVar(self.root)
         self.data_type_options = ['holding', 'Float 32 bit', 'ASCII 16 bit', 'Epoch 32 bit', 'Binary','Unsigned Int 16 bit', 'Boolean', 'Byte',
-                                  'Signed Int 32 bit', 'Unsigned Int 32 bit', 'ALL']
+                                  'Signed Int 32 bit', 'Unsigned Int 32 bit','Unsigned Int 8 bit', 'ALL']
 
         self.data_type_var.set(self.data_type_options[0])
         self.data_type_dropdown = tk.OptionMenu(self.root, self.data_type_var, *self.data_type_options)
@@ -417,6 +417,9 @@ class ModbusMasterClientWidget:
                 elif index in boolean_indices:
                     translated_value = self.translate_value("Boolean", value)
                     data_type = "Boolean"
+                elif index in Unsigned8bit_indices:
+                    translated_value = self.translate_value("Unsigned Int 8 bit", value)
+                    data_type = "Unsigned Int 8 bit"
                 else:
                     translated_value = self.translate_value("holding", value)
                     data_type = "holding"
@@ -450,6 +453,13 @@ class ModbusMasterClientWidget:
                 translated_value = self.translate_value("Byte", value1)
                 # translated_value =   round(translated_value,2)
                 self.table.insert('', 'end',values=(self.get_name(index1 + 1), index1 + 1, "Byte", translated_value))
+        elif selected_type == "Unsigned Int 8 bit":
+            for i in range(0, len(Unsigned8bit_indices)):
+                index1 =  Unsigned8bit_indices[i]
+                value1 = raw_values[index1]
+                translated_value = self.translate_value("Unsigned Int 8 bit", value1)
+                # translated_value =   round(translated_value,2)
+                self.table.insert('', 'end', values=(self.get_name(index1 + 1), index1 + 1, "Unsigned Int 8 bit", translated_value))
         elif selected_type == "Signed Int 32 bit":
             for i in range(0, len(Signed32Int_indices), 2):  # Step by 2
                 index1 = Signed32Int_indices[i]
@@ -556,5 +566,8 @@ class ModbusMasterClientWidget:
             binary_data = struct.pack('>HH', value1, value2)  # Combine two 16-bit values
             decoded_value = struct.unpack('>L', binary_data)[0]
             return decoded_value
+        elif data_type == "Unsigned Int 8 bit":
+            # Assuming the value is an unsigned 8-bit integer
+            return value1 & 0xFF
         else:
             return value1

@@ -187,11 +187,11 @@ class ModbusMasterClientWidget:
             116:"Online Recharge Time Last 24hrs",117:"Boost Motor Starts Last 24hrs",118:"Position Low",119:"Position Low LS2B",
             120:"Position High",121:"Position High LS2B",122:"Position Low 2",123:"Position Low 2 LS2B",124:"Position High 2",125:"Position High 2 LS2B",
             126:"Signal Low",127:"Signal Low LS2B",128:"Signal High",129:"Signal High LS2B",130:"Failsafe Position",131:"Failsafe Position LS2B",
-            132:"Min. Mod. Position",133:"Min. Mod. Position LS2B",134:"Calibrated Stroke",135:"Calibrated Stroke LS2B",136:"Booster Breakpoint",
+            132:"Min. Mod. Position",133:"Min. Mod. Position LS2B",134:"Calibrated Stroke",135:"Calibrated Stroke LS2B",136:"Booster Breakpoint",137:"Booster Breakpoint LS2B",
             138:"Deadband",139:"Deadband LS2B",140:"Speed Breakpoint",141:"Speed Breakpoint LS2B",142:"Surge Breakpoint",143:"Surge Breakpoint LS2B",
             144:"Surge Offpoint",145:"Surge Offpoint LS2B",146:"Relay 1 Setpoint",147:"Relay 1 Setpoint LS2B",148:"Relay 2 Setpoint",149:"Relay 2 Setpoint LS2B",
-            150:"PST Increment",151:"PST Increment LS2B",152:"PST Large Increment",153:"PST Large Increment LS2B",154:"PST Signal Deviation",155:"PST Signal Deviation",
-            156:"PST Offpoint",157:"PST Offpoint LS2B",158:"PST Target",159:"PST Target LS2B",160:"PST Max Target",161:"PST Max Target",
+            150:"PST Increment",151:"PST Increment LS2B",152:"PST Large Increment",153:"PST Large Increment LS2B",154:"PST Signal Deviation",155:"PST Signal Deviation LS2B",
+            156:"PST Offpoint",157:"PST Offpoint LS2B",158:"PST Target",159:"PST Target LS2B",160:"PST Max Target",161:"PST Max Target LS2B",
             162:"Transmitter Low",163:"Transmitter High",164:"Accumulator Recharge Time",
             165:"Accumulator Warning Pressure",166:"Accumulator Recharge Pressure",167:"Gain",168:"Max Down Speed",169:"Max Up Speed",170:"Max Manual Speed",
             171:"Delta Alarm Pressure",172:"Delta Warning Pressure",173:"PST Schedule Time",174:"PST Max RunTime",175:"Trip Mode",176:"Analog CS Enabled",
@@ -288,7 +288,8 @@ class ModbusMasterClientWidget:
             553:"Lifetime Boost Servo Drive Temp Faults",554:"Lifetime Boost Servo High Voltage Faults",555:"Lifetime Boost Servo Overspeed Faults",
             556:"Lifetime Boost Servo Motor Short Faults",557:"Lifetime Boost Servo Replace Drive Faults",558:"Lifetime Comm Loss Faults",559:"Current Strokes 1K",
             560:"Current Strokes 1k LS2B",561:"Lifetime Strokes 1K",562:"Lifetime Strokes 1K LS2B",563:"Current Starts 1K",564:"Current Starts 1K LS2B",
-            565:"Lifetime Starts 1K",566:"Lifetime Starts 1K LS2B",567:"Up Counter",568:"X3 Communication Active",569:"Host Write Enable",570:"Host Write Target"
+            565:"Lifetime Starts 1K",566:"Lifetime Starts 1K LS2B",567:"Up Counter",568:"X3 Communication Active",569:"Host Write Enable",570:"Host Write Target",
+            571:"Host Write Target LS2B"
         }
         return self.index_to_name.get(index, "No Name")
 

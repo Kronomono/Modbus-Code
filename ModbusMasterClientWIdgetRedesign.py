@@ -10,7 +10,6 @@ import time
 from ratelimiter import RateLimiter
 import threading
 
-
 class ModbusMasterClientWidget:
     def __init__(self, root, modbus_client):
         # Initialize the widget with a root window and a Modbus client
@@ -19,24 +18,25 @@ class ModbusMasterClientWidget:
         self.connection_button = None
         self.retrieve_button = None
 
+        # Create a main frame to take up the entire window
+        self.main_frame = tk.Frame(self.root)
+        self.main_frame.pack(fill='both', expand=True)
 
-        # Create a frame to hold the table and the scrollbar
-        self.frame = tk.Frame(self.root)
-        #self.frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
-        self.frame.place(relx=0.5, rely=0.75, anchor=tk.CENTER, relwidth=1.0, relheight=0.5)
-
-        # Create the table
-        self.table = ttk.Treeview(self.root, columns=("Name","Address", "Type", "Registry"), show='headings')
-        self.table.heading("Address", text="Address")
-        self.table.heading("Type", text="Type")
-        self.table.heading("Registry", text="Registry")
-        self.table.heading("Name", text="Name")
-        self.table.place(relx=0.5, rely=0.5, anchor=tk.CENTER, width = 1000, height = 500)
-        #self.table.pack(fill='both', expand=False)
+        # Create a second frame to hold the table and the scrollbar
+        self.frame = tk.Frame(self.main_frame)
+        self.frame.pack(side='bottom', fill='x', expand=True)
 
         # Create a scrollbar
         scrollbar = tk.Scrollbar(self.frame)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Create the table
+        self.table = ttk.Treeview(self.frame, columns=("Name", "Address", "Type", "Registry"), show='headings')
+        self.table.heading("Address", text="Address")
+        self.table.heading("Type", text="Type")
+        self.table.heading("Registry", text="Registry")
+        self.table.heading("Name", text="Name")
+        self.table.pack(fill='both', expand=True)
 
         # Link the scrollbar to the table
         self.table.configure(yscrollcommand=scrollbar.set)
@@ -50,7 +50,7 @@ class ModbusMasterClientWidget:
 
         self.data_type_var.set(self.data_type_options[0])
         self.data_type_dropdown = tk.OptionMenu(self.root, self.data_type_var, *self.data_type_options)
-        self.data_type_dropdown.place(relx=0.17, rely=0.075, anchor=tk.NW)
+        self.data_type_dropdown.place(relx=0.05, rely=0.11, anchor=tk.NW)
         # Add a trace to the data_type_var
         self.data_type_var.trace('w', self.refresh_table)
 
@@ -84,7 +84,6 @@ class ModbusMasterClientWidget:
         # create a count entry field and place in window
         count_entry_label = tk.Label(self.root, text="Enter # of addresses to read")
         count_entry = tk.Entry(self.root,width=10)
-
         # placements
         count_entry_label.place(relx=0.55, rely=0.03, anchor=tk.CENTER)
         count_entry.place(relx=0.5, rely=0.05, anchor=tk.NW)
@@ -275,9 +274,6 @@ class ModbusMasterClientWidget:
             556:"Lifetime Boost Servo Motor Short Faults",557:"Lifetime Boost Servo Replace Drive Faults",558:"Lifetime Comm Loss Faults",559:"Current Strokes 1K",
             560:"Current Strokes 1k LS2B",561:"Lifetime Strokes 1K",562:"Lifetime Strokes 1K LS2B",563:"Current Starts 1K",564:"Current Starts 1K LS2B",
             565:"Lifetime Starts 1K",566:"Lifetime Starts 1K LS2B",567:"Up Counter",568:"X3 Communication Active",569:"Host Write Enable",570:"Host Write Target"
-
-
-
         }
         return self.index_to_name.get(index, "No Name")
 
@@ -295,8 +291,7 @@ class ModbusMasterClientWidget:
             count = int(self.count_entry.get())
             raw_values = []  # Initialize raw_values outside the loop
             self.raw_values = raw_values
-            self.progress[
-                'maximum'] = count  # Set the maximum value of the progress bar to the total number of addresses to read
+            self.progress['maximum'] = count  # Set the maximum value of the progress bar to the total number of addresses to read
             self.progress['value'] = 0  # Reset the progress bar
             for address in range(0, count):  # Modbus address space is 0-65535
                 with rate_limiter:
@@ -307,16 +302,22 @@ class ModbusMasterClientWidget:
                             self.progress['value'] += 1  # Increment the progress bar
                             self.progress_label['text'] = f"{self.progress['value']}/{count}"  # Update the label text
                             self.root.update_idletasks()  # Update the GUI
+                        else:
+                            print(f"Error reading register at address {address}: {result}")
                     except Exception as e:
                         print(f"Exception while reading register at address {address}: {e}")
             # Print the number of elements in raw_values
             print(f"Number of elements in raw_values: {len(raw_values)}")
 
             self.refresh_table(raw_values)
+        except ValueError:
+            print("Invalid unit or count value. Please enter a valid number.")
+            messagebox.showerror("Error", "Invalid unit or count value. Please enter a valid number.")
         except Exception as e:
             print(f"Exception while reading data from Modbus server: {e}")
             messagebox.showerror("Error", f"Exception while reading data from Modbus server: {e}")
-        self.progress['value'] = 0  # Reset the progress bar
+        finally:
+            self.progress['value'] = 0  # Reset the progress bar
 
     def refresh_table(self, *args):
         raw_values = self.raw_values

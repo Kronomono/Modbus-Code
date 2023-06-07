@@ -9,7 +9,7 @@ import unicodedata
 import time
 from ratelimiter import RateLimiter
 import threading
-
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 class ModbusMasterClientWidget:
     def __init__(self, root, modbus_client):
@@ -18,7 +18,6 @@ class ModbusMasterClientWidget:
         self.modbus_client = modbus_client
         self.connection_button = None
         self.retrieve_button = None
-
 
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
@@ -40,8 +39,6 @@ class ModbusMasterClientWidget:
         self.table.heading("Name", text="Name")
         self.table.pack(fill='both', expand=True)
 
-
-
         # Link the scrollbar to the table
         self.table.configure(yscrollcommand=scrollbar.set)
         scrollbar.configure(command=self.table.yview)
@@ -54,7 +51,7 @@ class ModbusMasterClientWidget:
 
         self.data_type_var.set(self.data_type_options[0])
         self.data_type_dropdown = tk.OptionMenu(self.root, self.data_type_var, *self.data_type_options)
-        self.data_type_dropdown.place(relx=0.17, rely=0.075, anchor=tk.NW)
+        self.data_type_dropdown.place(relx=0.05, rely=0.11, anchor=tk.NW)
         # Add a trace to the data_type_var
         self.data_type_var.trace('w', self.refresh_table)
 
@@ -88,7 +85,6 @@ class ModbusMasterClientWidget:
         # create a count entry field and place in window
         count_entry_label = tk.Label(self.root, text="Enter # of addresses to read")
         count_entry = tk.Entry(self.root,width=10)
-
         # placements
         count_entry_label.place(relx=0.55, rely=0.03, anchor=tk.CENTER)
         count_entry.place(relx=0.5, rely=0.05, anchor=tk.NW)
@@ -279,18 +275,16 @@ class ModbusMasterClientWidget:
             556:"Lifetime Boost Servo Motor Short Faults",557:"Lifetime Boost Servo Replace Drive Faults",558:"Lifetime Comm Loss Faults",559:"Current Strokes 1K",
             560:"Current Strokes 1k LS2B",561:"Lifetime Strokes 1K",562:"Lifetime Strokes 1K LS2B",563:"Current Starts 1K",564:"Current Starts 1K LS2B",
             565:"Lifetime Starts 1K",566:"Lifetime Starts 1K LS2B",567:"Up Counter",568:"X3 Communication Active",569:"Host Write Enable",570:"Host Write Target"
-
-
-
         }
         return self.index_to_name.get(index, "No Name")
 
+    @retry(stop=stop_after_attempt(2), wait=wait_fixed(1))
     def retrieve_data(self, *args):
         threading.Thread(target=self.retrieve_data_thread).start()
 
     def retrieve_data_thread(self):
         # Define the maximum number of requests per second
-        MAX_REQUESTS_PER_SECOND = 20  # Increase this number to increase the polling rate
+        MAX_REQUESTS_PER_SECOND = 30  # Increase this number to increase the polling rate
         # Retrieve data from the Modbus server
         # Create a rate limiter
         rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=1.0)
@@ -299,8 +293,7 @@ class ModbusMasterClientWidget:
             count = int(self.count_entry.get())
             raw_values = []  # Initialize raw_values outside the loop
             self.raw_values = raw_values
-            self.progress[
-                'maximum'] = count  # Set the maximum value of the progress bar to the total number of addresses to read
+            self.progress['maximum'] = count  # Set the maximum value of the progress bar to the total number of addresses to read
             self.progress['value'] = 0  # Reset the progress bar
             for address in range(0, count):  # Modbus address space is 0-65535
                 with rate_limiter:
@@ -311,16 +304,22 @@ class ModbusMasterClientWidget:
                             self.progress['value'] += 1  # Increment the progress bar
                             self.progress_label['text'] = f"{self.progress['value']}/{count}"  # Update the label text
                             self.root.update_idletasks()  # Update the GUI
+                        else:
+                            print(f"Error reading register at address {address}: {result}")
                     except Exception as e:
                         print(f"Exception while reading register at address {address}: {e}")
             # Print the number of elements in raw_values
             print(f"Number of elements in raw_values: {len(raw_values)}")
 
             self.refresh_table(raw_values)
+        except ValueError:
+            print("Invalid unit or count value. Please enter a valid number.")
+            messagebox.showerror("Error", "Invalid unit or count value. Please enter a valid number.")
         except Exception as e:
             print(f"Exception while reading data from Modbus server: {e}")
             messagebox.showerror("Error", f"Exception while reading data from Modbus server: {e}")
-        self.progress['value'] = 0  # Reset the progress bar
+        finally:
+            self.progress['value'] = 0  # Reset the progress bar
 
     def refresh_table(self, *args):
         raw_values = self.raw_values

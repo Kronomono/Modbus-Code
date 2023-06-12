@@ -50,6 +50,7 @@ class ModbusClient:
         else:
             print("Modbus connection is not open.")
 
+
     def write_register(self, address, value, unit= unit):
         # Attempt to write a value to a specific register
         try:

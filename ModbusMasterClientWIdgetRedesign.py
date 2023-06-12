@@ -9,6 +9,7 @@ import unicodedata
 import time
 from ratelimiter import RateLimiter
 import threading
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 class ModbusMasterClientWidget:
     def __init__(self, root, modbus_client):
@@ -24,7 +25,8 @@ class ModbusMasterClientWidget:
 
         # Create a second frame to hold the table and the scrollbar
         self.frame = tk.Frame(self.main_frame)
-        self.frame.pack(side='bottom', fill='x', expand=True)
+        #.frame.pack(side='bottom', fill='x', expand=True)
+        self.frame.place(relx=0.5, rely=0.6, anchor='center', relwidth=1, relheight=0.75)
 
         # Create a scrollbar
         scrollbar = tk.Scrollbar(self.frame)
@@ -44,9 +46,8 @@ class ModbusMasterClientWidget:
 
         # Create the data type dropdown
         self.data_type_var = tk.StringVar(self.root)
-        self.data_type_options = ['holding', 'Float 32 bit', 'ASCII 16 bit', 'Epoch 32 bit', 'Binary',
-                                  'Signed Int 16 bit', 'Unsigned Int 16 bit', 'Boolean', 'Byte', 'Signed Int 32 bit',
-                                  'Unsigned Int 32 bit', 'ALL']
+        self.data_type_options = ['holding', 'Float 32 bit', 'ASCII 16 bit', 'Epoch 32 bit', 'Binary','Unsigned Int 16 bit', 'Boolean', 'Byte',
+                                  'Signed Int 32 bit', 'Unsigned Int 32 bit','Unsigned Int 8 bit', 'ALL']
 
         self.data_type_var.set(self.data_type_options[0])
         self.data_type_dropdown = tk.OptionMenu(self.root, self.data_type_var, *self.data_type_options)
@@ -151,33 +152,50 @@ class ModbusMasterClientWidget:
         else:
             self.disconnect_modbus()
 
-    def disconnect_modbus(self):
+    def disconnect_modbus(self,*args):
         # Disconnect the Modbus connection and update the Connect button text
         self.modbus_client.close()
         self.connection_button["text"] = "Connect"
 
+    @retry(stop=stop_after_attempt(2), wait=wait_fixed(1))
+    def retrieve_data(self, *args):
+        threading.Thread(target=self.retrieve_data_thread).start()
     def get_name(self,index):
         self.index_to_name = {
-            1: "Control Signal",2:"Control Signal LS2B",3:"Position",4:"Position LS2B",5:"Deviation",6:"Deviation LS2B",7:"Torque/Thrust",9:"Delta Pressure",10:"Open Pressure",11:"Close Pressure",12:"Pst Status",
-            13:"Accumulator Pressure",14:"System Mode",15:"Last Event",16:"System Status",17:"Active Feedback",18:"Active Warnings",22:"Active Alarms",
-            26:"Average Position Last 90 Days",28:"Max  Torque/Thrust Per Poll",30:"Min Torque/ Thrust Per Poll",32:"Max CW Torque Last 1hr",33:"Max CW Torque Last 1hr LS2B",
-            34:"Min CW Torque Last 1hr",36:"Max CCW Torque Last 1hr",38:"Min CCW Torque Last 1hr",40:"Max CW Torque Last 4hr",42:"Min CW Torque Last 4hr",
-            44:"Max CCW Torque Last 4hr",46:"Min CCW Torque Last 4hr",48:"Max CW Torque Last 8hr", 50:"Min CW Torque Last 8hr",52:"Max CCW Torque Last 8hr",
-            54:"Min CCW Torque Last 8hr",56:"Max CW Torque Last 12hr",58:"Min Cw Torque Last 12hr",60:"Max CCW Torque Last 12 hr",62:"Min CCW Torque Last 12hr",
-            64:"Max CW Torque Last 24 hr",66:"Min CW Torque Last 24hr",68:"Max CCW Torque Last 24hr",70:"Min CCW Torque Last 24hr",72:"Max Deviation Last 1hr",
-            74:"Max Deviation Last 4hr",76:"Max Deviation Last 8hr",78:"Max Deviation Last 12hr",80:"Max Deviation Last 24hr",82:"Current Position Sensor Noise",
-            83:"Actuator Drift Events Last 1hr",84:"Seating Events Last 1hr",85:"Primary Motor Starts Last 1hr",86:"Strokes Last 1hr",87:"Online Motor Starts Last 1hr",
-            88:"Online Recharge Time Last 1hr",89:"Boost Motor Starts Last 1hr",90:"Actuator Drift Events Last 4hrs",91:"Seating Events Last 4hrs",
-            92:"Primary Motor Starts Last 4hrs",93:"Strokes Last 4hrs",94:"Online Motor Starts Last 4hrs",95:"Online Recharge Time Last 4hrs",
-            96:"Boost Motor Starts Last 4hrs",97:"Actuator Drift Events Last 8 hrs",98:"Seating Events Last 8hrs", 99:"Primary Motor Starts Last 8hrs",
+            1: "Control Signal",2:"Control Signal LS2B",3:"Position",4:"Position LS2B",5:"Deviation",6:"Deviation LS2B",7:"Torque/Thrust",8:"Torque/Thrust LS2b",
+            9:"Delta Pressure",10:"Open Pressure",11:"Close Pressure",12:"Pst Status",13:"Accumulator Pressure",14:"System Mode",15:"Last Event",16:"System Status",
+            17:"Active Feedback",18:"Active Warnings",22:"Active Alarms",26:"Average Position Last 90 Days",27:"Average Position Last 90 Days LS2B",
+            28:"Max Torque/Thrust Per Poll",29:"Max Torque/Thrust Per Poll LS2B",30:"Min Torque/ Thrust Per Poll",31:" Min Torque/Thurst Per Poll LS2B",
+            32:"Max CW Torque Last 1hr",33:"Max CW Torque Last 1hr LS2B",34:"Min CW Torque Last 1hr",35:"Min CW Torque Last 1 hr LS2B",
+            36:"Max CCW Torque Last 1hr",37:"Max CCW Torque Last 1hr  LS2B",38:"Min CCW Torque Last 1hr",39:"Min CCW Torque Last 1hr  LS2B",
+            40:"Max CW Torque Last 4hr",41:"Max CW Torque Last 4hr  LS2B",42:"Min CW Torque Last 4hr",43:"Min CW Torque Last 4hr  LS2B",
+            44:"Max CCW Torque Last 4hr",45:"Max CCW Torque Last 4 hr  LS2B",46:"Min CCW Torque Last 4hr",47:"Min CCW Torque Last 4hr  LS2B",
+            48:"Max CW Torque Last 8hr",49:"Max CW Torque Last 8hr", 50:"Min CW Torque Last 8hr",51:"Min CW Torque Last 8hr  LS2B",52:"Max CCW Torque Last 8hr",
+            53:"Max CCW Torque Last hr LS2B",54:"Min CCW Torque Last 8hr",55:"Min CCW Torque Last 8hr LS2B",56:"Max CW Torque Last 12hr",
+            57:"Max CW Torque Last 12hr LS2B",58:"Min Cw Torque Last 12hr",59:"Min CW Torque Last 12hr LS2B",60:"Max CCW Torque Last 12hr",
+            61:"Max CCW Torque Last 12hr  LS2B",62:"Min CCW Torque Last 12hr",63:"Min CCW Torque Last 12hr LS2B",64:"Max CW Torque Last 24 hr",
+            65:"Max CW Torque Last 24hr LS2B",66:"Min CW Torque Last 24hr",67:"Min CW Torque Last 24hr LS2B",68:"Max CCW Torque Last 24hr",
+            69:"Max CCW Torque Last 24hr LS2B",70:"Min CCW Torque Last 24hr",71:"Min CCW Torque Last 24hr LS2B",72:"Max Deviation Last 1hr",
+            73:"Max Deviation Last 1hr LS2B",74:"Max Deviation Last 4hr",75:"Max Deviation Last 4hr LS2B",76:"Max Deviation Last 8hr",
+            77:"Max Deviatoin Last 8hr LS2B",78:"Max Deviation Last 12hr",79:"Max Deviation Last 12hr LS2B",80:"Max Deviation Last 24hr",
+            81:"Max Deviation Last 24hr LS2B",82:"Current Position Sensor Noise",83:"Actuator Drift Events Last 1hr",84:"Seating Events Last 1hr",85:"Primary Motor Starts Last 1hr",
+            86:"Strokes Last 1hr",87:"Online Motor Starts Last 1hr",88:"Online Recharge Time Last 1hr",89:"Boost Motor Starts Last 1hr",
+            90:"Actuator Drift Events Last 4hrs",91:"Seating Events Last 4hrs",92:"Primary Motor Starts Last 4hrs",93:"Strokes Last 4hrs",
+            94:"Online Motor Starts Last 4hrs",95:"Online Recharge Time Last 4hrs",96:"Boost Motor Starts Last 4hrs",97:"Actuator Drift Events Last 8 hrs",
+            98:"Seating Events Last 8hrs", 99:"Primary Motor Starts Last 8hrs",
             100:"Stroke Last 8hrs",101:"Online Motor Starts Last 8hrs",102:"Online Recharge Time Last 8hrs",103:"Boost Motor Starts Lst 8 hrs",
             104:"Actuator Drift Events Last 12hrs",105:"Seating Events Last 12hrs",106:"Primary Motor Starts Last 12hrs",107:"Strokes Last 12hrs",
             108:"Online Motor Starts Last 12hrs",109:"Online Recharge TIme Last 12hrs",110:"Boost Motor Starts Last 12hrs",111:"Actuator Drift Events Last 24hrs",
             112:"Seating Events last 24hrs",113:"Primary Motor Starts Last 24hrs",114:"Strokes Last 24hrs",115:"Online Motor Starts Last 24hrs",
-            116:"Online Recharge Time Last 24hrs",117:"Boost Motor Starts Last 24hrs",118:"Position Low",120:"Position High",122:"Position Low 2",124:"Position High 2",
-            126:"Signal Low",128:"Signal High",130:"Failsafe Position",132:"Min. Mod. Position",134:"Calibrated Stroke",136:"Booster Breakpoint",138:"Deadband",
-            140:"Speed Breakpoint",142:"Surge Breakpoint",144:"Surge Offpoint",146:"Relay 1 Setpoint",148:"Relay 2 Setpoint",150:"PST Increment",152:"PST Large Increment",
-            154:"PST Signal Deviation",156:"PST Offpoint",158:"PST Target",160:"PST Max Target",162:"Transmitter Low",163:"Transmitter High",164:"Accumulator Recharge Time",
+            116:"Online Recharge Time Last 24hrs",117:"Boost Motor Starts Last 24hrs",118:"Position Low",119:"Position Low LS2B",
+            120:"Position High",121:"Position High LS2B",122:"Position Low 2",123:"Position Low 2 LS2B",124:"Position High 2",125:"Position High 2 LS2B",
+            126:"Signal Low",127:"Signal Low LS2B",128:"Signal High",129:"Signal High LS2B",130:"Failsafe Position",131:"Failsafe Position LS2B",
+            132:"Min. Mod. Position",133:"Min. Mod. Position LS2B",134:"Calibrated Stroke",135:"Calibrated Stroke LS2B",136:"Booster Breakpoint",137:"Booster Breakpoint LS2B",
+            138:"Deadband",139:"Deadband LS2B",140:"Speed Breakpoint",141:"Speed Breakpoint LS2B",142:"Surge Breakpoint",143:"Surge Breakpoint LS2B",
+            144:"Surge Offpoint",145:"Surge Offpoint LS2B",146:"Relay 1 Setpoint",147:"Relay 1 Setpoint LS2B",148:"Relay 2 Setpoint",149:"Relay 2 Setpoint LS2B",
+            150:"PST Increment",151:"PST Increment LS2B",152:"PST Large Increment",153:"PST Large Increment LS2B",154:"PST Signal Deviation",155:"PST Signal Deviation LS2B",
+            156:"PST Offpoint",157:"PST Offpoint LS2B",158:"PST Target",159:"PST Target LS2B",160:"PST Max Target",161:"PST Max Target LS2B",
+            162:"Transmitter Low",163:"Transmitter High",164:"Accumulator Recharge Time",
             165:"Accumulator Warning Pressure",166:"Accumulator Recharge Pressure",167:"Gain",168:"Max Down Speed",169:"Max Up Speed",170:"Max Manual Speed",
             171:"Delta Alarm Pressure",172:"Delta Warning Pressure",173:"PST Schedule Time",174:"PST Max RunTime",175:"Trip Mode",176:"Analog CS Enabled",
             177:"One-Contact Enabled",178:"Two-Contact Enabled",179:"Power-up Last Enabled",180:"Power-up Local Enabled",181:"Failsafe Position Enabled",
@@ -273,16 +291,14 @@ class ModbusMasterClientWidget:
             553:"Lifetime Boost Servo Drive Temp Faults",554:"Lifetime Boost Servo High Voltage Faults",555:"Lifetime Boost Servo Overspeed Faults",
             556:"Lifetime Boost Servo Motor Short Faults",557:"Lifetime Boost Servo Replace Drive Faults",558:"Lifetime Comm Loss Faults",559:"Current Strokes 1K",
             560:"Current Strokes 1k LS2B",561:"Lifetime Strokes 1K",562:"Lifetime Strokes 1K LS2B",563:"Current Starts 1K",564:"Current Starts 1K LS2B",
-            565:"Lifetime Starts 1K",566:"Lifetime Starts 1K LS2B",567:"Up Counter",568:"X3 Communication Active",569:"Host Write Enable",570:"Host Write Target"
+            565:"Lifetime Starts 1K",566:"Lifetime Starts 1K LS2B",567:"Up Counter",568:"X3 Communication Active",569:"Host Write Enable",570:"Host Write Target",
+            571:"Host Write Target LS2B"
         }
         return self.index_to_name.get(index, "No Name")
 
-    def retrieve_data(self, *args):
-        threading.Thread(target=self.retrieve_data_thread).start()
-
     def retrieve_data_thread(self):
         # Define the maximum number of requests per second
-        MAX_REQUESTS_PER_SECOND = 20  # Increase this number to increase the polling rate
+        MAX_REQUESTS_PER_SECOND = 10  # Increase this number to increase the polling rate
         # Retrieve data from the Modbus server
         # Create a rate limiter
         rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=1.0)
@@ -319,207 +335,196 @@ class ModbusMasterClientWidget:
         finally:
             self.progress['value'] = 0  # Reset the progress bar
 
-    def refresh_table(self, *args):
+    def refresh_table(self,*args):
         raw_values = self.raw_values
         self.table.delete(*self.table.get_children())
         selected_type = self.data_type_var.get()  # Define selected_type before using it
-        if selected_type == "ALL":
-            float_indices = [0, 1, 2, 3, 4, 5, 25, 26, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
-                             117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128,
-                             129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140,
-                             141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152,
-                             153, 154, 155, 156, 157, 158, 159, 160, 313, 314, 569, 570]
+        float_indices = [0, 1, 2, 3, 4, 5, 25, 26, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
+                         117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128,
+                         129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140,
+                         141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152,
+                         153, 154, 155, 156, 157, 158, 159, 160, 313, 314, 569, 570]
 
-            ASCII16bit_indices = [205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219,
-                                  220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
-                                  235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249,
-                                  250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264,
-                                  265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279,
-                                  280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294,
-                                  295, 296, 297, 298, 299, 300, 301, 302,
-                                  303]
+        ASCII16bit_indices = [205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219,
+                              220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
+                              235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249,
+                              250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264,
+                              265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279,
+                              280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294,
+                              295, 296, 297, 298, 299, 300, 301, 302,
+                              303]
 
-            Signed32Int_indices = [6, 7, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
-                                   44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62,
-                                   63, 64, 65, 66, 67, 68, 69, 70]
+        Signed32Int_indices = [6, 7, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
+                               44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62,
+                               63, 64, 65, 66, 67, 68, 69, 70]
 
-            UnsignedInt16bit_indices = [12, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
-                                        98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112,
-                                        113, 114, 115, 116, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171,
-                                        172, 173, 306, 312, 418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429,
-                                        430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441, 442, 443, 444,
-                                        445, 446, 447, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459,
-                                        460, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474,
-                                        475, 476, 477, 478, 479, 480, 481, 482, 483, 484, 485, 486, 487, 488, 489,
-                                        490, 491, 492, 493, 494, 495, 496, 497, 498, 499, 500, 501, 502, 503, 504,
-                                        505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519,
-                                        520, 521, 522, 523, 524, 525, 526, 527, 528, 529, 530, 531, 532, 533, 534,
-                                        535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 547, 548, 549,
-                                        550, 551, 552, 553, 554, 555, 556, 557, 566]
+        UnsignedInt16bit_indices = [12, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
+                                    98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112,
+                                    113, 114, 115, 116, 161, 162, 163, 164, 165, 166,170, 171,
+                                    172, 173, 306, 312, 418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429,
+                                    430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441, 442, 443, 444,
+                                    445, 446, 447, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459,
+                                    460, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474,
+                                    475, 476, 477, 478, 479, 480, 481, 482, 483, 484, 485, 486, 487, 488, 489,
+                                    490, 491, 492, 493, 494, 495, 496, 497, 498, 499, 500, 501, 502, 503, 504,
+                                    505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519,
+                                    520, 521, 522, 523, 524, 525, 526, 527, 528, 529, 530, 531, 532, 533, 534,
+                                    535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 547, 548, 549,
+                                    550, 551, 552, 553, 554, 555, 556, 557, 566]
 
-            Unsigned32Int_indices = [315, 316, 558, 559, 560, 561, 562, 563, 564,
-                                     565]
+        Unsigned32Int_indices = [315, 316, 558, 559, 560, 561, 562, 563, 564,565]
+        boolean_indices = [174,175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190,
+                           191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 567,
+                           568]
+        Unsigned8bit_indices = [167,168,169]
 
-            boolean_indices = [175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190,
-                               191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 567,
-                               568]
-            # Combine all indices into one list
-            all_indices = float_indices + ASCII16bit_indices + Signed32Int_indices + UnsignedInt16bit_indices + Unsigned32Int_indices + boolean_indices
+        byte_indices = [304, 305, 307, 308, 309, 310, 311]
+        try:
+            if selected_type == "ALL":
 
-            # Sort the list
-            all_indices.sort()
+                # Combine all indices into one list
+                all_indices = float_indices + ASCII16bit_indices + Signed32Int_indices + UnsignedInt16bit_indices + Unsigned32Int_indices + boolean_indices
 
-            # Process each index
-            for i in range(len(all_indices)):
-                index = all_indices[i]
-                value = raw_values[index]
+                # Sort the list
+                all_indices.sort()
 
-                # Determine the type of the index and translate the value accordingly
-                if index in float_indices:
-                    # Check if this is the first index of a pair
-                    if index + 1 in float_indices and i + 1 < len(all_indices) and all_indices[i + 1] == index + 1:
-                        value2 = raw_values[index + 1]
-                        translated_value = self.translate_value("Float 32 bit", value, value2)
-                        data_type = "Float 32 bit"
+                # Process each index
+                for i in range(len(all_indices)):
+                    index = all_indices[i]
+                    value = raw_values[index]
+
+                    # Determine the type of the index and translate the value accordingly
+                    if index in float_indices:
+                        # Check if this is the first index of a pair
+                        if index + 1 in float_indices and i + 1 < len(all_indices) and all_indices[i + 1] == index + 1:
+                            value2 = raw_values[index + 1]
+                            translated_value = self.translate_value("Float 32 bit", value, value2)
+                            data_type = "Float 32 bit"
+                        else:
+                            continue
+                    elif index in ASCII16bit_indices:
+                        translated_value = self.translate_value("ASCII 16 bit", value)
+                        data_type = "ASCII 16 bit"
+                    elif index in byte_indices:
+                        translated_value = self.translate_value(("Byte"), value)
+                        data_type = "Byte"
+                    elif index in Signed32Int_indices:
+                        # Check if this is the first index of a pair
+                        if index + 1 in Signed32Int_indices and i + 1 < len(all_indices) and all_indices[
+                            i + 1] == index + 1:
+                            value2 = raw_values[index + 1]
+                            translated_value = self.translate_value("Signed Int 32 bit", value, value2)
+                            data_type = "Signed Int 32 bit"
+                        else:
+                            continue
+                    elif index in UnsignedInt16bit_indices:
+                        translated_value = self.translate_value("Unsigned Int 16 bit", value)
+                        data_type = "Unsigned Int 16 bit"
+                    elif index in Unsigned32Int_indices:
+                        # Check if this is the first index of a pair
+                        if index + 1 in Unsigned32Int_indices and i + 1 < len(all_indices) and all_indices[
+                            i + 1] == index + 1:
+                            value2 = raw_values[index + 1]
+                            translated_value = self.translate_value("Unsigned Int 32 bit", value, value2)
+                            data_type = "Unsigned Int 32 bit"
+                        else:
+                            continue
+                    elif index in boolean_indices:
+                        translated_value = self.translate_value("Boolean", value)
+                        data_type = "Boolean"
+                    elif index in Unsigned8bit_indices:
+                        translated_value = self.translate_value("Unsigned Int 8 bit", value)
+                        data_type = "Unsigned Int 8 bit"
                     else:
-                        continue
-                elif index in ASCII16bit_indices:
-                    translated_value = self.translate_value("ASCII 16 bit", value)
-                    data_type = "ASCII 16 bit"
-                elif index in Signed32Int_indices:
-                    # Check if this is the first index of a pair
-                    if index + 1 in Signed32Int_indices and i + 1 < len(all_indices) and all_indices[
-                        i + 1] == index + 1:
-                        value2 = raw_values[index + 1]
-                        translated_value = self.translate_value("Signed Int 32 bit", value, value2)
-                        data_type = "Signed Int 32 bit"
-                    else:
-                        continue
-                elif index in UnsignedInt16bit_indices:
-                    translated_value = self.translate_value("Unsigned Int 16 bit", value)
-                    data_type = "Unsigned Int 16 bit"
-                elif index in Unsigned32Int_indices:
-                    # Check if this is the first index of a pair
-                    if index + 1 in Unsigned32Int_indices and i + 1 < len(all_indices) and all_indices[
-                        i + 1] == index + 1:
-                        value2 = raw_values[index + 1]
-                        translated_value = self.translate_value("Unsigned Int 32 bit", value, value2)
-                        data_type = "Unsigned Int 32 bit"
-                    else:
-                        continue
-                elif index in boolean_indices:
-                    translated_value = self.translate_value("Boolean", value)
-                    data_type = "Boolean"
-                else:
-                    translated_value = self.translate_value("holding", value)
-                    data_type = "holding"
+                        translated_value = self.translate_value("holding", value)
+                        data_type = "holding"
 
-                # Insert the translated value into the table
-                self.table.insert('', 'end', values=(self.get_name(index+1), index+1, data_type, translated_value))
+                    # Insert the translated value into the table
+                    self.table.insert('', 'end',values=(self.get_name(index + 1), index + 1, data_type, translated_value))
 
-        elif selected_type == "Float 32 bit":
-            float_indices = [0, 1, 2, 3, 4, 5, 25, 26, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
-                             117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128,
-                             129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140,
-                             141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152,
-                             153, 154, 155, 156, 157, 158, 159, 160, 313, 314, 569,
-                             570]  # The indices of the values you want to read as 32-bit floats
-            for i in range(0, len(float_indices), 2):  # Step by 2
-                index1 = float_indices[i]
-                index2 = float_indices[i + 1] if i + 1 < len(
-                    float_indices) else index1  # Use index1 if there's no second index
-                value1 = raw_values[index1]
-                value2 = raw_values[index2]
+            elif selected_type == "Float 32 bit":
 
-                translated_value = self.translate_value("Float 32 bit", value1, value2)
-                translated_value =   round(translated_value,3)
-                self.table.insert('', 'end', values=(self.get_name(index1+1),index1+1, "Float 32 bit", translated_value))
-        elif selected_type == "ASCII 16 bit":
-            ASCII16bit_indices = [205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219,
-                                  220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
-                                  235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249,
-                                  250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264,
-                                  265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279,
-                                  280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294,
-                                  295, 296, 297, 298, 299, 300, 301, 302,
-                                  303]  # The indices of the values you want to read
-            for i in range(0, len(ASCII16bit_indices)):
-                index1 = ASCII16bit_indices[i]
-                value1 = raw_values[index1]
-                translated_value = self.translate_value("ASCII 16 bit", value1)
-                # translated_value =   round(translated_value,2)
-                self.table.insert('', 'end', values=(self.get_name(index1+1), index1+1, "ASCII 16 bit", translated_value))
-        elif selected_type == "Signed Int 32 bit":
-            Signed32Int_indices = [6, 7, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
-                                   44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62,
-                                   63, 64, 65, 66, 67, 68, 69, 70]  # The indices of the values you want to read
-            for i in range(0, len(Signed32Int_indices), 2):  # Step by 2
-                index1 = Signed32Int_indices[i]
-                index2 = Signed32Int_indices[i + 1] if i + 1 < len(
-                    Signed32Int_indices) else index1  # Use index1 if there's no second index
-                value1 = raw_values[index1]
-                value2 = raw_values[index2]
+                for i in range(0, len(float_indices), 2):  # Step by 2
+                    index1 = float_indices[i]
+                    index2 = float_indices[i + 1] if i + 1 < len(
+                        float_indices) else index1  # Use index1 if there's no second index
+                    value1 = raw_values[index1]
+                    value2 = raw_values[index2]
 
-                translated_value = self.translate_value("Signed Int 32 bit", value1, value2)
-                # translated_value =   round(translated_value,2)
-                self.table.insert('', 'end',
-                                  values=(self.get_name(index1+1), index1+1, "Signed Int 32 bit", translated_value))
-        elif selected_type == "Unsigned Int 16 bit":
-            UnsignedInt16bit_indices = [12, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
-                                        98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112,
-                                        113, 114, 115, 116, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171,
-                                        172, 173, 306, 312, 418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429,
-                                        430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441, 442, 443, 444,
-                                        445, 446, 447, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459,
-                                        460, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474,
-                                        475, 476, 477, 478, 479, 480, 481, 482, 483, 484, 485, 486, 487, 488, 489,
-                                        490, 491, 492, 493, 494, 495, 496, 497, 498, 499, 500, 501, 502, 503, 504,
-                                        505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519,
-                                        520, 521, 522, 523, 524, 525, 526, 527, 528, 529, 530, 531, 532, 533, 534,
-                                        535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 547, 548, 549,
-                                        550, 551, 552, 553, 554, 555, 556, 557,
-                                        566]  # The indices of the values you want to read
-            for i in range(0, len(UnsignedInt16bit_indices)):
-                index1 = UnsignedInt16bit_indices[i]
-                value1 = raw_values[index1]
-                translated_value = self.translate_value("Unsigned Int 16 bit", value1)
-                self.table.insert('', 'end',
-                                  values=(self.get_name(index1+1), index1+1, "Unsigned Int 16 bit", translated_value))
-        elif selected_type == "Unsigned Int 32 bit":
-            Unsigned32Int_indices = [315, 316, 558, 559, 560, 561, 562, 563, 564,
-                                     565]  # The indices of the values you want to read
-            for i in range(0, len(Unsigned32Int_indices), 2):  # Step by 2
-                index1 = Unsigned32Int_indices[i]
-                index2 = Unsigned32Int_indices[i + 1] if i + 1 < len(
-                    Unsigned32Int_indices) else index1  # Use index1 if there's no second index
-                value1 = raw_values[index1]
-                value2 = raw_values[index2]
+                    translated_value = self.translate_value("Float 32 bit", value1, value2)
+                    translated_value = round(translated_value, 3)
+                    self.table.insert('', 'end', values=(self.get_name(index1 + 1), index1 + 1, "Float 32 bit", translated_value))
+            elif selected_type == "ASCII 16 bit":
+                for i in range(0, len(ASCII16bit_indices)):
+                    index1 = ASCII16bit_indices[i]
+                    value1 = raw_values[index1]
+                    translated_value = self.translate_value("ASCII 16 bit", value1)
+                    # translated_value =   round(translated_value,2)
+                    self.table.insert('', 'end',values=(self.get_name(index1 + 1), index1 + 1, "ASCII 16 bit", translated_value))
+            elif selected_type == "Byte":
+                for i in range(0, len(byte_indices)):
+                    index1 = byte_indices[i]
+                    value1 = raw_values[index1]
+                    translated_value = self.translate_value("Byte", value1)
+                    # translated_value =   round(translated_value,2)
+                    self.table.insert('', 'end',values=(self.get_name(index1 + 1), index1 + 1, "Byte", translated_value))
+            elif selected_type == "Unsigned Int 8 bit":
+                for i in range(0, len(Unsigned8bit_indices)):
+                    index1 = Unsigned8bit_indices[i]
+                    value1 = raw_values[index1]
+                    translated_value = self.translate_value("Unsigned Int 8 bit", value1)
+                    # translated_value =   round(translated_value,2)
+                    self.table.insert('', 'end', values=(self.get_name(index1 + 1), index1 + 1, "Unsigned Int 8 bit", translated_value))
+            elif selected_type == "Signed Int 32 bit":
+                for i in range(0, len(Signed32Int_indices), 2):  # Step by 2
+                    index1 = Signed32Int_indices[i]
+                    index2 = Signed32Int_indices[i + 1] if i + 1 < len(
+                        Signed32Int_indices) else index1  # Use index1 if there's no second index
+                    value1 = raw_values[index1]
+                    value2 = raw_values[index2]
 
-                translated_value = self.translate_value("Unsigned Int 32 bit", value1, value2)
-                # translated_value =   round(translated_value,2)
-                self.table.insert('', 'end',
-                                  values=(self.get_name(index1+1), index1+1, "Unsigned Int 32 bit", translated_value))
-        elif selected_type == "Boolean":
-            boolean_indices = [175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190,
-                               191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 567,
-                               568]  # The indices of the values you want to read
-            for i in range(0, len(boolean_indices)):
-                index1 = boolean_indices[i]
-                value1 = raw_values[index1]
-                translated_value = self.translate_value("Boolean", value1)
-                self.table.insert('', 'end', values=(self.get_name(index1+1), index1+1, "Boolean", translated_value))
-        elif selected_type == "Binary":
-            # Insert raw_values into the table
-            for i, value in enumerate(raw_values):
-                translated_value = self.translate_value("Binary", value)  # Translate the value
-                self.table.insert('', 'end',
-                                  values=(
-                                  self.get_name(i+1), i+1, selected_type, translated_value))  # Use the translated value
-        else:
-            # Insert raw_values into the table
-            for i, value in enumerate(raw_values):
-                translated_value = self.translate_value("holding", value)  # Translate the value
-                self.table.insert('', 'end', values=(self.get_name(i+1), i+1, selected_type, translated_value))  # Use the translated value
+                    translated_value = self.translate_value("Signed Int 32 bit", value1, value2)
+                    # translated_value =   round(translated_value,2)
+                    self.table.insert('', 'end',
+                                      values=( self.get_name(index1 + 1), index1 + 1, "Signed Int 32 bit", translated_value))
+            elif selected_type == "Unsigned Int 16 bit":
+                for i in range(0, len(UnsignedInt16bit_indices)):
+                    index1 = UnsignedInt16bit_indices[i]
+                    value1 = raw_values[index1]
+                    translated_value = self.translate_value("Unsigned Int 16 bit", value1)
+                    self.table.insert('', 'end',
+                                      values=( self.get_name(index1 + 1), index1 + 1, "Unsigned Int 16 bit", translated_value))
+            elif selected_type == "Unsigned Int 32 bit":
+                for i in range(0, len(Unsigned32Int_indices), 2):  # Step by 2
+                    index1 = Unsigned32Int_indices[i]
+                    index2 = Unsigned32Int_indices[i + 1] if i + 1 < len(
+                        Unsigned32Int_indices) else index1  # Use index1 if there's no second index
+                    value1 = raw_values[index1]
+                    value2 = raw_values[index2]
+
+                    translated_value = self.translate_value("Unsigned Int 32 bit", value1, value2)
+                    # translated_value =   round(translated_value,2)
+                    self.table.insert('', 'end', values=( self.get_name(index1 + 1), index1 + 1, "Unsigned Int 32 bit", translated_value))
+            elif selected_type == "Boolean":
+                for i in range(0, len(boolean_indices)):
+                    index1 = boolean_indices[i]
+                    value1 = raw_values[index1]
+                    translated_value = self.translate_value("Boolean", value1)
+                    self.table.insert('', 'end', values=(self.get_name(index1 + 1), index1 + 1, "Boolean", translated_value))
+            elif selected_type == "Binary":
+                # Insert raw_values into the table
+                for i, value in enumerate(raw_values):
+                    translated_value = self.translate_value("Binary", value)  # Translate the value
+                    self.table.insert('', 'end',values=( self.get_name(i + 1), i + 1, selected_type,translated_value))  # Use the translated value
+            else:
+                # Insert raw_values into the table
+                for i, value in enumerate(raw_values):
+                    translated_value = self.translate_value("holding", value)  # Translate the value
+                    self.table.insert('', 'end', values=(self.get_name(i + 1), i + 1, selected_type, translated_value))  # Use the translated value
+
+        except AttributeError:
+            print(f"Did not retrieve data")
+            messagebox.showerror("Error", "Data retrieval error")
 
     def translate_value(self, data_type, value1, value2=None):
         # Translate the value based on the selected data type
@@ -577,5 +582,8 @@ class ModbusMasterClientWidget:
             binary_data = struct.pack('>HH', value1, value2)  # Combine two 16-bit values
             decoded_value = struct.unpack('>L', binary_data)[0]
             return decoded_value
+        elif data_type == "Unsigned Int 8 bit":
+            # Assuming the value is an unsigned 8-bit integer
+            return value1 & 0xFF
         else:
             return value1

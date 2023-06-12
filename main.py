@@ -11,11 +11,16 @@ import logging
 #log = logging.getLogger()
 #log.setLevel(logging.DEBUG)
 
+def on_window_close():
+
+    print("window Closed")
+    modbus_client.close()
+    root.destroy()
 
 root = tk.Tk()  # Root instance for your Tkinter application
 root.geometry("1080x768")  # Size of the tkinter window
 root.configure(bg="gray")  # Background color of the tkinter window
-
+root.protocol("WM_DELETE_WINDOW", on_window_close)  # Bind the function to the window close event
 notebook = ttk.Notebook(root)  # Create the notebook (tabbed window)
 
 # This is a list of the options that the user can select from when choosing what type of data to write to the modbus.

@@ -336,7 +336,11 @@ class ModbusMasterClientWidget:
             self.progress['value'] = 0  # Reset the progress bar
 
     def refresh_table(self,*args):
-        raw_values = self.raw_values
+        try:
+            raw_values = self.raw_values
+        except AttributeError:
+            print(f"Did not retrieve data")
+            messagebox.showerror("Error", "Retrieve Data First")
         self.table.delete(*self.table.get_children())
         selected_type = self.data_type_var.get()  # Define selected_type before using it
         float_indices = [0, 1, 2, 3, 4, 5, 25, 26, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
@@ -379,152 +383,153 @@ class ModbusMasterClientWidget:
         Unsigned8bit_indices = [167,168,169]
 
         byte_indices = [304, 305, 307, 308, 309, 310, 311]
-        try:
-            if selected_type == "ALL":
+        if selected_type == "ALL":
 
-                # Combine all indices into one list
-                all_indices = float_indices + ASCII16bit_indices + Signed32Int_indices + UnsignedInt16bit_indices + Unsigned32Int_indices + boolean_indices
+            # Combine all indices into one list
+            all_indices = float_indices + ASCII16bit_indices + Signed32Int_indices + UnsignedInt16bit_indices + Unsigned32Int_indices + boolean_indices
 
-                # Sort the list
-                all_indices.sort()
+            # Sort the list
+            all_indices.sort()
 
-                # Process each index
-                for i in range(len(all_indices)):
-                    index = all_indices[i]
-                    value = raw_values[index]
+            # Process each index
+            for i in range(len(all_indices)):
+                index = all_indices[i]
+                value = raw_values[index]
 
-                    # Determine the type of the index and translate the value accordingly
-                    if index in float_indices:
-                        # Check if this is the first index of a pair
-                        if index + 1 in float_indices and i + 1 < len(all_indices) and all_indices[i + 1] == index + 1:
-                            value2 = raw_values[index + 1]
-                            translated_value = self.translate_value("Float 32 bit", value, value2)
-                            data_type = "Float 32 bit"
-                        else:
-                            continue
-                    elif index in ASCII16bit_indices:
-                        translated_value = self.translate_value("ASCII 16 bit", value)
-                        data_type = "ASCII 16 bit"
-                    elif index in byte_indices:
-                        translated_value = self.translate_value(("Byte"), value)
-                        data_type = "Byte"
-                    elif index in Signed32Int_indices:
-                        # Check if this is the first index of a pair
-                        if index + 1 in Signed32Int_indices and i + 1 < len(all_indices) and all_indices[
-                            i + 1] == index + 1:
-                            value2 = raw_values[index + 1]
-                            translated_value = self.translate_value("Signed Int 32 bit", value, value2)
-                            data_type = "Signed Int 32 bit"
-                        else:
-                            continue
-                    elif index in UnsignedInt16bit_indices:
-                        translated_value = self.translate_value("Unsigned Int 16 bit", value)
-                        data_type = "Unsigned Int 16 bit"
-                    elif index in Unsigned32Int_indices:
-                        # Check if this is the first index of a pair
-                        if index + 1 in Unsigned32Int_indices and i + 1 < len(all_indices) and all_indices[
-                            i + 1] == index + 1:
-                            value2 = raw_values[index + 1]
-                            translated_value = self.translate_value("Unsigned Int 32 bit", value, value2)
-                            data_type = "Unsigned Int 32 bit"
-                        else:
-                            continue
-                    elif index in boolean_indices:
-                        translated_value = self.translate_value("Boolean", value)
-                        data_type = "Boolean"
-                    elif index in Unsigned8bit_indices:
-                        translated_value = self.translate_value("Unsigned Int 8 bit", value)
-                        data_type = "Unsigned Int 8 bit"
+                # Determine the type of the index and translate the value accordingly
+                if index in float_indices:
+                    # Check if this is the first index of a pair
+                    if index + 1 in float_indices:
+                        value2 = raw_values[index + 1]
+                        translated_value = self.translate_value("Float 32 bit", value, value2)
+                        data_type = "Float 32 bit"
                     else:
-                        translated_value = self.translate_value("holding", value)
-                        data_type = "holding"
+                        continue
+                elif index in ASCII16bit_indices:
+                    translated_value = self.translate_value("ASCII 16 bit", value)
+                    data_type = "ASCII 16 bit"
+                elif index in byte_indices:
+                    translated_value = self.translate_value(("Byte"), value)
+                    data_type = "Byte"
+                elif index in Signed32Int_indices:
+                    # Check if this is the first index of a pair
+                    if index + 1 in Signed32Int_indices and i + 1 < len(all_indices) and all_indices[
+                        i + 1] == index + 1:
+                        value2 = raw_values[index + 1]
+                        translated_value = self.translate_value("Signed Int 32 bit", value, value2)
+                        data_type = "Signed Int 32 bit"
+                    else:
+                        continue
+                elif index in UnsignedInt16bit_indices:
+                    translated_value = self.translate_value("Unsigned Int 16 bit", value)
+                    data_type = "Unsigned Int 16 bit"
+                elif index in Unsigned32Int_indices:
+                    # Check if this is the first index of a pair
+                    if index + 1 in Unsigned32Int_indices and i + 1 < len(all_indices) and all_indices[
+                        i + 1] == index + 1:
+                        value2 = raw_values[index + 1]
+                        translated_value = self.translate_value("Unsigned Int 32 bit", value, value2)
+                        data_type = "Unsigned Int 32 bit"
+                    else:
+                        continue
+                elif index in boolean_indices:
+                    translated_value = self.translate_value("Boolean", value)
+                    data_type = "Boolean"
+                elif index in Unsigned8bit_indices:
+                    translated_value = self.translate_value("Unsigned Int 8 bit", value)
+                    data_type = "Unsigned Int 8 bit"
+                else:
+                    translated_value = self.translate_value("holding", value)
+                    data_type = "holding"
 
-                    # Insert the translated value into the table
-                    self.table.insert('', 'end',values=(self.get_name(index + 1), index + 1, data_type, translated_value))
+                # Insert the translated value into the table
+                self.table.insert('', 'end', values=(self.get_name(index + 1), index + 1, data_type, translated_value))
 
-            elif selected_type == "Float 32 bit":
+        elif selected_type == "Float 32 bit":
 
-                for i in range(0, len(float_indices), 2):  # Step by 2
-                    index1 = float_indices[i]
-                    index2 = float_indices[i + 1] if i + 1 < len(
-                        float_indices) else index1  # Use index1 if there's no second index
-                    value1 = raw_values[index1]
-                    value2 = raw_values[index2]
+            for i in range(0, len(float_indices), 2):  # Step by 2
+                index1 = float_indices[i]
+                index2 = float_indices[i + 1] if i + 1 < len(float_indices) else index1  # Use index1 if there's no second index
+                value1 = raw_values[index1]
+                value2 = raw_values[index2]
 
-                    translated_value = self.translate_value("Float 32 bit", value1, value2)
-                    translated_value = round(translated_value, 3)
-                    self.table.insert('', 'end', values=(self.get_name(index1 + 1), index1 + 1, "Float 32 bit", translated_value))
-            elif selected_type == "ASCII 16 bit":
-                for i in range(0, len(ASCII16bit_indices)):
-                    index1 = ASCII16bit_indices[i]
-                    value1 = raw_values[index1]
-                    translated_value = self.translate_value("ASCII 16 bit", value1)
-                    # translated_value =   round(translated_value,2)
-                    self.table.insert('', 'end',values=(self.get_name(index1 + 1), index1 + 1, "ASCII 16 bit", translated_value))
-            elif selected_type == "Byte":
-                for i in range(0, len(byte_indices)):
-                    index1 = byte_indices[i]
-                    value1 = raw_values[index1]
-                    translated_value = self.translate_value("Byte", value1)
-                    # translated_value =   round(translated_value,2)
-                    self.table.insert('', 'end',values=(self.get_name(index1 + 1), index1 + 1, "Byte", translated_value))
-            elif selected_type == "Unsigned Int 8 bit":
-                for i in range(0, len(Unsigned8bit_indices)):
-                    index1 = Unsigned8bit_indices[i]
-                    value1 = raw_values[index1]
-                    translated_value = self.translate_value("Unsigned Int 8 bit", value1)
-                    # translated_value =   round(translated_value,2)
-                    self.table.insert('', 'end', values=(self.get_name(index1 + 1), index1 + 1, "Unsigned Int 8 bit", translated_value))
-            elif selected_type == "Signed Int 32 bit":
-                for i in range(0, len(Signed32Int_indices), 2):  # Step by 2
-                    index1 = Signed32Int_indices[i]
-                    index2 = Signed32Int_indices[i + 1] if i + 1 < len(
-                        Signed32Int_indices) else index1  # Use index1 if there's no second index
-                    value1 = raw_values[index1]
-                    value2 = raw_values[index2]
+                translated_value = self.translate_value("Float 32 bit", value1, value2)
+                translated_value = round(translated_value, 3)
+                self.table.insert('', 'end',values=(self.get_name(index1 + 1), index1 + 1, "Float 32 bit", translated_value))
+        elif selected_type == "ASCII 16 bit":
+            for i in range(0, len(ASCII16bit_indices)):
+                index1 = ASCII16bit_indices[i]
+                value1 = raw_values[index1]
+                translated_value = self.translate_value("ASCII 16 bit", value1)
+                # translated_value =   round(translated_value,2)
+                self.table.insert('', 'end',
+                                  values=(self.get_name(index1 + 1), index1 + 1, "ASCII 16 bit", translated_value))
+        elif selected_type == "Byte":
+            for i in range(0, len(byte_indices)):
+                index1 = byte_indices[i]
+                value1 = raw_values[index1]
+                translated_value = self.translate_value("Byte", value1)
+                # translated_value =   round(translated_value,2)
+                self.table.insert('', 'end', values=(self.get_name(index1 + 1), index1 + 1, "Byte", translated_value))
+        elif selected_type == "Unsigned Int 8 bit":
+            for i in range(0, len(Unsigned8bit_indices)):
+                index1 = Unsigned8bit_indices[i]
+                value1 = raw_values[index1]
+                translated_value = self.translate_value("Unsigned Int 8 bit", value1)
+                # translated_value =   round(translated_value,2)
+                self.table.insert('', 'end', values=(
+                self.get_name(index1 + 1), index1 + 1, "Unsigned Int 8 bit", translated_value))
+        elif selected_type == "Signed Int 32 bit":
+            for i in range(0, len(Signed32Int_indices), 2):  # Step by 2
+                index1 = Signed32Int_indices[i]
+                index2 = Signed32Int_indices[i + 1] if i + 1 < len(
+                    Signed32Int_indices) else index1  # Use index1 if there's no second index
+                value1 = raw_values[index1]
+                value2 = raw_values[index2]
 
-                    translated_value = self.translate_value("Signed Int 32 bit", value1, value2)
-                    # translated_value =   round(translated_value,2)
-                    self.table.insert('', 'end',
-                                      values=( self.get_name(index1 + 1), index1 + 1, "Signed Int 32 bit", translated_value))
-            elif selected_type == "Unsigned Int 16 bit":
-                for i in range(0, len(UnsignedInt16bit_indices)):
-                    index1 = UnsignedInt16bit_indices[i]
-                    value1 = raw_values[index1]
-                    translated_value = self.translate_value("Unsigned Int 16 bit", value1)
-                    self.table.insert('', 'end',
-                                      values=( self.get_name(index1 + 1), index1 + 1, "Unsigned Int 16 bit", translated_value))
-            elif selected_type == "Unsigned Int 32 bit":
-                for i in range(0, len(Unsigned32Int_indices), 2):  # Step by 2
-                    index1 = Unsigned32Int_indices[i]
-                    index2 = Unsigned32Int_indices[i + 1] if i + 1 < len(
-                        Unsigned32Int_indices) else index1  # Use index1 if there's no second index
-                    value1 = raw_values[index1]
-                    value2 = raw_values[index2]
+                translated_value = self.translate_value("Signed Int 32 bit", value1, value2)
+                # translated_value =   round(translated_value,2)
+                self.table.insert('', 'end',
+                                  values=(self.get_name(index1 + 1), index1 + 1, "Signed Int 32 bit", translated_value))
+        elif selected_type == "Unsigned Int 16 bit":
+            for i in range(0, len(UnsignedInt16bit_indices)):
+                index1 = UnsignedInt16bit_indices[i]
+                value1 = raw_values[index1]
+                translated_value = self.translate_value("Unsigned Int 16 bit", value1)
+                self.table.insert('', 'end',
+                                  values=(
+                                  self.get_name(index1 + 1), index1 + 1, "Unsigned Int 16 bit", translated_value))
+        elif selected_type == "Unsigned Int 32 bit":
+            for i in range(0, len(Unsigned32Int_indices), 2):  # Step by 2
+                index1 = Unsigned32Int_indices[i]
+                index2 = Unsigned32Int_indices[i + 1] if i + 1 < len(
+                    Unsigned32Int_indices) else index1  # Use index1 if there's no second index
+                value1 = raw_values[index1]
+                value2 = raw_values[index2]
 
-                    translated_value = self.translate_value("Unsigned Int 32 bit", value1, value2)
-                    # translated_value =   round(translated_value,2)
-                    self.table.insert('', 'end', values=( self.get_name(index1 + 1), index1 + 1, "Unsigned Int 32 bit", translated_value))
-            elif selected_type == "Boolean":
-                for i in range(0, len(boolean_indices)):
-                    index1 = boolean_indices[i]
-                    value1 = raw_values[index1]
-                    translated_value = self.translate_value("Boolean", value1)
-                    self.table.insert('', 'end', values=(self.get_name(index1 + 1), index1 + 1, "Boolean", translated_value))
-            elif selected_type == "Binary":
-                # Insert raw_values into the table
-                for i, value in enumerate(raw_values):
-                    translated_value = self.translate_value("Binary", value)  # Translate the value
-                    self.table.insert('', 'end',values=( self.get_name(i + 1), i + 1, selected_type,translated_value))  # Use the translated value
-            else:
-                # Insert raw_values into the table
-                for i, value in enumerate(raw_values):
-                    translated_value = self.translate_value("holding", value)  # Translate the value
-                    self.table.insert('', 'end', values=(self.get_name(i + 1), i + 1, selected_type, translated_value))  # Use the translated value
-
-        except AttributeError:
-            print(f"Did not retrieve data")
-            messagebox.showerror("Error", "Data retrieval error")
+                translated_value = self.translate_value("Unsigned Int 32 bit", value1, value2)
+                # translated_value =   round(translated_value,2)
+                self.table.insert('', 'end', values=(
+                self.get_name(index1 + 1), index1 + 1, "Unsigned Int 32 bit", translated_value))
+        elif selected_type == "Boolean":
+            for i in range(0, len(boolean_indices)):
+                index1 = boolean_indices[i]
+                value1 = raw_values[index1]
+                translated_value = self.translate_value("Boolean", value1)
+                self.table.insert('', 'end',
+                                  values=(self.get_name(index1 + 1), index1 + 1, "Boolean", translated_value))
+        elif selected_type == "Binary":
+            # Insert raw_values into the table
+            for i, value in enumerate(raw_values):
+                translated_value = self.translate_value("Binary", value)  # Translate the value
+                self.table.insert('', 'end', values=(
+                self.get_name(i + 1), i + 1, selected_type, translated_value))  # Use the translated value
+        else:
+            # Insert raw_values into the table
+            for i, value in enumerate(raw_values):
+                translated_value = self.translate_value("holding", value)  # Translate the value
+                self.table.insert('', 'end', values=(
+                self.get_name(i + 1), i + 1, selected_type, translated_value))  # Use the translated value
 
     def translate_value(self, data_type, value1, value2=None):
         # Translate the value based on the selected data type

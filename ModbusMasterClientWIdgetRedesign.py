@@ -441,8 +441,6 @@ class ModbusMasterClientWidget:
                 else:
                     translated_value = self.translate_value("holding", value)
                     data_type = "holding"
-
-                # Insert the translated value into the table
                 self.table.insert('', 'end', values=(self.get_name(index + 1), index + 1, data_type, translated_value))
 
         elif selected_type == "Float 32 bit":
@@ -461,7 +459,6 @@ class ModbusMasterClientWidget:
                 index1 = ASCII16bit_indices[i]
                 value1 = raw_values[index1]
                 translated_value = self.translate_value("ASCII 16 bit", value1)
-                # translated_value =   round(translated_value,2)
                 self.table.insert('', 'end',
                                   values=(self.get_name(index1 + 1), index1 + 1, "ASCII 16 bit", translated_value))
         elif selected_type == "Byte":
@@ -469,7 +466,6 @@ class ModbusMasterClientWidget:
                 index1 = byte_indices[i]
                 value1 = raw_values[index1]
                 translated_value = self.translate_value("Byte", value1)
-                # translated_value =   round(translated_value,2)
                 self.table.insert('', 'end', values=(self.get_name(index1 + 1), index1 + 1, "Byte", translated_value))
         elif selected_type == "Unsigned Int 8 bit":
             for i in range(0, len(Unsigned8bit_indices)):
@@ -477,8 +473,7 @@ class ModbusMasterClientWidget:
                 value1 = raw_values[index1]
                 translated_value = self.translate_value("Unsigned Int 8 bit", value1)
                 # translated_value =   round(translated_value,2)
-                self.table.insert('', 'end', values=(
-                self.get_name(index1 + 1), index1 + 1, "Unsigned Int 8 bit", translated_value))
+                self.table.insert('', 'end', values=(self.get_name(index1 + 1), index1 + 1, "Unsigned Int 8 bit", translated_value))
         elif selected_type == "Signed Int 32 bit":
             for i in range(0, len(Signed32Int_indices), 2):  # Step by 2
                 index1 = Signed32Int_indices[i]
@@ -488,7 +483,6 @@ class ModbusMasterClientWidget:
                 value2 = raw_values[index2]
 
                 translated_value = self.translate_value("Signed Int 32 bit", value1, value2)
-                # translated_value =   round(translated_value,2)
                 self.table.insert('', 'end',
                                   values=(self.get_name(index1 + 1), index1 + 1, "Signed Int 32 bit", translated_value))
         elif selected_type == "Unsigned Int 16 bit":
@@ -496,9 +490,7 @@ class ModbusMasterClientWidget:
                 index1 = UnsignedInt16bit_indices[i]
                 value1 = raw_values[index1]
                 translated_value = self.translate_value("Unsigned Int 16 bit", value1)
-                self.table.insert('', 'end',
-                                  values=(
-                                  self.get_name(index1 + 1), index1 + 1, "Unsigned Int 16 bit", translated_value))
+                self.table.insert('', 'end',values=(self.get_name(index1 + 1), index1 + 1, "Unsigned Int 16 bit", translated_value))
         elif selected_type == "Unsigned Int 32 bit":
             for i in range(0, len(Unsigned32Int_indices), 2):  # Step by 2
                 index1 = Unsigned32Int_indices[i]
@@ -508,28 +500,23 @@ class ModbusMasterClientWidget:
                 value2 = raw_values[index2]
 
                 translated_value = self.translate_value("Unsigned Int 32 bit", value1, value2)
-                # translated_value =   round(translated_value,2)
-                self.table.insert('', 'end', values=(
-                self.get_name(index1 + 1), index1 + 1, "Unsigned Int 32 bit", translated_value))
+                self.table.insert('', 'end', values=(self.get_name(index1 + 1), index1 + 1, "Unsigned Int 32 bit", translated_value))
         elif selected_type == "Boolean":
             for i in range(0, len(boolean_indices)):
                 index1 = boolean_indices[i]
                 value1 = raw_values[index1]
                 translated_value = self.translate_value("Boolean", value1)
-                self.table.insert('', 'end',
-                                  values=(self.get_name(index1 + 1), index1 + 1, "Boolean", translated_value))
+                self.table.insert('', 'end',values=(self.get_name(index1 + 1), index1 + 1, "Boolean", translated_value))
         elif selected_type == "Binary":
             # Insert raw_values into the table
             for i, value in enumerate(raw_values):
                 translated_value = self.translate_value("Binary", value)  # Translate the value
-                self.table.insert('', 'end', values=(
-                self.get_name(i + 1), i + 1, selected_type, translated_value))  # Use the translated value
+                self.table.insert('', 'end', values=(self.get_name(i + 1), i + 1, selected_type, translated_value))  # Use the translated value
         else:
             # Insert raw_values into the table
             for i, value in enumerate(raw_values):
                 translated_value = self.translate_value("holding", value)  # Translate the value
-                self.table.insert('', 'end', values=(
-                self.get_name(i + 1), i + 1, selected_type, translated_value))  # Use the translated value
+                self.table.insert('', 'end', values=(self.get_name(i + 1), i + 1, selected_type, translated_value))  # Use the translated value
 
     def translate_value(self, data_type, value1, value2=None):
         # Translate the value based on the selected data type

@@ -18,12 +18,15 @@ class ModBusProtocolConnection:
         # Create the Connect
         self.create_connection_button()
         # Drop down menu protocol
+        self.protocol_entry_label = tk.Label(self.root, text="Protocol")
+        self.protocol_entry_label.config(font=('Arial', 14))
+        self.protocol_entry_label.place(relx=0.38, rely=0.30, anchor=tk.NW)
         self.protocol_type_var = tk.StringVar(self.main_frame)
         self.protocol_options = ['Modbus TCP', 'Ethernet/IP']
         self.protocol_type_var.set(self.protocol_options[0])
         self.protocol_type_dropdown = tk.OptionMenu(self.main_frame, self.protocol_type_var, *self.protocol_options)
         self.protocol_type_dropdown.config(font=('Arial', 14), height=2, width= 10)  # Update font and height
-        self.protocol_type_dropdown.place(relx=0.35, rely=0.25, anchor=tk.NW)
+        self.protocol_type_dropdown.place(relx=0.35, rely=0.35, anchor=tk.NW)
         #self.protocol_type_var.trace('w', self.print_selected_option)
 
 
@@ -31,7 +34,7 @@ class ModBusProtocolConnection:
         # Create the Connect button and place it in the window
         self.connection_button = tk.Button(self.root, text="Connect", command=self.toggle_connection)
         self.connection_button.config(font=('Arial', 14), height= 2, width = 10 )  # Update font and height
-        self.connection_button.place(relx=0.22, rely=0.25, anchor=tk.NW)
+        self.connection_button.place(relx=0.22, rely=0.35, anchor=tk.NW)
 
     def show_connection_dialog(self):
         # Create and display a new connection dialog window

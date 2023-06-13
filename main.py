@@ -12,8 +12,6 @@ import logging
 #log.setLevel(logging.DEBUG)
 
 def on_window_close():
-
-    print("window Closed")
     modbus_client.close()
     root.destroy()
 
@@ -43,3 +41,4 @@ root.mainloop()  # This is the main event loop for the tkinter application.
 #Task to do
 # all integrated besides epochs and input
 # confusing epochs
+#unit.entry not working correctly. Still able to connect to slave even if unit id is different

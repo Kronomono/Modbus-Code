@@ -56,8 +56,6 @@ class ModbusMasterClientWidget:
         # Add a trace to the data_type_var
         self.data_type_var.trace('w', self.refresh_table)
 
-
-        self.unit_entry = self.create_unit_entry()  # Store the unit_entry widget
         self.count_entry = self.create_count_entry()
         self.progress = ttk.Progressbar(self.root, length=200, mode='determinate')
         self.progress.place(relx=0.5, rely=0.2, relwidth=0.8, anchor=tk.CENTER)
@@ -75,13 +73,6 @@ class ModbusMasterClientWidget:
         self.connection_button = tk.Button(self.root, text="Connect", command=self.toggle_connection)
         self.connection_button.place(relx=0.05, rely=0.05, anchor=tk.NW)
 
-    def create_unit_entry(self):
-        # Create a unit entry field and place it in the window
-        unit_entry = tk.Entry(self.root, width=10)
-        unit_entry_label = tk.Label(self.root, text="Enter unit #")
-        unit_entry_label.place(relx=0.38, rely=0.03, anchor=tk.CENTER)
-        unit_entry.place(relx=0.35, rely=0.05, anchor=tk.NW)
-        return unit_entry
     def create_count_entry(self):
         # create a count entry field and place in window
         count_entry_label = tk.Label(self.root, text="Enter # of addresses to read")
@@ -112,33 +103,38 @@ class ModbusMasterClientWidget:
             port_entry = tk.Entry(dialog)
             port_entry.pack()
 
+            unit_label = tk.Label(dialog, text="Unit:")
+            unit_label.pack()
+            unit_entry = tk.Entry(dialog)
+            unit_entry.pack()
+
             def connect():
-                # Retrieve the host and port from the dialog
+                # Retrieve the host, port, and unit from the dialog
                 host = host_entry.get()
                 port = port_entry.get()
+                unit = unit_entry.get()
 
                 print(f"Retrieved host from dialog: {host}")
                 print(f"Retrieved port from dialog: {port}")
+                print(f"Retrieved unit from dialog: {unit}")
 
-                if host and port:
-                    # Check if the port enter is an int
-                    if port.isdigit():
-                        self.modbus_client.update_host_port(host, int(port))
+                if host and port and unit:
+                    # Check if the port and unit are ints
+                    if port.isdigit() and unit.isdigit():
+                        self.modbus_client.update_host_port(host, int(port), int(unit))
                         if self.modbus_client.connect():
                             self.connection_button["text"] = "Disconnect"
                             messagebox.showinfo("Connected", "Connection successful")
-                            #self.retrieve_data()
                         else:
                             messagebox.showerror("Error", "Failed to establish Modbus connection.")
                         dialog.destroy()
                     else:
-                        messagebox.showerror("Error", "Invalid port. Please enter a valid number.")
+                        messagebox.showerror("Error", "Invalid port or unit. Please enter a valid number.")
                 else:
-                    messagebox.showerror("Error", "Please enter both the host IP address and port.")
+                    messagebox.showerror("Error", "Please enter the host IP address, port, and unit.")
 
             connect_button = tk.Button(dialog, text="Connect", command=connect)
             connect_button.pack()
-
 
             dialog.transient(self.root)
             dialog.title("Modbus Connection Settings")
@@ -170,7 +166,8 @@ class ModbusMasterClientWidget:
         # Create a rate limiter
         rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=1.0)
         try:
-            unit = int(self.unit_entry.get())
+            unit = self.modbus_client.unit
+            print(f"This is unit in ModbusMasterClientWidget.py {unit}")
             count = int(self.count_entry.get())
             raw_values = []  # Initialize raw_values outside the loop
             self.raw_values = raw_values
@@ -179,7 +176,7 @@ class ModbusMasterClientWidget:
             for address in range(0, count):  # Modbus address space is 0-65535
                 with rate_limiter:
                     try:
-                        result = self.modbus_client.client.read_holding_registers(address, 1, unit=unit)
+                        result = self.modbus_client.client.read_holding_registers(address, 1 ,unit=unit)
                         if not result.isError():
                             raw_values.append(result.registers[0])
                             self.progress['value'] += 1  # Increment the progress bar
@@ -362,4 +359,3 @@ class ModbusMasterClientWidget:
             for i, value in enumerate(raw_values):
                 translated_value = self.modbus_client.translate_value("holding", value)  # Translate the value
                 self.table.insert('', 'end', values=(self.names.get_name(i + 1), i + 1, selected_type, translated_value))  # Use the translated value
-

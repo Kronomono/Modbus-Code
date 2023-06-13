@@ -10,21 +10,23 @@ import unicodedata
 
 
 class ModbusClient:
-    unit = 10
-    def __init__(self, ip_address="127.0.0.1", port=502, unit = 1):
-        # Initialize the modbus client with the provided IP address and port
+
+    def __init__(self, ip_address="127.0.0.1", port=502, unit= 1):
+        # Initialize the modbus client with the provided IP address, port, and unit
         self.ip_address = ip_address
         self.port = port
         self.unit = unit
-        self.client = ModbusTcpClient(self.ip_address, port=self.port)
+        self.client = ModbusTcpClient(self.ip_address, port=self.port, unit=self.unit)
 
-    def update_host_port(self, ip_address, port):
-        # Update the IP address and port for the modbus client and create a new client instance
+    def update_host_port(self, ip_address, port, unit):
+        # Update the IP address, port, and unit for the modbus client and create a new client instance
         self.ip_address = ip_address
         self.port = port
-        self.client = ModbusTcpClient(self.ip_address, port=self.port)
+        self.unit = unit
+        self.client = ModbusTcpClient(self.ip_address, port=self.port, unit=self.unit)
         print(f"Updated client host to: {self.ip_address}")
         print(f"Updated client port to: {self.port}")
+        print(f"Updated client unit to: {self.unit}")
 
 
     def connect(self):
@@ -59,9 +61,9 @@ class ModbusClient:
         else:
             print("Modbus connection is closed.")
             return False
-
-
-    def write_register(self, address, value, unit= unit):
+    def write_register(self, address, value, unit=None):
+        # Default to instance's unit if not provided
+        unit = self.unit if unit is None else unit
         # Attempt to write a value to a specific register
         try:
             response = self.client.write_register(address, value, unit=unit)
@@ -72,7 +74,9 @@ class ModbusClient:
         except ModbusIOException as e:
             print(f"Modbus communication error: {e}")
 
-    def write_float(self, address, value, unit=unit):
+    def write_float(self, address, value, unit=None):
+        # Default to instance's unit if not provided
+        unit = self.unit if unit is None else unit
         # Convert the float value to a 32-bit integer
         float_as_int = struct.unpack('<I', struct.pack('<f', value))[0]
 
@@ -82,7 +86,9 @@ class ModbusClient:
         # Write the low-order word of the integer value to the next register
         self.write_register(address + 1, float_as_int & 0xFFFF, unit)
 
-    def write_ascii(self, address, ascii_string, unit= unit):
+    def write_ascii(self, address, ascii_string, unit=None):
+        # Default to instance's unit if not provided
+        unit = self.unit if unit is None else unit
         # Attempt to write an ASCII string to a specific register
         try:
             hex_data = [ord(c) for c in ascii_string]
@@ -93,6 +99,7 @@ class ModbusClient:
                 print(f"Written ASCII string: {ascii_string} to address: {address}")
         except ModbusIOException as e:
             print(f"Modbus communication error: {e}")
+
     def translate_value(self, data_type, value1, value2=None):
         # Translate the value based on the selected data type
         if data_type == "holding":

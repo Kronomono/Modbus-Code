@@ -23,8 +23,9 @@ class ModBusProtocolConnection:
         self.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.add_image("Images/ActBox.png", 150, 150, 0.1, 0.15)
         self.create_connection_button()
+        self.create_protocol_dropdown_menu()
 
-
+    def create_protocol_dropdown_menu(self):
         # Drop down menu protocol
         self.protocol_entry_label = tk.Label(self.root, text="Protocol")
         self.protocol_entry_label.config(font=('Arial', 14))
@@ -33,9 +34,9 @@ class ModBusProtocolConnection:
         self.protocol_options = ['Modbus TCP', 'Ethernet/IP']
         self.protocol_type_var.set(self.protocol_options[0])
         self.protocol_type_dropdown = tk.OptionMenu(self.main_frame, self.protocol_type_var, *self.protocol_options)
-        self.protocol_type_dropdown.config(font=('Arial', 14), height=2, width= 10)  # Update font and height
+        self.protocol_type_dropdown.config(font=('Arial', 14), height=2, width=10)  # Update font and height
         self.protocol_type_dropdown.place(relx=0.35, rely=0.35, anchor=tk.NW)
-        #self.protocol_type_var.trace('w', self.print_selected_option)
+        # self.protocol_type_var.trace('w', self.print_selected_option)
 
     def add_image(self,fileName,Wimage,Himage,Xpos,Ypos):
         # Load the image

@@ -18,7 +18,7 @@ root = tk.Tk()  # Root instance for your Tkinter application
 root.geometry("1080x768")  # Size of the tkinter window
 root.configure(bg="gray")  # Background color of the tkinter window
 root.title("Rexa ModbusTCP GUI")  # Set the window title
-#root.iconbitmap("path to ico file")
+root.iconbitmap("Rexa tiny logo.ico")
 root.protocol("WM_DELETE_WINDOW", on_window_close)  # Bind the function to the window close event
 
 # Create a Frame for the notebook
@@ -43,7 +43,7 @@ tab2 = DataTableBeta(notebook, options, modbus_client)
 tab3 = WriteRegistryBeta(notebook, options, modbus_client)  # Pass any necessary arguments to your tab classes
 
 # Add the frames to the notebook with their respective labels
-notebook.add(tab1.frame, text='Connect')
+notebook.add(tab1.frame, text='Connection')
 notebook.add(tab2.frame, text='Data Table')
 notebook.add(tab3.frame, text='Writing Registry')
 

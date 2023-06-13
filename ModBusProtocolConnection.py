@@ -3,12 +3,16 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from ratelimiter import RateLimiter
 import threading
+from PIL import Image, ImageTk
+
 
 class ModBusProtocolConnection:
     def __init__(self, root, modbus_client):
         #references to other classes
         self.root = root
         self.modbus_client = modbus_client
+
+
         self.connection_button = None
 
         # Create a main frame to take up the entire window
@@ -17,6 +21,8 @@ class ModBusProtocolConnection:
     def create_widgets(self):
         # Create the Connect
         self.create_connection_button()
+        self.add_image("rexa logo.png",300,50,0.5,0)
+
         # Drop down menu protocol
         self.protocol_entry_label = tk.Label(self.root, text="Protocol")
         self.protocol_entry_label.config(font=('Arial', 14))
@@ -28,6 +34,19 @@ class ModBusProtocolConnection:
         self.protocol_type_dropdown.config(font=('Arial', 14), height=2, width= 10)  # Update font and height
         self.protocol_type_dropdown.place(relx=0.35, rely=0.35, anchor=tk.NW)
         #self.protocol_type_var.trace('w', self.print_selected_option)
+
+    def add_image(self,fileName,Wimage,Himage,Xpos,Ypos):
+        # Load the image
+        image = Image.open(fileName)
+        image = image.resize((Wimage, Himage))  # Resize the image as needed
+
+        # Convert the image to a PhotoImage object
+        photo = ImageTk.PhotoImage(image)
+
+        # Create a label to display the image
+        image_label = tk.Label(self.root, image=photo)
+        image_label.image = photo  # Store a reference to the PhotoImage to prevent it from being garbage collected
+        image_label.place(relx=Xpos, rely=Ypos, anchor=tk.N)
 
 
     def create_connection_button(self):

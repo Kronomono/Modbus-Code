@@ -5,6 +5,7 @@ from ModbusClient import ModbusClient
 from ModbusMasterClientWidget import ModbusMasterClientWidget
 from DataTableBeta import  DataTableBeta
 from WriteRegistryBeta import WriteRegistryBeta
+from Tab1ModBusProtocolConnection import Tab1ModBusProtocolConnection
 import logging
 #logging.basicConfig()
 #log = logging.getLogger()
@@ -31,18 +32,20 @@ style.configure("TNotebook.Tab", padding=[50, 10])  # Adjust the padding values 
 notebook = ttk.Notebook(notebook_frame, style="TNotebook")  # Create the notebook (tabbed window)
 
 # This is a list of the options that the user can select from when choosing what type of data to write to the modbus.
-options = ["Float", "Signed 16-bit", "Unsigned 16-bit", "Boolean", "ASCII", "Byte", "Epoch"]
+options = ["Float", "Signed 16-bit", "Unsigned 16-bit", "Boolean", "ASCII", "Byte"]
 
 # Create an instance of the Modbus client with initial empty settings
 modbus_client = ModbusClient("", 0)
 
 # Create the tabs and add them to the notebook
-tab2 = WriteRegistryBeta(notebook, options, modbus_client)  # Pass any necessary arguments to your tab classes
-tab1 = DataTableBeta(notebook, options, modbus_client)
+tab1 = Tab1ModBusProtocolConnection(notebook, options, modbus_client)
+tab2 = DataTableBeta(notebook, options, modbus_client)
+tab3 = WriteRegistryBeta(notebook, options, modbus_client)  # Pass any necessary arguments to your tab classes
 
 # Add the frames to the notebook with their respective labels
-notebook.add(tab1.frame, text='Data Table')
-notebook.add(tab2.frame, text='Writing Registry')
+notebook.add(tab1.frame, text='Connect')
+notebook.add(tab2.frame, text='Data Table')
+notebook.add(tab3.frame, text='Writing Registry')
 
 notebook.pack(fill=tk.BOTH, expand=True)  # Add the notebook to the notebook frame
 

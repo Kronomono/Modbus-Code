@@ -61,7 +61,7 @@ class ModbusMasterClientWidget:
 
 
     def create_widgets(self):
-        # Create the Connect, Retrieve Data, and Show Graph buttons
+        # Create the Connect, Retrieve Data
         self.create_connection_button()
         self.create_retrieve_button()
 
@@ -181,7 +181,7 @@ class ModbusMasterClientWidget:
                             self.root.update_idletasks()  # Update the GUI
                         else:
                             print(f"Error reading register at address {address}: {result}")
-                            messagebox.showerror(f"Error reading register at address {address}: {result}")
+                            messagebox.showerror("Error",f"Error reading register at address {address}: {result}")
                             break;
                     except Exception as e:
                         print(f"Exception while reading register at address {address}: {e}")

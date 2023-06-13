@@ -176,7 +176,7 @@ class ModbusMasterClientWidget:
             for address in range(0, count):  # Modbus address space is 0-65535
                 with rate_limiter:
                     try:
-                        result = self.modbus_client.client.read_holding_registers(address, 1 ,unit=unit)
+                        result = self.modbus_client.client.read_holding_registers(address, 1 , unit)
                         if not result.isError():
                             raw_values.append(result.registers[0])
                             self.progress['value'] += 1  # Increment the progress bar

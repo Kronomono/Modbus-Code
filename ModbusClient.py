@@ -16,14 +16,14 @@ class ModbusClient:
         self.ip_address = ip_address
         self.port = port
         self.unit = unit
-        self.client = ModbusTcpClient(self.ip_address, port=self.port, unit=self.unit)
+        self.client = ModbusTcpClient(self.ip_address, port=self.port)
 
     def update_host_port(self, ip_address, port, unit):
         # Update the IP address, port, and unit for the modbus client and create a new client instance
         self.ip_address = ip_address
         self.port = port
         self.unit = unit
-        self.client = ModbusTcpClient(self.ip_address, port=self.port, unit=self.unit)
+        self.client = ModbusTcpClient(self.ip_address, port=self.port)
         print(f"Updated client host to: {self.ip_address}")
         print(f"Updated client port to: {self.port}")
         print(f"Updated client unit to: {self.unit}")
@@ -74,7 +74,7 @@ class ModbusClient:
         except ModbusIOException as e:
             print(f"Modbus communication error: {e}")
 
-    def write_float(self, address, value, unit=None):
+    def write_float(self, address, value, unit= None):
         # Default to instance's unit if not provided
         unit = self.unit if unit is None else unit
         # Convert the float value to a 32-bit integer

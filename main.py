@@ -3,8 +3,8 @@ from tkinter import ttk
 from Widgets import Widgets
 from ModbusClient import ModbusClient
 from ModbusMasterClientWidget import ModbusMasterClientWidget
-from Tab1 import Tab1  # Import the classes for the tabs
-from Tab2 import Tab2
+from DataTableBeta import  DataTableBeta
+from WriteRegistryBeta import WriteRegistryBeta
 import logging
 #logging.basicConfig()
 #log = logging.getLogger()
@@ -35,12 +35,12 @@ options = ["Float", "Signed 16-bit", "Unsigned 16-bit", "Boolean", "ASCII", "Byt
 modbus_client = ModbusClient("", 0)
 
 # Create the tabs and add them to the notebook
-tab1 = Tab1(notebook, options, modbus_client)  # Pass any necessary arguments to your tab classes
-tab2 = Tab2(notebook, options, modbus_client)
+tab2 = WriteRegistryBeta(notebook, options, modbus_client)  # Pass any necessary arguments to your tab classes
+tab1 = DataTableBeta(notebook, options, modbus_client)
 
 # Add the frames to the notebook with their respective labels
-notebook.add(tab1.frame, text='Write Registry')
-notebook.add(tab2.frame, text='Data Display')
+notebook.add(tab1.frame, text='Data Table')
+notebook.add(tab2.frame, text='Writing Registry')
 
 notebook.pack(fill=tk.BOTH, expand=True)  # Add the notebook to the notebook frame
 

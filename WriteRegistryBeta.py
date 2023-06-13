@@ -1,8 +1,8 @@
-#Tab1.py
+#WriteRegistryBeta
 import tkinter as tk
 from Widgets import Widgets
 
-class Tab1:
+class WriteRegistryBeta:
     def __init__(self, notebook, options, modbus_client):
         self.frame = tk.Frame(notebook)
         self.widgets = Widgets(self.frame, options, modbus_client)

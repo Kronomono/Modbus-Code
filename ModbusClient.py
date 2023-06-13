@@ -61,12 +61,12 @@ class ModbusClient:
         else:
             print("Modbus connection is closed.")
             return False
-    def write_register(self, address, value, unit=None):
+    def write_register(self, address, value):
         # Default to instance's unit if not provided
-        unit = self.unit if unit is None else unit
+        unit = self.unit
         # Attempt to write a value to a specific register
         try:
-            response = self.client.write_register(address, value, unit=unit)
+            response = self.client.write_register(address, value, unit)
             if response.isError():
                 print(f"Modbus response error: {response}")
             else:
@@ -74,9 +74,9 @@ class ModbusClient:
         except ModbusIOException as e:
             print(f"Modbus communication error: {e}")
 
-    def write_float(self, address, value, unit= None):
+    def write_float(self, address, value):
         # Default to instance's unit if not provided
-        unit = self.unit if unit is None else unit
+        unit = self.unit
         # Convert the float value to a 32-bit integer
         float_as_int = struct.unpack('<I', struct.pack('<f', value))[0]
 
@@ -86,13 +86,13 @@ class ModbusClient:
         # Write the low-order word of the integer value to the next register
         self.write_register(address + 1, float_as_int & 0xFFFF, unit)
 
-    def write_ascii(self, address, ascii_string, unit=None):
+    def write_ascii(self, address, ascii_string):
         # Default to instance's unit if not provided
-        unit = self.unit if unit is None else unit
+        unit = self.unit
         # Attempt to write an ASCII string to a specific register
         try:
             hex_data = [ord(c) for c in ascii_string]
-            response = self.client.write_registers(address, hex_data, unit=unit)
+            response = self.client.write_registers(address, hex_data, unit)
             if response.isError():
                 print(f"Modbus response error: {response}")
             else:

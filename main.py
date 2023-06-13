@@ -16,6 +16,8 @@ def on_window_close():
 root = tk.Tk()  # Root instance for your Tkinter application
 root.geometry("1080x768")  # Size of the tkinter window
 root.configure(bg="gray")  # Background color of the tkinter window
+root.title("Rexa ModbusTCP GUI")  # Set the window title
+#root.iconbitmap("path to ico file")
 root.protocol("WM_DELETE_WINDOW", on_window_close)  # Bind the function to the window close event
 
 # Create a Frame for the notebook

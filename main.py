@@ -27,7 +27,7 @@ notebook_frame.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 # Create a custom style for the notebook and set the tab position to 's' (south)
 style = ttk.Style()
 style.configure("TNotebook", tabposition="s")
-
+style.configure("TNotebook.Tab", padding=[50, 10])  # Adjust the padding values as desired
 notebook = ttk.Notebook(notebook_frame, style="TNotebook")  # Create the notebook (tabbed window)
 
 # This is a list of the options that the user can select from when choosing what type of data to write to the modbus.
@@ -49,3 +49,4 @@ notebook.pack(fill=tk.BOTH, expand=True)  # Add the notebook to the notebook fra
 root.mainloop()  # This is the main event loop for the tkinter application.
 #Task to do
 # all integrated be
+# need display epoch support

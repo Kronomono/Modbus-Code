@@ -20,8 +20,10 @@ class ModBusProtocolConnection:
         self.main_frame.pack(fill='both', expand=True)
     def create_widgets(self):
         # Create the Connect
+        self.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
+        self.add_image("Images/ActBox.png", 150, 150, 0.1, 0.15)
         self.create_connection_button()
-        self.add_image("rexa logo.png",300,50,0.5,0)
+
 
         # Drop down menu protocol
         self.protocol_entry_label = tk.Label(self.root, text="Protocol")

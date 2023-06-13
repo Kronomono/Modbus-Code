@@ -1,9 +1,6 @@
 #ModbusMasterClientWidget.py
 import tkinter as tk
 from tkinter import messagebox, ttk
-import struct
-import unicodedata
-import time
 from ratelimiter import RateLimiter
 import threading
 
@@ -184,6 +181,8 @@ class ModbusMasterClientWidget:
                             self.root.update_idletasks()  # Update the GUI
                         else:
                             print(f"Error reading register at address {address}: {result}")
+                            messagebox.showerror(f"Error reading register at address {address}: {result}")
+                            break;
                     except Exception as e:
                         print(f"Exception while reading register at address {address}: {e}")
             # Print the number of elements in raw_values

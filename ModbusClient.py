@@ -7,6 +7,8 @@ import time
 from pymodbus.constants import Endian
 import struct
 import unicodedata
+import tkinter as tk
+from tkinter import messagebox, ttk
 
 
 class ModbusClient:
@@ -69,6 +71,8 @@ class ModbusClient:
             response = self.client.write_register(address, value, unit)
             if response.isError():
                 print(f"Modbus response error: {response}")
+                messagebox.showerror("Error", f"Modbus reponse error: {response}")
+
             else:
                 print(f"Written value: {value} to address: {address}")
         except ModbusIOException as e:
@@ -95,6 +99,7 @@ class ModbusClient:
             response = self.client.write_registers(address, hex_data, unit)
             if response.isError():
                 print(f"Modbus response error: {response}")
+                messagebox.showerror("Error", f"Modbus reponse error: {response}")
             else:
                 print(f"Written ASCII string: {ascii_string} to address: {address}")
         except ModbusIOException as e:

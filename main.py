@@ -6,6 +6,7 @@ from ModbusMasterClientWidget import ModbusMasterClientWidget
 from DataTableBeta import  DataTableBeta
 from WriteRegistryBeta import WriteRegistryBeta
 from Tab1ModBusProtocolConnection import Tab1ModBusProtocolConnection
+from Tab2ModBusProtocolStatus import Tab2ModBusProtocolStatus
 import logging
 #logging.basicConfig()
 #log = logging.getLogger()
@@ -39,13 +40,15 @@ modbus_client = ModbusClient("", 0)
 
 # Create the tabs and add them to the notebook
 tab1 = Tab1ModBusProtocolConnection(notebook, options, modbus_client)
-tab2 = DataTableBeta(notebook, options, modbus_client)
-tab3 = WriteRegistryBeta(notebook, options, modbus_client)  # Pass any necessary arguments to your tab classes
+tab2 = Tab2ModBusProtocolStatus(notebook, options, modbus_client)
+tab3 = DataTableBeta(notebook, options, modbus_client)
+tab4 = WriteRegistryBeta(notebook, options, modbus_client)  # Pass any necessary arguments to your tab classes
 
 # Add the frames to the notebook with their respective labels
 notebook.add(tab1.frame, text='Connection')
-notebook.add(tab2.frame, text='Data Table')
-notebook.add(tab3.frame, text='Writing Registry')
+notebook.add(tab2.frame, text='Status')
+notebook.add(tab3.frame, text='Data Table')
+notebook.add(tab4.frame, text='Writing Registry')
 
 notebook.pack(fill=tk.BOTH, expand=True)  # Add the notebook to the notebook frame
 
@@ -53,3 +56,5 @@ root.mainloop()  # This is the main event loop for the tkinter application.
 #Task to do
 # all integrated be
 # need display epoch support
+#implement epochs
+# no window for connect. Just Entries

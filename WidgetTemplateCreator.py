@@ -14,7 +14,7 @@ class WidgetTemplateCreator:
         button.place(relx=relx, rely=rely, anchor=tk.NW)
         return button
 
-    def entry(self, relx, rely, width, readOnly, preFilledText=None):
+    def create_entry(self, relx, rely, width, readOnly, preFilledText=None):
         entry = tk.Entry(self.root, width=width)
         entry.insert(0, preFilledText)
         if readOnly:

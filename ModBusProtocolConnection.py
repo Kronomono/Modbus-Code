@@ -20,13 +20,13 @@ class ModBusProtocolConnection:
         self.widgetTemp.add_image(self,"Images/ActBox.png", 150, 150, 0.1, 0.15)
 
         self.host_label = tk.Label(self.root, text="Host IP Address:")
-        self.host_entry = self.widgetTemp.entry(self,0.22,0.45,20,False,"192.168.1.100")
+        self.host_entry = self.widgetTemp.create_entry(self,0.22,0.45,20,False,"192.168.1.100")
 
         self.port_label = tk.Label(self.root, text="Modbus Port:")
-        self.port_entry =  self.widgetTemp.entry(self,0.22,0.55,20,False,"2011")
+        self.port_entry =  self.widgetTemp.create_entry(self,0.22,0.55,20,False,"2011")
 
         self.unit_label = tk.Label(self.root, text="Unit:")
-        self.unit_entry =  self.widgetTemp.entry(self,0.22,0.65,20,False,"10")
+        self.unit_entry =  self.widgetTemp.create_entry(self,0.22,0.65,20,False,"10")
 
         self.protocol_type_var, self.protocol_entry_label, self.protocol_type_dropdown = self.widgetTemp.create_dropdown_menu(self,
             "Protocol",0.38, ['Modbus TCP', 'Ethernet/IP'], 'Modbus TCP', 0.35, 0.30, self.manage_entries_and_version

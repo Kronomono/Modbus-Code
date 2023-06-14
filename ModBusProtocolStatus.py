@@ -4,7 +4,6 @@ from tkinter import messagebox, ttk
 from ratelimiter import RateLimiter
 import threading
 from Names import Names
-from ModBusProtocolConnection import ModBusProtocolConnection
 from WidgetTemplateCreator import  WidgetTemplateCreator
 
 
@@ -30,6 +29,8 @@ class ModBusProtocolStatus:
         self.updateDataBtn = self.widgetTemp.create_button(self,'Update Data',0.05,0.08,10,1,10,self.retrieve_data)
 
         self.print_stats()
+
+
 
     def print_stats(self):
         protocol_type = self.ModBusProtocolConnection.protocol_type_var.get()

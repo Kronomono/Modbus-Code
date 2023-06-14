@@ -20,10 +20,10 @@ class ModBusProtocolConnection:
         self.create_connection_entries()
 
         self.protocol_type_var, self.protocol_entry_label, self.protocol_type_dropdown = self.create_dropdown_menu(
-            "Protocol", ['Modbus TCP', 'Ethernet/IP'], 'Modbus TCP', 0.38, 0.30, self.manage_entries_and_version
+            "Protocol",0.38, ['Modbus TCP', 'Ethernet/IP'], 'Modbus TCP', 0.35, 0.30, self.manage_entries_and_version
         )
         self.rexa_version_type_var, self.rexa_version_entry_label, self.rexa_version_type_dropdown = self.create_dropdown_menu(
-            "Rexa Version", ['X3', 'NextGen'], 'X3', 0.85, 0.10, self.manage_entries_and_version
+            "Rexa Version", 0.77, ['X3', 'NextGen'], 'X3', 0.75, 0.10, self.manage_entries_and_version
         )
         #call at end
         self.manage_entries_and_version()
@@ -51,11 +51,11 @@ class ModBusProtocolConnection:
         self.unit_label = tk.Label(self.root, text="Unit:")
         self.unit_entry = tk.Entry(self.root)
 
-    def create_dropdown_menu(self, label_text, options, default_option, relx, rely, trace_function):
+    def create_dropdown_menu(self, label_text, label_textX, options, default_option, relx, rely, trace_function):
         # Create a label
         entry_label = tk.Label(self.root, text=label_text)
         entry_label.config(font=('Arial', 14))
-        entry_label.place(relx=relx, rely=rely, anchor=tk.NW)
+        entry_label.place(relx=label_textX, rely=rely, anchor=tk.NW)
 
         # Create a variable to hold the selected option
         type_var = tk.StringVar(self.main_frame)
@@ -64,7 +64,7 @@ class ModBusProtocolConnection:
         # Create the dropdown menu
         type_dropdown = tk.OptionMenu(self.main_frame, type_var, *options)
         type_dropdown.config(font=('Arial', 14), height=2, width=10)  # Update font and height
-        type_dropdown.place(relx=relx + 0.03, rely=rely + 0.05, anchor=tk.NW)
+        type_dropdown.place(relx=relx, rely=rely + 0.05, anchor=tk.NW)
 
         # Add a trace to the variable
         type_var.trace('w', trace_function)

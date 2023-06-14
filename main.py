@@ -8,19 +8,22 @@ from WriteRegistryBeta import WriteRegistryBeta
 from Tab1ModBusProtocolConnection import Tab1ModBusProtocolConnection
 from Tab2ModBusProtocolStatus import Tab2ModBusProtocolStatus
 import logging
+import atexit
 #logging.basicConfig()
 #log = logging.getLogger()
 #log.setLevel(logging.DEBUG)
-def on_window_close():
+
+def on_exit():
     modbus_client.close()
-    root.destroy()
+
 
 root = tk.Tk()  # Root instance for your Tkinter application
 root.geometry("1080x768")  # Size of the tkinter window
 root.configure(bg="gray")  # Background color of the tkinter window
 root.title("Rexa ModbusTCP GUI")  # Set the window title
 root.iconbitmap("Images\Rexa tiny logo.ico")
-root.protocol("WM_DELETE_WINDOW", on_window_close)  # Bind the function to the window close event
+atexit.register(on_exit)
+#root.protocol("WM_DELETE_WINDOW", on_exit)
 
 # Create a Frame for the notebook
 notebook_frame = ttk.Frame(root)
@@ -51,6 +54,9 @@ notebook.add(tab3.frame, text='Data Table')
 notebook.add(tab4.frame, text='Writing Registry')
 
 notebook.pack(fill=tk.BOTH, expand=True)  # Add the notebook to the notebook frame
+
+
+
 
 root.mainloop()  # This is the main event loop for the tkinter application.
 #Task to do

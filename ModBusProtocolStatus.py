@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from ratelimiter import RateLimiter
 import threading
+from Names import Names
 from PIL import Image, ImageTk
 
 
@@ -11,30 +12,20 @@ class ModBusProtocolStatus:
         #references to other classes
         self.root = root
         self.modbus_client = modbus_client
+        self.names = Names()
 
-
-        self.connection_button = None
 
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
+
+        self.retrieve_button = None
+
     def create_widgets(self):
         # Create the Connect
         self.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
-
-
-    def create_protocol_dropdown_menu(self):
-        # Drop down menu protocol
-        self.protocol_entry_label = tk.Label(self.root, text="Protocol")
-        self.protocol_entry_label.config(font=('Arial', 14))
-        self.protocol_entry_label.place(relx=0.38, rely=0.30, anchor=tk.NW)
-        self.protocol_type_var = tk.StringVar(self.main_frame)
-        self.protocol_options = ['Modbus TCP', 'Ethernet/IP']
-        self.protocol_type_var.set(self.protocol_options[0])
-        self.protocol_type_dropdown = tk.OptionMenu(self.main_frame, self.protocol_type_var, *self.protocol_options)
-        self.protocol_type_dropdown.config(font=('Arial', 14), height=2, width=10)  # Update font and height
-        self.protocol_type_dropdown.place(relx=0.35, rely=0.35, anchor=tk.NW)
-        # self.protocol_type_var.trace('w', self.print_selected_option)
+        self.create_progress_bar()
+        self.create_retrieve_button()
 
     def add_image(self,fileName,Wimage,Himage,Xpos,Ypos):
         # Load the image
@@ -49,78 +40,62 @@ class ModBusProtocolStatus:
         image_label.image = photo  # Store a reference to the PhotoImage to prevent it from being garbage collected
         image_label.place(relx=Xpos, rely=Ypos, anchor=tk.N)
 
+    def create_progress_bar(self):
+        self.progress = ttk.Progressbar(self.root, length=200, mode='determinate')
+        self.progress.place(relx=0.5, rely=0.15, relwidth=0.8, anchor=tk.CENTER)
+        self.progress_label = tk.Label(self.root, text="")
+        self.progress_label.place(relx=0.5, rely=0.1, anchor=tk.CENTER)
 
-    def create_connection_button(self):
-        # Create the Connect button and place it in the window
-        self.connection_button = tk.Button(self.root, text="Connect", command=self.toggle_connection)
-        self.connection_button.config(font=('Arial', 14), height= 2, width = 10 )  # Update font and height
-        self.connection_button.place(relx=0.22, rely=0.35, anchor=tk.NW)
+    def create_retrieve_button(self):
+        # Create the Retrieve Data button and place it in the window
+        self.retrieve_button = tk.Button(self.root, text="Retrieve Data", command=self.retrieve_data)
+        self.retrieve_button.place(relx=0.05, rely=0.08, anchor=tk.NW)
 
-    def show_connection_dialog(self):
-        # Create and display a new connection dialog window
-        if self.connection_button["text"] == "Connect":
-            dialog = tk.Toplevel(self.root)
-            dialog.title("Modbus Connection Settings")
-
-            host_label = tk.Label(dialog, text="Host IP Address:")
-            host_label.pack()
-            host_entry = tk.Entry(dialog)
-            host_entry.pack()
-
-            port_label = tk.Label(dialog, text="Modbus Port:")
-            port_label.pack()
-            port_entry = tk.Entry(dialog)
-            port_entry.pack()
-
-            unit_label = tk.Label(dialog, text="Unit:")
-            unit_label.pack()
-            unit_entry = tk.Entry(dialog)
-            unit_entry.pack()
-
-            def connect():
-                # Retrieve the host, port, and unit from the dialog
-                host = host_entry.get()
-                port = port_entry.get()
-                unit = unit_entry.get()
-
-                print(f"Retrieved host from dialog: {host}")
-                print(f"Retrieved port from dialog: {port}")
-                print(f"Retrieved unit from dialog: {unit}")
-
-                if host and port and unit:
-                    # Check if the port and unit are ints
-                    if port.isdigit() and unit.isdigit():
-                        self.modbus_client.update_host_port(host, int(port), int(unit))
-                        if self.modbus_client.connect():
-                            self.connection_button["text"] = "Disconnect"
-                            messagebox.showinfo("Connected", "Connection successful")
-                        else:
-                            messagebox.showerror("Error", "Failed to establish Modbus connection.")
-                        dialog.destroy()
-                    else:
-                        messagebox.showerror("Error", "Invalid port or unit. Please enter a valid number.")
-                else:
-                    messagebox.showerror("Error", "Please enter the host IP address, port, and unit.")
-
-            connect_button = tk.Button(dialog, text="Connect", command=connect)
-            connect_button.pack()
-
-            dialog.transient(self.root)
-            dialog.title("Modbus Connection Settings")
-            dialog.geometry("400x400")  # Set the width and height of the dialog window
-            dialog.grab_set()
-            self.root.wait_window(dialog)
-    def toggle_connection(self,*args):
-        selected_option = self.protocol_type_var.get()
-        print("Selected option:", selected_option)
-        # Toggle the Modbus connection based on the current state
-        if self.connection_button["text"] == "Connect" and selected_option == 'Modbus TCP':
-            self.show_connection_dialog()
+    def retrieve_data(self, *args):
+        if self.modbus_client.is_connected():
+            threading.Thread(target=self.retrieve_data_thread).start()
         else:
-            self.disconnect_modbus()
+            messagebox.showerror("Error", "Modbus connection is not open.")
 
-    def disconnect_modbus(self,*args):
-        # Disconnect the Modbus connection and update the Connect button text
-        self.modbus_client.close()
-        self.connection_button["text"] = "Connect"
+    def retrieve_data_thread(self):
+        # Define the maximum number of requests per second
+        MAX_REQUESTS_PER_SECOND = 100  # Increase this number to increase the polling rate
+        # Retrieve data from the Modbus server
+        # Create a rate limiter
+        rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=1.0)
+        try:
+            unit = self.modbus_client.unit
+            #print(f"This is unit in ModbusMasterClientWidget.py {unit}")
+            count = 571
+            raw_values = []  # Initialize raw_values outside the loop
+            self.raw_values = raw_values
+            self.progress['maximum'] = count
+            self.progress['value'] = 0  # Reset the progress bar
+            for address in range(0, count):
+                with rate_limiter:
+                    try:
+                        result = self.modbus_client.client.read_holding_registers(address, 1 , unit)
+                        if not result.isError():
+                            raw_values.append(result.registers[0])
+                            self.progress['value'] += 1  # Increment the progress bar
+                            self.progress_label['text'] = f"{self.progress['value']}/{count}"  # Update the label text
+                            self.root.update_idletasks()  # Update the GUI
+                        else:
+                            print(f"Error reading register at address {address}: {result}")
+                            messagebox.showerror("Error",f"Error reading register at address {address}: {result}")
+                            break;
+                    except Exception as e:
+                        print(f"Exception while reading register at address {address}: {e}")
+            # Print the number of elements in raw_values
+            print(f"Number of elements in raw_values: {len(raw_values)}")
+
+            #self.refresh_table(raw_values)
+        except ValueError:
+            print("Invalid unit or count value. Please enter a valid number.")
+            messagebox.showerror("Error", "Invalid unit or count value. Please enter a valid number.")
+        except Exception as e:
+            print(f"Exception while reading data from Modbus server: {e}")
+            messagebox.showerror("Error", f"Exception while reading data from Modbus server: {e}")
+
+
 

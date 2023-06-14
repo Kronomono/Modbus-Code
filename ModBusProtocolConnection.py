@@ -4,8 +4,6 @@ from tkinter import messagebox,ttk
 from ratelimiter import RateLimiter
 import threading
 from PIL import Image, ImageTk
-
-
 class ModBusProtocolConnection:
     def __init__(self, root, modbus_client):
         #references to other classes
@@ -20,13 +18,14 @@ class ModBusProtocolConnection:
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
     def create_widgets(self):
-        # Create the Connect
+
         self.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.add_image("Images/ActBox.png", 150, 150, 0.1, 0.15)
+        self.create_rexa_version_dropdown_menu()
         self.create_connection_button()
         self.create_protocol_dropdown_menu()
         self.create_connection_entries()
-
+        self.rexa_version_type_var.trace('w', self.version_manager)  # Add trace to rexa_version_type_var
 
         #call at end
         self.entries_manager()
@@ -43,6 +42,19 @@ class ModBusProtocolConnection:
         self.protocol_type_dropdown.config(font=('Arial', 14), height=2, width=10)  # Update font and height
         self.protocol_type_dropdown.place(relx=0.35, rely=0.35, anchor=tk.NW)
         self.protocol_type_var.trace('w', self.entries_manager)
+
+    def create_rexa_version_dropdown_menu(self):
+        # Drop down menu protocol
+        self.rexa_version_entry_label = tk.Label(self.root, text="Rexa Version")
+        self.rexa_version_entry_label.config(font=('Arial', 14))
+        self.rexa_version_entry_label.place(relx=0.85, rely=0.10, anchor=tk.N)
+        self.rexa_version_type_var = tk.StringVar(self.main_frame)
+        self.rexa_version_options = ['X3', 'NextGen']
+        self.rexa_version_type_var.set(self.rexa_version_options[0])
+        self.rexa_version_type_dropdown = tk.OptionMenu(self.main_frame, self.rexa_version_type_var, *self.rexa_version_options)
+        self.rexa_version_type_dropdown.config(font=('Arial', 14), height=2, width=10)  # Update font and height
+        self.rexa_version_type_dropdown.place(relx=0.85, rely=0.15, anchor=tk.N)
+       #self.rexa_version_type_var.trace('w', self.entries_manager)
 
 
     def add_image(self,fileName,Wimage,Himage,Xpos,Ypos):
@@ -93,6 +105,24 @@ class ModBusProtocolConnection:
         else:
             self.unit_label.place_forget()  # Hide the unit label
             self.unit_entry.place_forget()  # Hide the unit entry
+
+    def version_manager(self, *args):
+        selected_version = self.rexa_version_type_var.get()
+        if selected_version == 'X3':
+            self.connection_button.place(relx=0.22, rely=0.35, anchor=tk.NW)
+            self.protocol_entry_label.place(relx=0.38, rely=0.30, anchor=tk.NW)
+            self.protocol_type_dropdown.place(relx=0.35, rely=0.35, anchor=tk.NW)
+            self.entries_manager()
+        else:
+            self.connection_button.place_forget()
+            self.protocol_entry_label.place_forget()
+            self.protocol_type_dropdown.place_forget()
+            self.host_label.place_forget()
+            self.host_entry.place_forget()
+            self.port_label.place_forget()
+            self.port_entry.place_forget()
+            self.unit_label.place_forget()
+            self.unit_entry.place_forget()
 
     def toggle_connection(self, *args):
         # Toggle the Modbus connection based on the current state

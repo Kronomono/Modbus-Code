@@ -14,7 +14,7 @@ class ModBusProtocolStatus:
         self.modbus_client = modbus_client
         self.names = Names()
         self.ModBusProtocolConnection = modbus_protocol_connection
-        self.widgetTemp = WidgetTemplateCreator
+        self.widgetTemp = WidgetTemplateCreator(self.root)
 
 
         # Create a main frame to take up the entire window
@@ -24,9 +24,13 @@ class ModBusProtocolStatus:
 
     def create_widgets(self):
         # Create the Connect
-        self.widgetTemp.add_image(self,"Images/rexa logo.png", 300, 50, 0.5, 0)
+        self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.create_progress_bar()
-        self.updateDataBtn = self.widgetTemp.create_button(self,'Update Data',0.05,0.08,10,1,10,self.retrieve_data)
+        self.updateDataBtn = self.widgetTemp.create_button('Update Data',0.05,0.08,10,1,10,self.retrieve_data)
+
+        self.current_operational_mode_label = tk.Label(self.root, text="Current Operational Mode")
+        self.widgetTemp.placeOrHide(self.current_operational_mode_label,0.5,0.45,False)
+        self.current_operational_mode_entry = self.widgetTemp.create_entry(0.5, 0.5, 20, False, preFilledText=None)
 
         self.print_stats()
 

@@ -25,41 +25,8 @@ class ModBusProtocolStatus:
     def create_widgets(self):
         # Create the Connect
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
-        self.create_progress_bar(0.5,0.98)
-        self.updateDataBtn = self.widgetTemp.create_button('Update Data',0.05,0.93,10,1,10,self.retrieve_data)
 
-        self.current_operational_mode_label, self.current_operational_mode_entry = self.create_label_and_entry(
-            "Current Operational Mode", 0.005, 0.07, 0.01, 0.1, 20, True
-        )
-
-        self.operational_status_label, self.operational_status_entry = self.create_label_and_entry(
-            "Operational Status", 0.16, 0.07, 0.15, 0.1, 20, True
-        )
-
-        self.control_command_label, self.control_command_entry = self.create_label_and_entry(
-            "Control Command", 0.02, 0.17, 0.01, 0.2, 20, True
-        )
-
-        self.actuator_position_label, self.actuator_position_entry = self.create_label_and_entry(
-            "Actuator Position", 0.16, 0.17, 0.15, 0.2, 20, True
-        )
-
-        self.deviation_label, self.deviation_entry = self.create_label_and_entry(
-            "Deviation", 0.36, 0.34, 0.34, 0.37, 15, True
-        )
-
-        self.position_transmitter_label, self.position_transmitter_entry = self.create_label_and_entry(
-            "Position Transmitter", 0.33, 0.57, 0.34, 0.60, 15, True
-        )
-
-        self.warning_status_label, self.warning_status_entry = self.create_label_and_entry(
-            "Warning Status", 0.03, 0.67, 0.01, 0.7, 20, True
-        )
-
-        self.alarm_status_label, self.alarm_status_entry = self.create_label_and_entry(
-            "Alarm Status", 0.17, 0.67, 0.15, 0.7, 20, True
-        )
-        self.print_stats()
+        self.manage_UI()
 
     def create_label_and_entry(self, label_text, label_relx, label_rely, entry_relx, entry_rely, entry_width,entry_readOnly, preFilledText=None):
         # Create the label
@@ -72,9 +39,48 @@ class ModBusProtocolStatus:
         return label, entry
 
 
-    def print_stats(self):
+    def manage_UI(self):
         protocol_type = self.ModBusProtocolConnection.protocol_type_var.get()
         print(f"Protocol type: {protocol_type}")
+        if protocol_type == 'Modbus TCP':
+            self.create_progress_bar(0.5, 0.98)
+            self.updateDataBtn = self.widgetTemp.create_button('Update Data', 0.05, 0.93, 10, 1, 10, self.retrieve_data)
+
+            self.current_operational_mode_label, self.current_operational_mode_entry = self.create_label_and_entry(
+                "Current Operational Mode", 0, 0.07, 0.01, 0.1, 12, True
+            )
+
+            self.operational_status_label, self.operational_status_entry = self.create_label_and_entry(
+                "Operational Status", 0.14, 0.07, 0.15, 0.1, 12, True
+            )
+
+            self.control_command_label, self.control_command_entry = self.create_label_and_entry(
+                "Control Command", 0, 0.17, 0.01, 0.2, 12, True
+            )
+
+            self.actuator_position_label, self.actuator_position_entry = self.create_label_and_entry(
+                "Actuator Position", 0.14, 0.17, 0.15, 0.2, 12, True
+            )
+
+            self.deviation_label, self.deviation_entry = self.create_label_and_entry(
+                "Deviation", 0.24, 0.34, 0.23, 0.37, 12, True
+            )
+
+            self.position_transmitter_label, self.position_transmitter_entry = self.create_label_and_entry(
+                "Position Transmitter", 0.22, 0.57, 0.23, 0.60, 12, True
+            )
+
+            self.warning_status_label, self.warning_status_entry = self.create_label_and_entry(
+                "Warning Status", 0.005, 0.67, 0.01, 0.7, 12, True
+            )
+
+            self.alarm_status_label, self.alarm_status_entry = self.create_label_and_entry(
+                "Alarm Status", 0.15, 0.67, 0.15, 0.7, 12, True
+            )
+
+            self.accumulator_pressure_label, self.accumulator_pressure_entry = self.create_label_and_entry(
+                "Accumulator Pressure", 0.43, 0.67, 0.45, 0.7, 12, True
+            )
 
     def create_progress_bar(self,relx,rely):
         self.progress = ttk.Progressbar(self.root, length=200, mode='determinate')

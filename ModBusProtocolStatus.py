@@ -4,18 +4,17 @@ from tkinter import messagebox, ttk
 from ratelimiter import RateLimiter
 import threading
 from Names import Names
-from PIL import Image, ImageTk
 from ModBusProtocolConnection import ModBusProtocolConnection
 from WidgetTemplateCreator import  WidgetTemplateCreator
 
 
 class ModBusProtocolStatus:
-    def __init__(self, root, modbus_client):
+    def __init__(self, root, modbus_client,modbus_protocol_connection):
         #references to other classes
         self.root = root
         self.modbus_client = modbus_client
         self.names = Names()
-        self.ModBusProtocolConnection = ModBusProtocolConnection(root,modbus_client)
+        self.ModBusProtocolConnection = modbus_protocol_connection
         self.widgetTemp = WidgetTemplateCreator
 
 
@@ -29,6 +28,13 @@ class ModBusProtocolStatus:
         self.widgetTemp.add_image(self,"Images/rexa logo.png", 300, 50, 0.5, 0)
         self.create_progress_bar()
         self.updateDataBtn = self.widgetTemp.create_button(self,'Update Data',0.05,0.08,10,1,10,self.retrieve_data)
+
+        self.print_stats()
+
+    def print_stats(self):
+        protocol_type = self.ModBusProtocolConnection.protocol_type_var.get()
+        print(f"Protocol type: {protocol_type}")
+
 
     def create_progress_bar(self):
         self.progress = ttk.Progressbar(self.root, length=200, mode='determinate')

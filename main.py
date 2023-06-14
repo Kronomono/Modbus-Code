@@ -43,7 +43,7 @@ modbus_client = ModbusClient("", 0)
 
 # Create the tabs and add them to the notebook
 tab1 = Tab1ModBusProtocolConnection(notebook, options, modbus_client)
-tab2 = Tab2ModBusProtocolStatus(notebook, options, modbus_client)
+tab2 = Tab2ModBusProtocolStatus(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget)
 tab3 = DataTableBeta(notebook, options, modbus_client)
 tab4 = WriteRegistryBeta(notebook, options, modbus_client)  # Pass any necessary arguments to your tab classes
 

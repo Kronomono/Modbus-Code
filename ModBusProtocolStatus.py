@@ -5,6 +5,7 @@ from ratelimiter import RateLimiter
 import threading
 from Names import Names
 from PIL import Image, ImageTk
+from ModBusProtocolConnection import ModBusProtocolConnection
 
 
 class ModBusProtocolStatus:
@@ -13,6 +14,7 @@ class ModBusProtocolStatus:
         self.root = root
         self.modbus_client = modbus_client
         self.names = Names()
+        self.ModBusProtocolConnection = ModBusProtocolConnection(root,modbus_client)
 
 
         # Create a main frame to take up the entire window
@@ -25,7 +27,7 @@ class ModBusProtocolStatus:
         # Create the Connect
         self.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.create_progress_bar()
-        self.create_retrieve_button()
+
 
     def add_image(self,fileName,Wimage,Himage,Xpos,Ypos):
         # Load the image
@@ -59,7 +61,7 @@ class ModBusProtocolStatus:
 
     def retrieve_data_thread(self):
         # Define the maximum number of requests per second
-        MAX_REQUESTS_PER_SECOND = 100  # Increase this number to increase the polling rate
+        MAX_REQUESTS_PER_SECOND = 25  # Increase this number to increase the polling rate
         # Retrieve data from the Modbus server
         # Create a rate limiter
         rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=1.0)

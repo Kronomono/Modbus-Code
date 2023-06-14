@@ -21,12 +21,12 @@ class ModBusProtocolStatus:
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
 
-        self.retrieve_button = None
 
     def create_widgets(self):
         # Create the Connect
         self.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.create_progress_bar()
+        self.ModBusProtocolConnection.create_button('Update Data',0.05,0.08,10,1,10,self.retrieve_data)
 
 
     def add_image(self,fileName,Wimage,Himage,Xpos,Ypos):
@@ -47,11 +47,6 @@ class ModBusProtocolStatus:
         self.progress.place(relx=0.5, rely=0.15, relwidth=0.8, anchor=tk.CENTER)
         self.progress_label = tk.Label(self.root, text="")
         self.progress_label.place(relx=0.5, rely=0.1, anchor=tk.CENTER)
-
-    def create_retrieve_button(self):
-        # Create the Retrieve Data button and place it in the window
-        self.retrieve_button = tk.Button(self.root, text="Retrieve Data", command=self.retrieve_data)
-        self.retrieve_button.place(relx=0.05, rely=0.08, anchor=tk.NW)
 
     def retrieve_data(self, *args):
         if self.modbus_client.is_connected():

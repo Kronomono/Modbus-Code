@@ -16,7 +16,7 @@ class ModBusProtocolConnection:
         self.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.add_image("Images/ActBox.png", 150, 150, 0.1, 0.15)
 
-        self.connection_button = self.create_button("Connect",0.22,0.35,self.toggle_connection)
+        self.connection_button = self.create_button("Connect",0.22,0.35,14,2,10,self.toggle_connection)
         self.create_connection_entries()
 
         self.protocol_type_var, self.protocol_entry_label, self.protocol_type_dropdown = self.create_dropdown_menu(
@@ -28,9 +28,9 @@ class ModBusProtocolConnection:
         #call at end
         self.manage_entries_and_version()
 
-    def create_button(self, text, relx, rely, command):
+    def create_button(self, text, relx, rely,font_size,button_height,button_width, command):
         button = tk.Button(self.root, text=text, command=command)
-        button.config(font=('Arial', 14), height=2, width=10)
+        button.config(font=('Arial', font_size), height=button_height, width=button_width)
         button.place(relx=relx, rely=rely, anchor=tk.NW)
         return button
 

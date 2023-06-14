@@ -6,6 +6,7 @@ import threading
 from Names import Names
 from PIL import Image, ImageTk
 from ModBusProtocolConnection import ModBusProtocolConnection
+from WidgetTemplateCreator import  WidgetTemplateCreator
 
 
 class ModBusProtocolStatus:
@@ -15,6 +16,7 @@ class ModBusProtocolStatus:
         self.modbus_client = modbus_client
         self.names = Names()
         self.ModBusProtocolConnection = ModBusProtocolConnection(root,modbus_client)
+        self.widgetTemp = WidgetTemplateCreator
 
 
         # Create a main frame to take up the entire window
@@ -26,7 +28,7 @@ class ModBusProtocolStatus:
         # Create the Connect
         self.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.create_progress_bar()
-        self.ModBusProtocolConnection.create_button('Update Data',0.05,0.08,10,1,10,self.retrieve_data)
+        self.updateDataBtn = self.widgetTemp.create_button(self,'Update Data',0.05,0.08,10,1,10,self.retrieve_data)
 
 
     def add_image(self,fileName,Wimage,Himage,Xpos,Ypos):

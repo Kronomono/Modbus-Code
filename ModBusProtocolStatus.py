@@ -26,23 +26,9 @@ class ModBusProtocolStatus:
 
     def create_widgets(self):
         # Create the Connect
-        self.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
+        self.widgetTemp.add_image(self,"Images/rexa logo.png", 300, 50, 0.5, 0)
         self.create_progress_bar()
         self.updateDataBtn = self.widgetTemp.create_button(self,'Update Data',0.05,0.08,10,1,10,self.retrieve_data)
-
-
-    def add_image(self,fileName,Wimage,Himage,Xpos,Ypos):
-        # Load the image
-        image = Image.open(fileName)
-        image = image.resize((Wimage, Himage))  # Resize the image as needed
-
-        # Convert the image to a PhotoImage object
-        photo = ImageTk.PhotoImage(image)
-
-        # Create a label to display the image
-        image_label = tk.Label(self.root, image=photo)
-        image_label.image = photo  # Store a reference to the PhotoImage to prevent it from being garbage collected
-        image_label.place(relx=Xpos, rely=Ypos, anchor=tk.N)
 
     def create_progress_bar(self):
         self.progress = ttk.Progressbar(self.root, length=200, mode='determinate')

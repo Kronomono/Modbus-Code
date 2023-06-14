@@ -44,6 +44,21 @@ class ModBusProtocolStatus:
             "Actuator Position", 0.16, 0.17, 0.15, 0.2, 20, True
         )
 
+        self.deviation_label, self.deviation_entry = self.create_label_and_entry(
+            "Deviation", 0.36, 0.34, 0.34, 0.37, 15, True
+        )
+
+        self.position_transmitter_label, self.position_transmitter_entry = self.create_label_and_entry(
+            "Position Transmitter", 0.33, 0.57, 0.34, 0.60, 15, True
+        )
+
+        self.warning_status_label, self.warning_status_entry = self.create_label_and_entry(
+            "Warning Status", 0.03, 0.67, 0.01, 0.7, 20, True
+        )
+
+        self.alarm_status_label, self.alarm_status_entry = self.create_label_and_entry(
+            "Alarm Status", 0.17, 0.67, 0.15, 0.7, 20, True
+        )
         self.print_stats()
 
     def create_label_and_entry(self, label_text, label_relx, label_rely, entry_relx, entry_rely, entry_width,entry_readOnly, preFilledText=None):

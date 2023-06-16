@@ -17,6 +17,8 @@ class ModBusProtocolStatus:
         self.widgetTemp = WidgetTemplateCreator(self.root)
 
 
+
+
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
@@ -25,7 +27,8 @@ class ModBusProtocolStatus:
     def create_widgets(self):
         # Create the Connect
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
-
+        self.updateDataBtn = self.widgetTemp.create_button('Update Data', 0.05, 0.93, 10, 1, 10, self.retrieve_data)
+        #self.protocol_type.trace('w', self.manage_UI())
         self.manage_UI()
 
     def create_label_and_entry(self, label_text, label_relx, label_rely, entry_relx, entry_rely, entry_width,entry_readOnly, preFilledText=None):
@@ -39,7 +42,7 @@ class ModBusProtocolStatus:
         return label, entry
 
 
-    def manage_UI(self):
+    def manage_UI(self,*args):
         protocol_type = self.ModBusProtocolConnection.protocol_type_var.get()
         print(f"Protocol type: {protocol_type}")
         if protocol_type == 'Modbus TCP':
@@ -81,6 +84,10 @@ class ModBusProtocolStatus:
             self.accumulator_pressure_label, self.accumulator_pressure_entry = self.create_label_and_entry(
                 "Accumulator Pressure", 0.43, 0.67, 0.45, 0.7, 12, True
             )
+        else:
+            self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93, True)
+
+
 
     def create_progress_bar(self,relx,rely):
         self.progress = ttk.Progressbar(self.root, length=200, mode='determinate')

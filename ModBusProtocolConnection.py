@@ -10,6 +10,7 @@ class ModBusProtocolConnection:
         self.widgetTemp = WidgetTemplateCreator
 
 
+
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)

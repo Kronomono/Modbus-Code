@@ -91,7 +91,7 @@ class ModBusProtocolStatus:
 
     def manage_UI(self,*args):
 
-            self.progress_bar = self.create_progress_bar(0.5, 0.98)
+            self.progress_bar,self.progress_label  = self.create_progress_bar(0.5, 0.98)
             self.updateDataBtn = self.widgetTemp.create_button('Update Data', 0.05, 0.93, 10, 1, 10, self.retrieve_data)
 
             self.current_operational_mode_label, self.current_operational_mode_entry = self.create_label_and_entry(
@@ -137,7 +137,7 @@ class ModBusProtocolStatus:
         progress.place(relx=relx, rely=rely, relwidth=0.8, anchor=tk.CENTER)
         progress_label = tk.Label(self.root, text="")
         progress_label.place(relx=0.5, rely=rely - 0.05, anchor=tk.CENTER)
-        return progress  # return the created progress bar
+        return progress, progress_label  # return the created progress bar
 
     def retrieve_data(self, *args):
         if self.modbus_client.is_connected():

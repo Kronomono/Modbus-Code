@@ -41,60 +41,56 @@ class ModBusProtocolStatus:
     def manage_widgets_visibility(self, *args):
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()
         selected_protocol = self.ModBusProtocolConnection.protocol_type_var.get()
+        widgets = [ (self.updateDataBtn, 0.05, 0.93),
+                    (self.current_operational_mode_label, 0, 0.07),
+                    (self.current_operational_mode_entry, 0.01, 0.1),
+                    (self.operational_status_label, 0.14, 0.07),
+                    (self.operational_status_entry, 0.15, 0.1),
+                    (self.control_command_label, 0.0, 0.17),
+                    (self.control_command_entry, 0.01, 0.2),
+                    (self.actuator_position_label, 0.14, 0.17),
+                    (self.actuator_position_entry, 0.15, 0.2),
+                    (self.deviation_label, 0.24, 0.34),
+                    (self.deviation_entry, 0.23, 0.37),
+                    (self.position_transmitter_label, 0.22, 0.57),
+                    (self.position_transmitter_entry, 0.23, 0.60),
+                    (self.warning_status_label, 0.005, 0.67),
+                    (self.warning_status_entry, 0.01, 0.7),
+                    (self.alarm_status_label, 0.15, 0.67),
+                    (self.alarm_status_entry, 0.15, 0.7),
+                    (self.accumulator_pressure_label, 0.43, 0.67),
+                    (self.accumulator_pressure_entry, 0.45, 0.7),
+                    (self.main_feedback_label, 0.28, 0.2),
+                    (self.main_feedback_entry, 0.25, 0.2),
+                    (self.redundant_feedback_label, 0.28, 0.23),
+                    (self.redundant_feedback_entry, 0.25, 0.23),
+
+                    (self.motor_starts_label, 0.155, 0.81),
+                    (self.motor_starts_entry, 0.15, 0.84),
+                    (self.booster_starts_label, 0.25, 0.81),
+                    (self.booster_starts_entry, 0.25, 0.84),
+                    (self.accumulator_starts_label, 0.335, 0.81),
+                    (self.accumulator_starts_entry, 0.35, 0.84),
+                    (self.actuator_stokes_label, 0.445, 0.81),
+                    (self.actuator_strokes_entry, 0.45, 0.84),
+                    (self.total_auto_time_label, 0.545, 0.81),
+                    (self.total_auto_time_entry, 0.55, 0.84),
+                    (self.three_month_average_position_label, 0.645, 0.78),
+                    (self.three_month_average_position_entry, 0.65, 0.84)
+        ]
 
         if selected_version == 'X3':
-            self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93, False)
             self.progress_label.place(relx=0.5, rely= 0.93, anchor=tk.CENTER)
             self.progress_bar.place(relx=0.5, rely=0.98, relwidth=0.8, anchor=tk.CENTER)
 
-            self.widgetTemp.placeOrHide(self.current_operational_mode_label,0,0.07,False)
-            self.widgetTemp.placeOrHide(self.current_operational_mode_entry,0.01,0.1,False)
-            self.widgetTemp.placeOrHide(self.operational_status_label,0.14,0.07,False)
-            self.widgetTemp.placeOrHide(self.operational_status_entry,0.15,0.1,False)
-            self.widgetTemp.placeOrHide(self.control_command_label,0,0.17,False)
-            self.widgetTemp.placeOrHide(self.control_command_entry,0.01,0.2,False)
-            self.widgetTemp.placeOrHide(self.actuator_position_label,0.14,0.17,False)
-            self.widgetTemp.placeOrHide(self.actuator_position_entry,0.15,0.2,False)
-            self.widgetTemp.placeOrHide(self.deviation_label,0.24,0.34,False)
-            self.widgetTemp.placeOrHide(self.deviation_entry,0.23,0.37,False)
-            self.widgetTemp.placeOrHide(self.position_transmitter_label,0.22,0.57,False)
-            self.widgetTemp.placeOrHide(self.position_transmitter_entry,0.23,0.60,False)
-            self.widgetTemp.placeOrHide(self.warning_status_label,0.005,0.67,False)
-            self.widgetTemp.placeOrHide(self.warning_status_entry, 0.01, 0.7, False)
-            self.widgetTemp.placeOrHide(self.alarm_status_label,0.15,0.67,False)
-            self.widgetTemp.placeOrHide(self.alarm_status_entry, 0.15, 0.7, False)
-            self.widgetTemp.placeOrHide(self.accumulator_pressure_label,0.43,0.67,False)
-            self.widgetTemp.placeOrHide(self.accumulator_pressure_entry,0.45,0.7,False)
-            self.widgetTemp.placeOrHide(self.main_feedback_label,0.28,0.2,False)
-            self.widgetTemp.placeOrHide(self.main_feedback_entry,0.25,0.2,False)
-            self.widgetTemp.placeOrHide(self.redundant_feedback_label,0.28,0.23,False)
-            self.widgetTemp.placeOrHide(self.redundant_feedback_entry,0.25,0.23,False)
+            for widget in widgets:
+                self.widgetTemp.placeOrHide(*widget, False)
+
         else:
-            self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93, True)
             self.progress_bar.place_forget()
             self.progress_label.place_forget()
-            self.widgetTemp.placeOrHide(self.current_operational_mode_label, 0, 0.07, True)
-            self.widgetTemp.placeOrHide(self.current_operational_mode_entry, 0.01, 0.1, True)
-            self.widgetTemp.placeOrHide(self.operational_status_label,0.14,0.1,True)
-            self.widgetTemp.placeOrHide(self.operational_status_entry, 0.15, 0.1, True)
-            self.widgetTemp.placeOrHide(self.control_command_label, 0, 0.17, True)
-            self.widgetTemp.placeOrHide(self.control_command_entry, 0.01, 0.2, True)
-            self.widgetTemp.placeOrHide(self.actuator_position_label,0.14,0.17,True)
-            self.widgetTemp.placeOrHide(self.actuator_position_entry, 0.15, 0.2, True)
-            self.widgetTemp.placeOrHide(self.deviation_label, 0.24, 0.34, True)
-            self.widgetTemp.placeOrHide(self.deviation_entry, 0.23, 0.37, True)
-            self.widgetTemp.placeOrHide(self.position_transmitter_label, 0.22, 0.57, True)
-            self.widgetTemp.placeOrHide(self.position_transmitter_entry, 0.23, 0.60, True)
-            self.widgetTemp.placeOrHide(self.warning_status_label, 0.005, 0.67, True)
-            self.widgetTemp.placeOrHide(self.warning_status_entry,0.01,0.7,True)
-            self.widgetTemp.placeOrHide(self.alarm_status_label, 0.15, 0.67, True)
-            self.widgetTemp.placeOrHide(self.alarm_status_entry,0.15,0.7,True)
-            self.widgetTemp.placeOrHide(self.accumulator_pressure_label, 0.43, 0.67, True)
-            self.widgetTemp.placeOrHide(self.accumulator_pressure_entry,0.45,0.7,True)
-            self.widgetTemp.placeOrHide(self.main_feedback_label,0.28,0.2,True)
-            self.widgetTemp.placeOrHide(self.main_feedback_entry,0.25,0.2,True)
-            self.widgetTemp.placeOrHide(self.redundant_feedback_label,0.28,0.23,True)
-            self.widgetTemp.placeOrHide(self.redundant_feedback_entry,0.25,0.23,True)
+            for widget in widgets:
+                self.widgetTemp.placeOrHide(*widget,True)
 
     def manage_UI(self,*args):
 
@@ -142,6 +138,24 @@ class ModBusProtocolStatus:
             self.redundant_feedback_label, self.redundant_feedback_entry = self.create_label_and_entry(
                 "Redundant Feedback", 0.28, 0.23, 0.25, 0.23, 5, True, preFilledText=None
             )
+            self.motor_starts_label,self.motor_starts_entry = self.create_label_and_entry(
+                "Motor Starts",0.155,0.81,0.15,0.84,12,False, preFilledText=None
+            )
+            self.booster_starts_label, self.booster_starts_entry = self.create_label_and_entry(
+                "Booster Starts", 0.25, 0.81, 0.25, 0.84, 12, False, preFilledText=None
+            )
+            self.accumulator_starts_label, self.accumulator_starts_entry = self.create_label_and_entry(
+                "Accumulator Starts", 0.335, 0.81, 0.35, 0.84, 12, False, preFilledText=None
+            )
+            self.actuator_stokes_label, self.actuator_strokes_entry = self.create_label_and_entry(
+                "Actuator Stokes", 0.445, 0.81, 0.45, 0.84, 12, False, preFilledText=None
+            )
+            self.total_auto_time_label, self.total_auto_time_entry = self.create_label_and_entry(
+                "Total Auto Time", 0.545, 0.81, 0.55, 0.84, 12, False, preFilledText=None
+            )
+            self.three_month_average_position_label, self.three_month_average_position_entry = self.create_label_and_entry(
+                "3 Month Average \n Position", 0.645, 0.78, 0.65, 0.84, 12, False, preFilledText=None
+            )
 
             self.manage_widgets_visibility()
 
@@ -181,6 +195,7 @@ class ModBusProtocolStatus:
 
         self.current_operational_mode_entry.insert(0,raw_values[13])
         self.operational_status_entry.insert(0, raw_values[15])
+        #self.control_command_entry(0,)
 
         self.current_operational_mode_entry.config(state='readonly')
         self.operational_status_entry.config(state='readonly')

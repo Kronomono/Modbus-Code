@@ -22,6 +22,15 @@ class WidgetTemplateCreator:
             entry.configure(state="readonly")
         entry.place(relx=relx, rely=rely, anchor=tk.NW)
         return entry
+    def create_label_and_entry(self, label_text, label_relx, label_rely, entry_relx, entry_rely, entry_width,entry_readOnly, preFilledText):
+        # Create the label
+        label = tk.Label(self.root, text=label_text)
+        self.placeOrHide(label, label_relx, label_rely, False)
+
+        # Create the entry
+        entry = self.create_entry(entry_relx, entry_rely, entry_width, entry_readOnly, preFilledText)
+
+        return label, entry
 
     def placeOrHide(self, widget, relx, rely, hide):
         if hide == False:

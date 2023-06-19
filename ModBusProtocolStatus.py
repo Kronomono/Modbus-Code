@@ -152,9 +152,52 @@ class ModBusProtocolStatus:
         progress_label.place(relx=0.5, rely=rely - 0.05, anchor=tk.CENTER)
         return progress, progress_label  # return the created progress bar
 
+    def clear_entries(self,raw_values):
+        print(f'called on')
+        self.current_operational_mode_entry.config(state='normal')
+        self.operational_status_entry.config(state='normal')
+        self.control_command_entry.config(state='normal')
+        self.actuator_position_entry.config(state='normal')
+        self.deviation_entry.config(state='normal')
+        self.position_transmitter_entry.config(state='normal')
+        self.warning_status_entry.config(state='normal')
+        self.alarm_status_entry.config(state='normal')
+        self.accumulator_pressure_entry.config(state='normal')
+        self.main_feedback_entry.config(state='normal')
+        self.redundant_feedback_entry.config(state='normal')
+
+        # Clear the entries
+        self.current_operational_mode_entry.delete(0, tk.END)
+        self.operational_status_entry.delete(0, tk.END)
+        self.control_command_entry.delete(0, tk.END)
+        self.actuator_position_entry.delete(0, tk.END)
+        self.deviation_entry.delete(0, tk.END)
+        self.position_transmitter_entry.delete(0, tk.END)
+        self.warning_status_entry.delete(0, tk.END)
+        self.alarm_status_entry.delete(0, tk.END)
+        self.accumulator_pressure_entry.delete(0, tk.END)
+        self.main_feedback_entry.delete(0, tk.END)
+        self.redundant_feedback_entry.delete(0, tk.END)
+
+        self.current_operational_mode_entry.insert(0,raw_values[13])
+
+        self.current_operational_mode_entry.config(state='readonly')
+        self.operational_status_entry.config(state='readonly')
+        self.control_command_entry.config(state='readonly')
+        self.actuator_position_entry.config(state='readonly')
+        self.deviation_entry.config(state='readonly')
+        self.position_transmitter_entry.config(state='readonly')
+        self.warning_status_entry.config(state='readonly')
+        self.alarm_status_entry.config(state='readonly')
+        self.accumulator_pressure_entry.config(state='readonly')
+        self.main_feedback_entry.config(state='readonly')
+        self.redundant_feedback_entry.config(state='readonly')
+
     def retrieve_data(self, *args):
+
         if self.modbus_client.is_connected():
             threading.Thread(target=self.retrieve_data_thread).start()
+            self.root.update()
         else:
             messagebox.showerror("Error", "Modbus connection is not open.")
 
@@ -189,8 +232,8 @@ class ModBusProtocolStatus:
                         print(f"Exception while reading register at address {address}: {e}")
             # Print the number of elements in raw_values
             print(f"Number of elements in raw_values: {len(raw_values)}")
+            self.clear_entries(self.raw_values)  # Clear the entries
 
-            #self.refresh_table(raw_values)
         except ValueError:
             print("Invalid unit or count value. Please enter a valid number.")
             messagebox.showerror("Error", "Invalid unit or count value. Please enter a valid number.")

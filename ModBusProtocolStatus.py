@@ -163,7 +163,6 @@ class ModBusProtocolStatus:
             # Skip label widgets
             if isinstance(widget, tk.Label):
                 continue
-
             widget.config(state='normal')
             widget.delete(0, tk.END)
 

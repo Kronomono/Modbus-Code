@@ -31,8 +31,7 @@ class ModBusProtocolStatus:
     def manage_widgets_visibility(self, *args):
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()
         selected_protocol = self.ModBusProtocolConnection.protocol_type_var.get()
-        widgets = [ (self.updateDataBtn, 0.05, 0.93),
-                    (self.current_operational_mode_label, 0, 0.07),
+        self.widgets_index = [(self.current_operational_mode_label, 0, 0.07),
                     (self.current_operational_mode_entry, 0.01, 0.1),
                     (self.operational_status_label, 0.14, 0.07),
                     (self.operational_status_entry, 0.15, 0.1),
@@ -72,14 +71,16 @@ class ModBusProtocolStatus:
         if selected_version == 'X3':
             self.progress_label.place(relx=0.5, rely= 0.93, anchor=tk.CENTER)
             self.progress_bar.place(relx=0.5, rely=0.98, relwidth=0.8, anchor=tk.CENTER)
+            self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93,False)
 
-            for widget in widgets:
+            for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
 
         else:
             self.progress_bar.place_forget()
             self.progress_label.place_forget()
-            for widget in widgets:
+            self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93, True)
+            for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget,True)
 
     def manage_UI(self,*args):
@@ -158,46 +159,25 @@ class ModBusProtocolStatus:
 
     def clear_entries(self,raw_values):
         print(f'called on')
-        self.current_operational_mode_entry.config(state='normal')
-        self.operational_status_entry.config(state='normal')
-        self.control_command_entry.config(state='normal')
-        self.actuator_position_entry.config(state='normal')
-        self.deviation_entry.config(state='normal')
-        self.position_transmitter_entry.config(state='normal')
-        self.warning_status_entry.config(state='normal')
-        self.alarm_status_entry.config(state='normal')
-        self.accumulator_pressure_entry.config(state='normal')
-        self.main_feedback_entry.config(state='normal')
-        self.redundant_feedback_entry.config(state='normal')
+        for widget, _, _ in self.widgets_index:
+            # Skip label widgets
+            if isinstance(widget, tk.Label):
+                continue
 
-        # Clear the entries
-        self.current_operational_mode_entry.delete(0, tk.END)
-        self.operational_status_entry.delete(0, tk.END)
-        self.control_command_entry.delete(0, tk.END)
-        self.actuator_position_entry.delete(0, tk.END)
-        self.deviation_entry.delete(0, tk.END)
-        self.position_transmitter_entry.delete(0, tk.END)
-        self.warning_status_entry.delete(0, tk.END)
-        self.alarm_status_entry.delete(0, tk.END)
-        self.accumulator_pressure_entry.delete(0, tk.END)
-        self.main_feedback_entry.delete(0, tk.END)
-        self.redundant_feedback_entry.delete(0, tk.END)
+            widget.config(state='normal')
+            widget.delete(0, tk.END)
 
         self.current_operational_mode_entry.insert(0,raw_values[13])
         self.operational_status_entry.insert(0, raw_values[15])
 
+        for widget, _, _ in self.widgets_index:
+            # Skip label widgets
+            if widget == self.motor_starts_label:
+                break
+            if isinstance(widget, tk.Label):
+                continue
+            widget.config(state='readonly')
 
-        self.current_operational_mode_entry.config(state='readonly')
-        self.operational_status_entry.config(state='readonly')
-        self.control_command_entry.config(state='readonly')
-        self.actuator_position_entry.config(state='readonly')
-        self.deviation_entry.config(state='readonly')
-        self.position_transmitter_entry.config(state='readonly')
-        self.warning_status_entry.config(state='readonly')
-        self.alarm_status_entry.config(state='readonly')
-        self.accumulator_pressure_entry.config(state='readonly')
-        self.main_feedback_entry.config(state='readonly')
-        self.redundant_feedback_entry.config(state='readonly')
 
     def retrieve_data(self, *args):
 

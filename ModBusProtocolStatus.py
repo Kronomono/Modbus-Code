@@ -53,7 +53,20 @@ class ModBusProtocolStatus:
             self.widgetTemp.placeOrHide(self.current_operational_mode_entry,0.01,0.1,False)
             self.widgetTemp.placeOrHide(self.operational_status_label,0.14,0.07,False)
             self.widgetTemp.placeOrHide(self.operational_status_entry,0.15,0.1,False)
-
+            self.widgetTemp.placeOrHide(self.control_command_label,0,0.17,False)
+            self.widgetTemp.placeOrHide(self.control_command_entry,0.01,0.2,False)
+            self.widgetTemp.placeOrHide(self.actuator_position_label,0.14,0.17,False)
+            self.widgetTemp.placeOrHide(self.actuator_position_entry,0.15,0.2,False)
+            self.widgetTemp.placeOrHide(self.deviation_label,0.24,0.34,False)
+            self.widgetTemp.placeOrHide(self.deviation_entry,0.23,0.37,False)
+            self.widgetTemp.placeOrHide(self.position_transmitter_label,0.22,0.57,False)
+            self.widgetTemp.placeOrHide(self.position_transmitter_entry,0.23,0.60,False)
+            self.widgetTemp.placeOrHide(self.warning_status_label,0.005,0.67,False)
+            self.widgetTemp.placeOrHide(self.warning_status_entry, 0.01, 0.7, False)
+            self.widgetTemp.placeOrHide(self.alarm_status_label,0.15,0.67,False)
+            self.widgetTemp.placeOrHide(self.alarm_status_entry, 0.15, 0.7, False)
+            self.widgetTemp.placeOrHide(self.accumulator_pressure_label,0.43,0.67,False)
+            self.widgetTemp.placeOrHide(self.accumulator_pressure_entry,0.45,0.7,False)
         else:
             self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93, True)
             #self.widgetTemp.placeOrHide(self.create_progress_bar(0.5,0.98), 0.5, 0.98, False)
@@ -61,9 +74,20 @@ class ModBusProtocolStatus:
             self.widgetTemp.placeOrHide(self.current_operational_mode_entry, 0.01, 0.1, True)
             self.widgetTemp.placeOrHide(self.operational_status_label,0.14,0.1,True)
             self.widgetTemp.placeOrHide(self.operational_status_entry, 0.15, 0.1, True)
-
-
-
+            self.widgetTemp.placeOrHide(self.control_command_label, 0, 0.17, True)
+            self.widgetTemp.placeOrHide(self.control_command_entry, 0.01, 0.2, True)
+            self.widgetTemp.placeOrHide(self.actuator_position_label,0.14,0.17,True)
+            self.widgetTemp.placeOrHide(self.actuator_position_entry, 0.15, 0.2, True)
+            self.widgetTemp.placeOrHide(self.deviation_label, 0.24, 0.34, True)
+            self.widgetTemp.placeOrHide(self.deviation_entry, 0.23, 0.37, True)
+            self.widgetTemp.placeOrHide(self.position_transmitter_label, 0.22, 0.57, True)
+            self.widgetTemp.placeOrHide(self.position_transmitter_entry, 0.23, 0.60, True)
+            self.widgetTemp.placeOrHide(self.warning_status_label, 0.005, 0.67, True)
+            self.widgetTemp.placeOrHide(self.warning_status_entry,0.01,0.7,True)
+            self.widgetTemp.placeOrHide(self.alarm_status_label, 0.15, 0.67, True)
+            self.widgetTemp.placeOrHide(self.alarm_status_entry,0.15,0.7,True)
+            self.widgetTemp.placeOrHide(self.accumulator_pressure_label, 0.43, 0.67, True)
+            self.widgetTemp.placeOrHide(self.accumulator_pressure_entry,0.45,0.7,True)
 
     def manage_UI(self,*args):
 

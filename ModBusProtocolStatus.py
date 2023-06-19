@@ -27,8 +27,9 @@ class ModBusProtocolStatus:
     def create_widgets(self):
         # Create the Connect
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
-        self.updateDataBtn = self.widgetTemp.create_button('Update Data', 0.05, 0.93, 10, 1, 10, self.retrieve_data)
-        #self.protocol_type.trace('w', self.manage_UI())
+        self.ModBusProtocolConnection.protocol_type_var.trace('w', self.manage_widgets_visibility)
+        self.ModBusProtocolConnection.rexa_version_type_var.trace('w', self.manage_widgets_visibility)
+
         self.manage_UI()
 
     def create_label_and_entry(self, label_text, label_relx, label_rely, entry_relx, entry_rely, entry_width,entry_readOnly, preFilledText=None):
@@ -41,11 +42,31 @@ class ModBusProtocolStatus:
 
         return label, entry
 
+    def manage_widgets_visibility(self, *args):
+        selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()
+        selected_protocol = self.ModBusProtocolConnection.protocol_type_var.get()
+
+        if selected_version == 'X3':
+            self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93, False)
+            #self.widgetTemp.placeOrHide(self.create_progress_bar(0.5,0.98),0.5,0.98,False)
+            self.widgetTemp.placeOrHide(self.current_operational_mode_label,0,0.07,False)
+            self.widgetTemp.placeOrHide(self.current_operational_mode_entry,0.01,0.1,False)
+            self.widgetTemp.placeOrHide(self.operational_status_label,0.14,0.07,False)
+            self.widgetTemp.placeOrHide(self.operational_status_entry,0.15,0.1,False)
+
+        else:
+            self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93, True)
+            #self.widgetTemp.placeOrHide(self.create_progress_bar(0.5,0.98), 0.5, 0.98, False)
+            self.widgetTemp.placeOrHide(self.current_operational_mode_label, 0, 0.07, True)
+            self.widgetTemp.placeOrHide(self.current_operational_mode_entry, 0.01, 0.1, True)
+            self.widgetTemp.placeOrHide(self.operational_status_label,0.14,0.1,True)
+            self.widgetTemp.placeOrHide(self.operational_status_entry, 0.15, 0.1, True)
+
+
+
 
     def manage_UI(self,*args):
-        protocol_type = self.ModBusProtocolConnection.protocol_type_var.get()
-        print(f"Protocol type: {protocol_type}")
-        if protocol_type == 'Modbus TCP':
+
             self.create_progress_bar(0.5, 0.98)
             self.updateDataBtn = self.widgetTemp.create_button('Update Data', 0.05, 0.93, 10, 1, 10, self.retrieve_data)
 
@@ -84,8 +105,8 @@ class ModBusProtocolStatus:
             self.accumulator_pressure_label, self.accumulator_pressure_entry = self.create_label_and_entry(
                 "Accumulator Pressure", 0.43, 0.67, 0.45, 0.7, 12, True
             )
-        else:
-            self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93, True)
+
+            self.manage_widgets_visibility()
 
 
 
@@ -140,6 +161,5 @@ class ModBusProtocolStatus:
         except Exception as e:
             print(f"Exception while reading data from Modbus server: {e}")
             messagebox.showerror("Error", f"Exception while reading data from Modbus server: {e}")
-
 
 

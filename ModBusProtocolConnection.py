@@ -2,12 +2,14 @@
 import tkinter as tk
 from tkinter import messagebox,ttk
 from WidgetTemplateCreator import  WidgetTemplateCreator
+from ModBusProtocolStatus import  ModBusProtocolStatus
 class ModBusProtocolConnection:
     def __init__(self, root, modbus_client):
         #references to other classes
         self.root = root
         self.modbus_client = modbus_client
         self.widgetTemp = WidgetTemplateCreator
+        self.modbus_status = ModBusProtocolStatus
 
 
 
@@ -38,10 +40,10 @@ class ModBusProtocolConnection:
         #call at end
         self.manage_entries_and_version()
 
+
     def manage_entries_and_version(self, *args):
         selected_version = self.rexa_version_type_var.get()
         selected_protocol = self.protocol_type_var.get()
-
         if selected_version == 'X3':
             self.widgetTemp.placeOrHide(self,self.connection_button, 0.22, 0.35, False)
             self.widgetTemp.placeOrHide(self,self.protocol_entry_label, 0.38, 0.30, False)
@@ -103,4 +105,3 @@ class ModBusProtocolConnection:
         # Disconnect the Modbus connection and update the Connect button text
         self.modbus_client.close()
         self.connection_button["text"] = "Connect"
-

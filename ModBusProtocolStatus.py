@@ -180,6 +180,7 @@ class ModBusProtocolStatus:
         self.redundant_feedback_entry.delete(0, tk.END)
 
         self.current_operational_mode_entry.insert(0,raw_values[13])
+        self.operational_status_entry.insert(0, raw_values[15])
 
         self.current_operational_mode_entry.config(state='readonly')
         self.operational_status_entry.config(state='readonly')

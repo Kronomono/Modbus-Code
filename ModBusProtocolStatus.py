@@ -16,13 +16,9 @@ class ModBusProtocolStatus:
         self.ModBusProtocolConnection = modbus_protocol_connection
         self.widgetTemp = WidgetTemplateCreator(self.root)
 
-
-
-
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
-
 
     def create_widgets(self):
         # Create the Connect
@@ -48,7 +44,9 @@ class ModBusProtocolStatus:
 
         if selected_version == 'X3':
             self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93, False)
-            self.widgetTemp.placeOrHide(self.progress_bar, 0.1, 0.97, False)
+            self.progress_label.place(relx=0.5, rely= 0.93, anchor=tk.CENTER)
+            self.progress_bar.place(relx=0.5, rely=0.98, relwidth=0.8, anchor=tk.CENTER)
+
             self.widgetTemp.placeOrHide(self.current_operational_mode_label,0,0.07,False)
             self.widgetTemp.placeOrHide(self.current_operational_mode_entry,0.01,0.1,False)
             self.widgetTemp.placeOrHide(self.operational_status_label,0.14,0.07,False)
@@ -67,9 +65,14 @@ class ModBusProtocolStatus:
             self.widgetTemp.placeOrHide(self.alarm_status_entry, 0.15, 0.7, False)
             self.widgetTemp.placeOrHide(self.accumulator_pressure_label,0.43,0.67,False)
             self.widgetTemp.placeOrHide(self.accumulator_pressure_entry,0.45,0.7,False)
+            self.widgetTemp.placeOrHide(self.main_feedback_label,0.28,0.2,False)
+            self.widgetTemp.placeOrHide(self.main_feedback_entry,0.25,0.2,False)
+            self.widgetTemp.placeOrHide(self.redundant_feedback_label,0.28,0.23,False)
+            self.widgetTemp.placeOrHide(self.redundant_feedback_entry,0.25,0.23,False)
         else:
             self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93, True)
-            self.widgetTemp.placeOrHide(self.progress_bar, 0.1, 0.97, True)
+            self.progress_bar.place_forget()
+            self.progress_label.place_forget()
             self.widgetTemp.placeOrHide(self.current_operational_mode_label, 0, 0.07, True)
             self.widgetTemp.placeOrHide(self.current_operational_mode_entry, 0.01, 0.1, True)
             self.widgetTemp.placeOrHide(self.operational_status_label,0.14,0.1,True)
@@ -88,6 +91,10 @@ class ModBusProtocolStatus:
             self.widgetTemp.placeOrHide(self.alarm_status_entry,0.15,0.7,True)
             self.widgetTemp.placeOrHide(self.accumulator_pressure_label, 0.43, 0.67, True)
             self.widgetTemp.placeOrHide(self.accumulator_pressure_entry,0.45,0.7,True)
+            self.widgetTemp.placeOrHide(self.main_feedback_label,0.28,0.2,True)
+            self.widgetTemp.placeOrHide(self.main_feedback_entry,0.25,0.2,True)
+            self.widgetTemp.placeOrHide(self.redundant_feedback_label,0.28,0.23,True)
+            self.widgetTemp.placeOrHide(self.redundant_feedback_entry,0.25,0.23,True)
 
     def manage_UI(self,*args):
 
@@ -128,6 +135,12 @@ class ModBusProtocolStatus:
 
             self.accumulator_pressure_label, self.accumulator_pressure_entry = self.create_label_and_entry(
                 "Accumulator Pressure", 0.43, 0.67, 0.45, 0.7, 12, True
+            )
+            self.main_feedback_label, self.main_feedback_entry = self.create_label_and_entry(
+                "Main Feedback", 0.28, 0.2, 0.25, 0.2, 5, True
+            )
+            self.redundant_feedback_label, self.redundant_feedback_entry = self.create_label_and_entry(
+                "Redundant Feedback", 0.28, 0.23, 0.25, 0.23, 5, True
             )
 
             self.manage_widgets_visibility()

@@ -28,7 +28,7 @@ class ModBusProtocolStatus:
 
         self.manage_UI()
 
-    def create_label_and_entry(self, label_text, label_relx, label_rely, entry_relx, entry_rely, entry_width,entry_readOnly, preFilledText=None):
+    def create_label_and_entry(self, label_text, label_relx, label_rely, entry_relx, entry_rely, entry_width,entry_readOnly, preFilledText):
         # Create the label
         label = tk.Label(self.root, text=label_text)
         self.widgetTemp.placeOrHide(label, label_relx, label_rely, False)
@@ -102,45 +102,45 @@ class ModBusProtocolStatus:
             self.updateDataBtn = self.widgetTemp.create_button('Update Data', 0.05, 0.93, 10, 1, 10, self.retrieve_data)
 
             self.current_operational_mode_label, self.current_operational_mode_entry = self.create_label_and_entry(
-                "Current Operational Mode", 0, 0.07, 0.01, 0.1, 12, True
+                "Current Operational Mode", 0, 0.07, 0.01, 0.1, 12, True, preFilledText=None
             )
 
             self.operational_status_label, self.operational_status_entry = self.create_label_and_entry(
-                "Operational Status", 0.14, 0.07, 0.15, 0.1, 12, True
+                "Operational Status", 0.14, 0.07, 0.15, 0.1, 12, True, preFilledText=None
             )
 
             self.control_command_label, self.control_command_entry = self.create_label_and_entry(
-                "Control Command", 0, 0.17, 0.01, 0.2, 12, True
+                "Control Command", 0, 0.17, 0.01, 0.2, 12, True, preFilledText=None
             )
 
             self.actuator_position_label, self.actuator_position_entry = self.create_label_and_entry(
-                "Actuator Position", 0.14, 0.17, 0.15, 0.2, 12, True
+                "Actuator Position", 0.14, 0.17, 0.15, 0.2, 12, True, preFilledText=None
             )
 
             self.deviation_label, self.deviation_entry = self.create_label_and_entry(
-                "Deviation", 0.24, 0.34, 0.23, 0.37, 12, True
+                self.names.get_name(5), 0.24, 0.34, 0.23, 0.37, 12, True, preFilledText=None
             )
 
             self.position_transmitter_label, self.position_transmitter_entry = self.create_label_and_entry(
-                "Position Transmitter", 0.22, 0.57, 0.23, 0.60, 12, True
+                "Position Transmitter", 0.22, 0.57, 0.23, 0.60, 12, True, preFilledText=None
             )
 
             self.warning_status_label, self.warning_status_entry = self.create_label_and_entry(
-                "Warning Status", 0.005, 0.67, 0.01, 0.7, 12, True
+                "Warning Status", 0.005, 0.67, 0.01, 0.7, 12, True, preFilledText=None
             )
 
             self.alarm_status_label, self.alarm_status_entry = self.create_label_and_entry(
-                "Alarm Status", 0.15, 0.67, 0.15, 0.7, 12, True
+                "Alarm Status", 0.15, 0.67, 0.15, 0.7, 12, True, preFilledText=None
             )
 
             self.accumulator_pressure_label, self.accumulator_pressure_entry = self.create_label_and_entry(
-                "Accumulator Pressure", 0.43, 0.67, 0.45, 0.7, 12, True
+                "Accumulator Pressure", 0.43, 0.67, 0.45, 0.7, 12, True, preFilledText=None
             )
             self.main_feedback_label, self.main_feedback_entry = self.create_label_and_entry(
-                "Main Feedback", 0.28, 0.2, 0.25, 0.2, 5, True
+                "Main Feedback", 0.28, 0.2, 0.25, 0.2, 5, True, preFilledText=None
             )
             self.redundant_feedback_label, self.redundant_feedback_entry = self.create_label_and_entry(
-                "Redundant Feedback", 0.28, 0.23, 0.25, 0.23, 5, True
+                "Redundant Feedback", 0.28, 0.23, 0.25, 0.23, 5, True, preFilledText=None
             )
 
             self.manage_widgets_visibility()

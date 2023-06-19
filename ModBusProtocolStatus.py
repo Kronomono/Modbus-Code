@@ -157,16 +157,16 @@ class ModBusProtocolStatus:
             count = 571
             raw_values = []  # Initialize raw_values outside the loop
             self.raw_values = raw_values
-            self.progress['maximum'] = count
-            self.progress['value'] = 0  # Reset the progress bar
+            self.progress_bar['maximum'] = count
+            self.progress_bar['value'] = 0  # Reset the progress bar
             for address in range(0, count):
                 with rate_limiter:
                     try:
                         result = self.modbus_client.client.read_holding_registers(address, 1 , unit)
                         if not result.isError():
                             raw_values.append(result.registers[0])
-                            self.progress['value'] += 1  # Increment the progress bar
-                            self.progress_label['text'] = f"{self.progress['value']}/{count}"  # Update the label text
+                            self.progress_bar['value'] += 1  # Increment the progress bar
+                            self.progress_label['text'] = f"{self.progress_bar['value']}/{count}"  # Update the label text
                             self.root.update_idletasks()  # Update the GUI
                         else:
                             print(f"Error reading register at address {address}: {result}")

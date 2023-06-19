@@ -87,7 +87,6 @@ class ModBusProtocolStatus:
 
             self.progress_bar,self.progress_label  = self.create_progress_bar(0.5, 0.98)
             self.updateDataBtn = self.widgetTemp.create_button('Update Data', 0.05, 0.93, 10, 1, 10, self.retrieve_data)
-
             self.current_operational_mode_label, self.current_operational_mode_entry = self.widgetTemp.create_label_and_entry(
                 "Current Operational Mode", 0, 0.07, 0.01, 0.1, 12, True, preFilledText=None
             )
@@ -177,7 +176,6 @@ class ModBusProtocolStatus:
                 continue
             widget.config(state='readonly')
 
-
     def retrieve_data(self, *args):
 
         if self.modbus_client.is_connected():
@@ -185,7 +183,6 @@ class ModBusProtocolStatus:
             self.root.update()
         else:
             messagebox.showerror("Error", "Modbus connection is not open.")
-
     def retrieve_data_thread(self):
         # Define the maximum number of requests per second
         MAX_REQUESTS_PER_SECOND = 25  # Increase this number to increase the polling rate

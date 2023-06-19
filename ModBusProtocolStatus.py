@@ -48,7 +48,7 @@ class ModBusProtocolStatus:
 
         if selected_version == 'X3':
             self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93, False)
-            #self.widgetTemp.placeOrHide(self.create_progress_bar(0.5,0.98),0.5,0.98,False)
+            self.widgetTemp.placeOrHide(self.progress_bar, 0.1, 0.97, False)
             self.widgetTemp.placeOrHide(self.current_operational_mode_label,0,0.07,False)
             self.widgetTemp.placeOrHide(self.current_operational_mode_entry,0.01,0.1,False)
             self.widgetTemp.placeOrHide(self.operational_status_label,0.14,0.07,False)
@@ -69,7 +69,7 @@ class ModBusProtocolStatus:
             self.widgetTemp.placeOrHide(self.accumulator_pressure_entry,0.45,0.7,False)
         else:
             self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93, True)
-            #self.widgetTemp.placeOrHide(self.create_progress_bar(0.5,0.98), 0.5, 0.98, False)
+            self.widgetTemp.placeOrHide(self.progress_bar, 0.1, 0.97, True)
             self.widgetTemp.placeOrHide(self.current_operational_mode_label, 0, 0.07, True)
             self.widgetTemp.placeOrHide(self.current_operational_mode_entry, 0.01, 0.1, True)
             self.widgetTemp.placeOrHide(self.operational_status_label,0.14,0.1,True)
@@ -91,7 +91,7 @@ class ModBusProtocolStatus:
 
     def manage_UI(self,*args):
 
-            self.create_progress_bar(0.5, 0.98)
+            self.progress_bar = self.create_progress_bar(0.5, 0.98)
             self.updateDataBtn = self.widgetTemp.create_button('Update Data', 0.05, 0.93, 10, 1, 10, self.retrieve_data)
 
             self.current_operational_mode_label, self.current_operational_mode_entry = self.create_label_and_entry(
@@ -132,13 +132,12 @@ class ModBusProtocolStatus:
 
             self.manage_widgets_visibility()
 
-
-
-    def create_progress_bar(self,relx,rely):
-        self.progress = ttk.Progressbar(self.root, length=200, mode='determinate')
-        self.progress.place(relx=relx, rely=rely, relwidth=0.8, anchor=tk.CENTER)
-        self.progress_label = tk.Label(self.root, text="")
-        self.progress_label.place(relx=0.5, rely=rely-0.05, anchor=tk.CENTER)
+    def create_progress_bar(self, relx, rely):
+        progress = ttk.Progressbar(self.root, length=200, mode='determinate')
+        progress.place(relx=relx, rely=rely, relwidth=0.8, anchor=tk.CENTER)
+        progress_label = tk.Label(self.root, text="")
+        progress_label.place(relx=0.5, rely=rely - 0.05, anchor=tk.CENTER)
+        return progress  # return the created progress bar
 
     def retrieve_data(self, *args):
         if self.modbus_client.is_connected():

@@ -11,8 +11,6 @@ class ModBusProtocolConnection:
         self.widgetTemp = WidgetTemplateCreator
         self.modbus_status = ModBusProtocolStatus
 
-
-
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
@@ -39,7 +37,6 @@ class ModBusProtocolConnection:
         )
         #call at end
         self.manage_entries_and_version()
-
 
     def manage_entries_and_version(self, *args):
         selected_version = self.rexa_version_type_var.get()

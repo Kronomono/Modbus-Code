@@ -6,7 +6,6 @@ import threading
 from Names import Names
 from WidgetTemplateCreator import  WidgetTemplateCreator
 
-
 class ModBusProtocolStatus:
     def __init__(self, root, modbus_client,modbus_protocol_connection):
         #references to other classes
@@ -150,7 +149,6 @@ class ModBusProtocolStatus:
                              ("booster_starts_label",("Booster Starts",0.25,0.81)),
                              ("accumulator_starts_label",("Accumulator Starts",0.335,0.81)),
                              ("actuator_strokes_label",("Actuator Strokes",0.445,0.81)),
-
                              ("total_auto_time_label",("Total Auto Time",0.545,0.81)),
                              ("three_month_average_position_label",("3 Month Average \n Position", 0.645, 0.78))
         ]

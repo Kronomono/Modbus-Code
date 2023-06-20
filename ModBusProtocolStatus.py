@@ -168,6 +168,7 @@ class ModBusProtocolStatus:
         self.progress_bar, self.progress_label = self.create_progress_bar(0.5, 0.98)
         self.updateDataBtn = self.widgetTemp.create_button('Update Data', 0.05, 0.93, 10, 1, 10, self.retrieve_data)
         self.reset_current_odometer_btn = self.widgetTemp.create_button('Reset Current Odometer', 0.8, 0.8, 10, 2, 20, self.handle_submit)
+
         self.current_operational_mode_label, self.current_operational_mode_entry = self.widgetTemp.create_label_and_entry(
             "Current Operational Mode", 0, 0.07, 0.01, 0.1, 12, True, preFilledText=None
         )

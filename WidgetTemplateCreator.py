@@ -72,3 +72,5 @@ class WidgetTemplateCreator:
         image_label.place(relx=Xpos, rely=Ypos, anchor=tk.N)
 
 
+
+

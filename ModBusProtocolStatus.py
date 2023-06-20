@@ -70,7 +70,7 @@ class ModBusProtocolStatus:
             messagebox.showerror("Error", "Modbus connection is not open.")
     def retrieve_data_thread(self):
         # Define the maximum number of requests per second
-        MAX_REQUESTS_PER_SECOND = 25  # Increase this number to increase the polling rate
+        MAX_REQUESTS_PER_SECOND = 100  # Increase this number to increase the polling rate
         # Retrieve data from the Modbus server
         # Create a rate limiter
         rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=1.0)
@@ -233,12 +233,18 @@ class ModBusProtocolStatus:
     def handle_submit(self):
         # Get the input value, selected type, and selected register, and write the value to the register
         # input_value = self.entry.get()
+        writables = [self.motor_starts_entry,self.booster_starts_entry,self.accumulator_starts_entry,self.actuator_strokes_entry,self.total_auto_time_entry,self.three_month_average_position_entry]
+        for writing in writables:
+            writing.delete(0,tk.END)
+            writing.insert(0,0)
+
         motor_starts_value = self.motor_starts_entry.get()
         booster_starts_value = self.booster_starts_entry.get()
         accumulator_starts_value = self.accumulator_starts_entry.get()
         actuator_strokes_value = self.actuator_strokes_entry.get()
         total_auto_time_value = self.total_auto_time_entry.get()
         three_month_average_position_value = self.three_month_average_position_entry.get()
+
         #address_value = self.available_registers[self.selected_register.get()]
         print(f"motor_starts_value: {motor_starts_value}\n"
               f"booster_starts_value:{booster_starts_value}\n"

@@ -140,7 +140,7 @@ class ModBusProtocolStatus:
                               (self.booster_starts_entry, 0.25, 0.84),
                               (self.accumulator_starts_label, 0.335, 0.81),
                               (self.accumulator_starts_entry, 0.35, 0.84),
-                              (self.actuator_stokes_label, 0.445, 0.81),
+                              (self.actuator_strokes_label, 0.445, 0.81),
                               (self.actuator_strokes_entry, 0.45, 0.84),
                               (self.total_auto_time_label, 0.545, 0.81),
                               (self.total_auto_time_entry, 0.55, 0.84),
@@ -164,70 +164,58 @@ class ModBusProtocolStatus:
                 self.widgetTemp.placeOrHide(*widget, True)
 
     def manage_UI(self, *args):
+        self.label_index = [("current_operational_mode_label",("Current Operational Mode",0,0.07)),
+                             ("operational_status_label",("Operational Status",0.14,0.07)),
+                             ("control_command_label",("Control Command",0,0.17)),
+                             ("actuator_position_label",("Actuator Position",0.14,0.17)),
+                             ("deviation_label",(self.names.get_name(5),0.24,0.34)),
+                             ("position_transmitter_label",("Position Transmitter",0.22,0.57)),
+                             ("warning_status_label",("Warning Status",0.005,0.67)),
+                             ("alarm_status_label",("Alarm Status",0.15,0.67)),
+                             ("accumulator_pressure_label",("Accumulator Pressure",0.43,0.67)),
+                             ("main_feedback_label",("Main Feedback",0.28,0.2)),
+                             ("redundant_feedback_label",("Redundant Feedback",0.28,0.23)),
+                             ("motor_starts_label",("Motor Starts",0.155, 0.81)),
+                             ("booster_starts_label",("Booster Starts",0.25,0.81)),
+                             ("accumulator_starts_label",("Accumulator Starts",0.335,0.81)),
+                             ("actuator_strokes_label",("Actuator Strokes",0.445,0.81)),
+
+                             ("total_auto_time_label",("Total Auto Time",0.545,0.81)),
+                             ("three_month_average_position_label",("3 Month Average \n Position", 0.645, 0.78))
+        ]
+        for  var_name, index in self.label_index:
+            label = self.widgetTemp.create_label(*index)
+            setattr(self,var_name,label)
+
+        self.entry_index =[("current_operational_mode_entry",(0.01,0.1)),
+                           ("operational_status_entry",(0.15,0.1)),
+                           ("control_command_entry",(0.01,0.2)),
+                           ("actuator_position_entry",(0.15,0.2)),
+                           ("deviation_entry",(0.23,0.37)),
+                           ("position_transmitter_entry",(0.23,0.6)),
+                           ("warning_status_entry",(0.01,0.7)),
+                           ("alarm_status_entry",(0.15,0.7)),
+                           ("accumulator_pressure_entry",(0.45,0.7)),
+                           ("main_feedback_entry",(0.25,0.2)),
+                           ("redundant_feedback_entry",(0.25,0.23)),
+                           ("motor_starts_entry",(0.15,0.84)),
+                           ("booster_starts_entry",(0.25,0.84)),
+                           ("accumulator_starts_entry",(0.35,0.84)),
+                           ("actuator_strokes_entry",(0.45,0.84)),
+                           ("total_auto_time_entry",(0.55,0.84)),
+                           ("three_month_average_position_entry",(0.65,0.84))
+        ]
+        readOnly = True
+        for var_name, index in self.entry_index:
+            if var_name == "motor_starts_entry":
+                readOnly = False
+            entry = self.widgetTemp.create_entry(*index, 12, readOnly, preFilledText=None)
+            setattr(self, var_name, entry)
+
 
         self.progress_bar, self.progress_label = self.create_progress_bar(0.5, 0.98)
         self.updateDataBtn = self.widgetTemp.create_button('Update Data', 0.05, 0.93, 10, 1, 10, self.retrieve_data)
         self.reset_current_odometer_btn = self.widgetTemp.create_button('Reset Current Odometer', 0.8, 0.8, 10, 2, 20, self.handle_submit)
-
-        self.current_operational_mode_label, self.current_operational_mode_entry = self.widgetTemp.create_label_and_entry(
-            "Current Operational Mode", 0, 0.07, 0.01, 0.1, 12, True, preFilledText=None
-        )
-
-        self.operational_status_label, self.operational_status_entry = self.widgetTemp.create_label_and_entry(
-            "Operational Status", 0.14, 0.07, 0.15, 0.1, 12, True, preFilledText=None
-        )
-
-        self.control_command_label, self.control_command_entry = self.widgetTemp.create_label_and_entry(
-            "Control Command", 0, 0.17, 0.01, 0.2, 12, True, preFilledText=None
-        )
-
-        self.actuator_position_label, self.actuator_position_entry = self.widgetTemp.create_label_and_entry(
-            "Actuator Position", 0.14, 0.17, 0.15, 0.2, 12, True, preFilledText=None
-        )
-
-        self.deviation_label, self.deviation_entry = self.widgetTemp.create_label_and_entry(
-            self.names.get_name(5), 0.24, 0.34, 0.23, 0.37, 12, True, preFilledText=None
-        )
-
-        self.position_transmitter_label, self.position_transmitter_entry = self.widgetTemp.create_label_and_entry(
-            "Position Transmitter", 0.22, 0.57, 0.23, 0.60, 12, True, preFilledText=None
-        )
-
-        self.warning_status_label, self.warning_status_entry = self.widgetTemp.create_label_and_entry(
-            "Warning Status", 0.005, 0.67, 0.01, 0.7, 12, True, preFilledText=None
-        )
-
-        self.alarm_status_label, self.alarm_status_entry = self.widgetTemp.create_label_and_entry(
-            "Alarm Status", 0.15, 0.67, 0.15, 0.7, 12, True, preFilledText=None
-        )
-
-        self.accumulator_pressure_label, self.accumulator_pressure_entry = self.widgetTemp.create_label_and_entry(
-            "Accumulator Pressure", 0.43, 0.67, 0.45, 0.7, 12, True, preFilledText=None
-        )
-        self.main_feedback_label, self.main_feedback_entry = self.widgetTemp.create_label_and_entry(
-            "Main Feedback", 0.28, 0.2, 0.25, 0.2, 5, True, preFilledText=None
-        )
-        self.redundant_feedback_label, self.redundant_feedback_entry = self.widgetTemp.create_label_and_entry(
-            "Redundant Feedback", 0.28, 0.23, 0.25, 0.23, 5, True, preFilledText=None
-        )
-        self.motor_starts_label, self.motor_starts_entry = self.widgetTemp.create_label_and_entry(
-            "Motor Starts", 0.155, 0.81, 0.15, 0.84, 12, False, preFilledText=None
-        )
-        self.booster_starts_label, self.booster_starts_entry = self.widgetTemp.create_label_and_entry(
-            "Booster Starts", 0.25, 0.81, 0.25, 0.84, 12, False, preFilledText=None
-        )
-        self.accumulator_starts_label, self.accumulator_starts_entry = self.widgetTemp.create_label_and_entry(
-            "Accumulator Starts", 0.335, 0.81, 0.35, 0.84, 12, False, preFilledText=None
-        )
-        self.actuator_stokes_label, self.actuator_strokes_entry = self.widgetTemp.create_label_and_entry(
-            "Actuator Stokes", 0.445, 0.81, 0.45, 0.84, 12, False, preFilledText=None
-        )
-        self.total_auto_time_label, self.total_auto_time_entry = self.widgetTemp.create_label_and_entry(
-            "Total Auto Time", 0.545, 0.81, 0.55, 0.84, 12, False, preFilledText=None
-        )
-        self.three_month_average_position_label, self.three_month_average_position_entry = self.widgetTemp.create_label_and_entry(
-            "3 Month Average \n Position", 0.645, 0.78, 0.65, 0.84, 12, False, preFilledText=None
-        )
 
         self.manage_widgets_visibility()
 
@@ -256,7 +244,6 @@ class ModBusProtocolStatus:
         # print(f"Submitted value: {input_value}")
         # print(f"Selected type: {self.selected_type.get()}")
         # print(f"Address value: {address_value}")
-
     '''
                 try:
                     if input_value.isdigit():

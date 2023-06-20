@@ -111,42 +111,13 @@ class ModBusProtocolStatus:
     def manage_widgets_visibility(self, *args):
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()
         selected_protocol = self.ModBusProtocolConnection.protocol_type_var.get()
-        self.widgets_index = [(self.current_operational_mode_label, 0, 0.07),
-                              (self.current_operational_mode_entry, 0.01, 0.1),
-                              (self.operational_status_label, 0.14, 0.07),
-                              (self.operational_status_entry, 0.15, 0.1),
-                              (self.control_command_label, 0.0, 0.17),
-                              (self.control_command_entry, 0.01, 0.2),
-                              (self.actuator_position_label, 0.14, 0.17),
-                              (self.actuator_position_entry, 0.15, 0.2),
-                              (self.deviation_label, 0.24, 0.34),
-                              (self.deviation_entry, 0.23, 0.37),
-                              (self.position_transmitter_label, 0.22, 0.57),
-                              (self.position_transmitter_entry, 0.23, 0.60),
-                              (self.warning_status_label, 0.005, 0.67),
-                              (self.warning_status_entry, 0.01, 0.7),
-                              (self.alarm_status_label, 0.15, 0.67),
-                              (self.alarm_status_entry, 0.15, 0.7),
-                              (self.accumulator_pressure_label, 0.43, 0.67),
-                              (self.accumulator_pressure_entry, 0.45, 0.7),
-                              (self.main_feedback_label, 0.28, 0.2),
-                              (self.main_feedback_entry, 0.25, 0.2),
-                              (self.redundant_feedback_label, 0.28, 0.23),
-                              (self.redundant_feedback_entry, 0.25, 0.23),
+        self.widgets_index = []
 
-                              (self.motor_starts_label, 0.155, 0.81),
-                              (self.motor_starts_entry, 0.15, 0.84),
-                              (self.booster_starts_label, 0.25, 0.81),
-                              (self.booster_starts_entry, 0.25, 0.84),
-                              (self.accumulator_starts_label, 0.335, 0.81),
-                              (self.accumulator_starts_entry, 0.35, 0.84),
-                              (self.actuator_strokes_label, 0.445, 0.81),
-                              (self.actuator_strokes_entry, 0.45, 0.84),
-                              (self.total_auto_time_label, 0.545, 0.81),
-                              (self.total_auto_time_entry, 0.55, 0.84),
-                              (self.three_month_average_position_label, 0.645, 0.78),
-                              (self.three_month_average_position_entry, 0.65, 0.84)
-                              ]
+        for var_name, index in self.label_index + self.entry_index:
+            if len(index) == 3:
+                self.widgets_index.append((getattr(self, var_name), index[1], index[2]))
+            elif len(index) == 2:
+                self.widgets_index.append((getattr(self, var_name), index[0], index[1]))
 
         if selected_version == 'X3':
             self.progress_label.place(relx=0.5, rely=0.93, anchor=tk.CENTER)
@@ -253,6 +224,8 @@ class ModBusProtocolStatus:
 
                 except ValueError:
                     messagebox.showerror("Error", "Invalid input value. Please try again.")'''
+
+
 
 
 

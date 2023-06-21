@@ -130,6 +130,7 @@ class ModBusProtocolStatus:
             self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93, False)
             self.widgetTemp.placeOrHide(self.main_feedback_entry,0.25,0.2,False)
             self.widgetTemp.placeOrHide(self.redundant_feedback_entry, 0.25, 0.23, False)
+            self.widgetTemp.placeOrHide(self.reset_current_odometer_btn,0.8,0.8,False)
 
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
@@ -140,6 +141,7 @@ class ModBusProtocolStatus:
             self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93, True)
             self.widgetTemp.placeOrHide(self.main_feedback_entry, 0.25, 0.2, True)
             self.widgetTemp.placeOrHide(self.redundant_feedback_entry, 0.25, 0.23, True)
+            self.widgetTemp.placeOrHide(self.reset_current_odometer_btn, 0.8, 0.8, True)
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, True)
 

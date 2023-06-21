@@ -17,8 +17,8 @@ class ModBusProtocolConnection:
     def create_widgets(self):
         self.connection_button = self.widgetTemp.create_button(self,"Connect",0.22,0.35,14,2,10,self.toggle_connection)
 
-        self.widgetTemp.add_image(self,"Images/rexa logo.png", 300, 50, 0.5, 0)
-        self.widgetTemp.add_image(self,"Images/ActBox.png", 150, 150, 0.1, 0.15)
+        self.logo = self.widgetTemp.add_image(self,"Images/rexa logo.png", 300, 50, 0.5, 0)
+        self.box = self.widgetTemp.add_image(self,"Images/ActBox.png", 150, 150, 0.1, 0.15)
 
         self.host_label = tk.Label(self.root, text="Host IP Address:")
         self.host_entry = self.widgetTemp.create_entry(self,0.22,0.45,20,False,"192.168.1.100")
@@ -49,6 +49,7 @@ class ModBusProtocolConnection:
             self.widgetTemp.placeOrHide(self,self.host_entry, 0.38, 0.45, False)
             self.widgetTemp.placeOrHide(self,self.port_label, 0.22, 0.55, False)
             self.widgetTemp.placeOrHide(self,self.port_entry, 0.38, 0.55, False)
+            self.box.place(relx=0.1, rely=0.15, anchor=tk.N)
 
             if selected_protocol == 'Modbus TCP':
                 self.widgetTemp.placeOrHide(self,self.unit_label, 0.22, 0.65, False)
@@ -66,6 +67,7 @@ class ModBusProtocolConnection:
             self.widgetTemp.placeOrHide(self,self.port_entry, 0.38, 0.55, True)
             self.widgetTemp.placeOrHide(self,self.unit_label, 0.22, 0.65, True)
             self.widgetTemp.placeOrHide(self,self.unit_entry, 0.38, 0.65, True)
+            self.box.place_forget()
 
     def toggle_connection(self, *args):
         # Toggle the Modbus connection based on the current state

@@ -75,6 +75,7 @@ class WidgetTemplateCreator:
         image_label = tk.Label(self.root, image=photo)
         image_label.image = photo  # Store a reference to the PhotoImage to prevent it from being garbage collected
         image_label.place(relx=Xpos, rely=Ypos, anchor=tk.N)
+        return image_label
 
 
 

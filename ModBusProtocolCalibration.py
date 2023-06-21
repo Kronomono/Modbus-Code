@@ -30,6 +30,19 @@ class ModBusProtocolCalibration:
     def manage_widgets_visibility(self, *args):
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()
         selected_protocol = self.ModBusProtocolConnection.protocol_type_var.get()
+        self.widgets_index = []
+
+        for var_name, index in self.label_index + self.entry_index:
+            if len(index) == 3:
+                self.widgets_index.append((getattr(self, var_name), index[1], index[2]))
+            elif len(index) == 2:
+                self.widgets_index.append((getattr(self, var_name), index[0], index[1]))
+        if selected_version == 'X3':
+            for widget in self.widgets_index:
+                self.widgetTemp.placeOrHide(*widget, False)
+        else:
+            for widget in self.widgets_index:
+                self.widgetTemp.placeOrHide(*widget, True)
 
     def manage_UI(self, *args):
         self.entry_index =[("current_operational_mode_entry",(0.01,0.1,)),
@@ -56,7 +69,7 @@ class ModBusProtocolCalibration:
                        ("primary_feedback_label",("Primary Feedback",0.04,0.23)),
                        ("redundant_feedback_label",("Redundant Feedback",0.33,0.23)),
                        ("stroke_limits_label",("Stroke Limits",0.03,0.18)),
-                       ("primary_feedback_label",("Using Primary Feedback",0.35,0.84)),
+                       ("using_primary_feedback_label",("Using Primary Feedback",0.35,0.84)),
                        ("factory_calibration_label",("Factory Calibration",0.77,0.79)),
                        ("mA1_label",("mA",0.12,0.77)),
                        ("mA2_label",("mA",0.27,0.77)),

@@ -188,7 +188,7 @@ class ModBusProtocolStatus:
         for var_name, index in self.entry_index:
             if var_name == "motor_starts_entry":
                 readOnly = False
-            entry = self.widgetTemp.create_entry(*index, 12, readOnly, preFilledText="1")
+            entry = self.widgetTemp.create_entry(*index, 12, readOnly, preFilledText=None)
             setattr(self, var_name, entry)
 
 

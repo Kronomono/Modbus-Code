@@ -56,15 +56,12 @@ class ModBusProtocolStatus:
             if isinstance(widget, tk.Label):
                 continue
             widget.config(state='readonly')
-    def get_system_name(self, index):
-        self.index_to_name = {1: "Auto Mode", 2: "Setup Mode",5: "Manual Mode"}
-        return self.index_to_name.get(index,'Invalid Value')
 
     def set_entries(self,raw_values):
         #write what values should be in the registry here
         self.accumulator_pressure_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[12]))
 
-        self.current_operational_mode_entry.insert(0, self.get_system_name(raw_values[13]))
+        self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
 
     def retrieve_data(self, *args):
 

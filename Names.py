@@ -135,6 +135,9 @@ class Names:
             571:"Host Write Target LS2B"
         }
         return self.index_to_name.get(index, "No Name")
+    def get_system_name(self, index):
+        self.index_to_name = {1: "Auto Mode", 2: "Setup Mode",5: "Manual Mode"}
+        return self.index_to_name.get(index,'Invalid Value')
 
 
 

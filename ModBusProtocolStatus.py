@@ -35,6 +35,12 @@ class ModBusProtocolStatus:
 
     def clear_entries(self,raw_values):
         print(f'called on')
+        self.main_feedback_entry.config(state='normal')
+        self.main_feedback_entry.delete(0,tk.END)
+        self.main_feedback_entry.config(state='readonly')
+        self.redundant_feedback_entry.config(state='normal')
+        self.redundant_feedback_entry.delete(0,tk.END)
+        self.redundant_feedback_entry.config(state='readonly')
         for widget, _, _ in self.widgets_index:
             # Skip label widgets
             if isinstance(widget, tk.Label):
@@ -69,7 +75,7 @@ class ModBusProtocolStatus:
             messagebox.showerror("Error", "Modbus connection is not open.")
     def retrieve_data_thread(self):
         # Define the maximum number of requests per second
-        MAX_REQUESTS_PER_SECOND = 100  # Increase this number to increase the polling rate
+        MAX_REQUESTS_PER_SECOND = 25  # Increase this number to increase the polling rate
         # Retrieve data from the Modbus server
         # Create a rate limiter
         rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=1.0)

@@ -33,9 +33,13 @@ class ModBusProtocolCalibration:
         setattr(self, "dropdown_var", dropdown_var)
         setattr(self, "dropdown_label", dropdown_label)
         setattr(self, "dropdown_menu", dropdown_menu)'''
-        self.protocol_type_var, self.protocol_entry_label, self.protocol_type_dropdown = self.widgetTemp.create_dropdown_menu2(
+        self.operational_mode_type_var, self.operational_mode_entry_label, self.operational_mode_type_dropdown = self.widgetTemp.create_dropdown_menu2(
             "Operational Mode", 0.67, ['Auto Mode', 'Set Up Mode', 'Manual Mode'], 'Auto Mode', 0.67, 0.0, self.something()
             )
+        self.position_transmitter_type_var, self.position_transmitter_entry_label, self.position_transmitter_type_dropdown = self.widgetTemp.create_dropdown_menu2(
+            "Position Transmitter", 0.72, ['Option 1', 'Option 2', 'Option 3'], 'Option 1', 0.77, 0.71,
+            self.something()
+        )
         self.manage_UI()
 
     def something(self,*args):
@@ -52,10 +56,14 @@ class ModBusProtocolCalibration:
             elif len(index) == 2:
                 self.widgets_index.append((getattr(self, var_name), index[0], index[1]))
         if selected_version == 'X3':
+            self.widgetTemp.placeOrHide(self.operational_mode_entry_label,0.67,0.0,False)
+            self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, False)
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
         else:
             for widget in self.widgets_index:
+                self.widgetTemp.placeOrHide(self.operational_mode_entry_label, 0.67, 0.0, True)
+                self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, True)
                 self.widgetTemp.placeOrHide(*widget, True)
 
     def manage_UI(self, *args):

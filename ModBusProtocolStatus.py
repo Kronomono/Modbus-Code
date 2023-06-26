@@ -73,7 +73,7 @@ class ModBusProtocolStatus:
 
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
         self.three_month_average_position_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[25], raw_values[26]),3))
-
+        self.ModBusProtocolCalibration.set_entries(self.raw_values)
 
 
     def retrieve_data(self, *args):
@@ -214,7 +214,6 @@ class ModBusProtocolStatus:
     def handle_submit(self):
         # Get the input value, selected type, and selected register, and write the value to the register
         # input_value = self.entry.get()
-        self.ModBusProtocolCalibration.set_entries(self.raw_values)
         writables = [self.motor_starts_entry,self.booster_starts_entry,self.accumulator_starts_entry,self.actuator_strokes_entry,self.total_auto_time_entry,self.three_month_average_position_entry]
         for writing in writables:
             writing.delete(0,tk.END)

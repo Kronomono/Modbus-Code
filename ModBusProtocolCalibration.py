@@ -40,15 +40,10 @@ class ModBusProtocolCalibration:
     def something(self,*args):
         print("something")
 
-    def set_entries(self,raw_values):
-
-        self.transmitter_low_entry.config(state='normal')
-        self.transmitter_low_entry.delete(0, 'end')
-        self.transmitter_low_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[161]))
-
     def manage_widgets_visibility(self, *args):
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()
         selected_protocol = self.ModBusProtocolConnection.protocol_type_var.get()
+
         self.widgets_index = []
 
         for var_name, index in self.label_index + self.entry_index:
@@ -64,11 +59,11 @@ class ModBusProtocolCalibration:
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
         else:
+            self.widgetTemp.placeOrHide(self.operational_mode_entry_label, 0.67, 0.0, True)
+            self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, True)
+            self.widgetTemp.placeOrHide(self.position_transmitter_entry_label, 0.72, 0.71, True)
+            self.widgetTemp.placeOrHide(self.position_transmitter_type_dropdown, 0.77, 0.74, True)
             for widget in self.widgets_index:
-                self.widgetTemp.placeOrHide(self.operational_mode_entry_label, 0.67, 0.0, True)
-                self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, True)
-                self.widgetTemp.placeOrHide(self.position_transmitter_entry_label, 0.72, 0.71, True)
-                self.widgetTemp.placeOrHide(self.position_transmitter_type_dropdown, 0.77, 0.74, True)
                 self.widgetTemp.placeOrHide(*widget, True)
 
     def manage_UI(self, *args):
@@ -122,11 +117,18 @@ class ModBusProtocolCalibration:
         for  var_name, index in self.label_index:
             label = self.widgetTemp.create_label(*index)
             setattr(self,var_name,label)
+    def set_entries(self,raw_values):
+        for var_name, _ in self.entry_index:
+            # Get the corresponding entry widget
+            entry = getattr(self, var_name)
+            # Make the entry widget writable
+            entry.config(state='normal')
+            # Clear the existing text in the entry widget
+            entry.delete(0, 'end')
 
+        self.transmitter_low_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[161]))
+        self.transmitter_high_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[162]))
 
-
-
-
-
-
-
+        for var_name, _ in self.entry_index:
+            entry = getattr(self, var_name)
+            entry.config(state='readonly')

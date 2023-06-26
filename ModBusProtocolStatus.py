@@ -25,6 +25,7 @@ class ModBusProtocolStatus:
         self.ModBusProtocolConnection.protocol_type_var.trace('w', self.manage_widgets_visibility)
         self.ModBusProtocolConnection.rexa_version_type_var.trace('w', self.manage_widgets_visibility)
 
+
         self.manage_UI()
     def create_progress_bar(self, relx, rely):
         progress = ttk.Progressbar(self.root, length=200, mode='determinate')
@@ -185,7 +186,7 @@ class ModBusProtocolStatus:
         for var_name, index in self.entry_index:
             if var_name == "motor_starts_entry":
                 readOnly = False
-            entry = self.widgetTemp.create_entry(*index, 12, readOnly, preFilledText=None)
+            entry = self.widgetTemp.create_entry(*index, 13, readOnly, preFilledText=None)
             setattr(self, var_name, entry)
 
 

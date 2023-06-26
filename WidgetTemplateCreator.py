@@ -8,6 +8,7 @@ class WidgetTemplateCreator:
         # references to other classes
         self.root = root
 
+
     def create_button(self, text, relx, rely, fontSize, buttonHeight, buttonWidth, command):
         button = tk.Button(self.root, text=text, command=command)
         button.config(font=('Arial', fontSize), height=buttonHeight, width=buttonWidth)
@@ -77,6 +78,26 @@ class WidgetTemplateCreator:
         image_label.place(relx=Xpos, rely=Ypos, anchor=tk.N)
         return image_label
 
+    def create_dropdown_menu2(self, label_text,label_textX, options, default_option, relx, rely, trace_function=None):
+        # Create a label
+        entry_label = tk.Label(self.root, text=label_text)
+        entry_label.config(font=('Arial', 10))
+        entry_label.place(relx=label_textX, rely=rely, anchor=tk.NW)
+
+        # Create a variable to hold the selected option
+        type_var = tk.StringVar(self.root)
+        type_var.set(default_option)
+
+        # Create the dropdown menu
+        type_dropdown = tk.OptionMenu(self.root, type_var, *options)
+        type_dropdown.config(font=('Arial', 10))  # Update font
+        type_dropdown.place(relx=relx, rely=rely + 0.03, anchor=tk.NW)
+
+        # Add a trace to the variable
+        if trace_function is not None:
+            type_var.trace('w', trace_function)
+
+        return type_var, entry_label, type_dropdown
 
 
 

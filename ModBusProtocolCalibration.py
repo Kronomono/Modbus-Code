@@ -25,7 +25,21 @@ class ModBusProtocolCalibration:
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.ModBusProtocolConnection.protocol_type_var.trace('w', self.manage_widgets_visibility)
         self.ModBusProtocolConnection.rexa_version_type_var.trace('w', self.manage_widgets_visibility)
+        '''options = ['Option1', 'Option2', 'Option3']
+        default_option = options[0]
+        trace_function = self.something  # A trace function, e.g. self.something
+        dropdown_var, dropdown_label, dropdown_menu = self.widgetTemp.create_dropdown_menu2("Label Text", options,
+        default_option, 0.73, 0.90,trace_function)
+        setattr(self, "dropdown_var", dropdown_var)
+        setattr(self, "dropdown_label", dropdown_label)
+        setattr(self, "dropdown_menu", dropdown_menu)'''
+        self.protocol_type_var, self.protocol_entry_label, self.protocol_type_dropdown = self.widgetTemp.create_dropdown_menu2(
+            "Operational Mode", 0.67, ['Auto Mode', 'Set Up Mode', 'Manual Mode'], 'Auto Mode', 0.67, 0.0, self.something()
+            )
         self.manage_UI()
+
+    def something(self,*args):
+        print("something")
 
     def manage_widgets_visibility(self, *args):
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()

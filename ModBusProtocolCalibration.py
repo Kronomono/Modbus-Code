@@ -20,19 +20,14 @@ class ModBusProtocolCalibration:
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
 
+
+
     def create_widgets(self):
         # Create the Connect
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.ModBusProtocolConnection.protocol_type_var.trace('w', self.manage_widgets_visibility)
         self.ModBusProtocolConnection.rexa_version_type_var.trace('w', self.manage_widgets_visibility)
-        '''options = ['Option1', 'Option2', 'Option3']
-        default_option = options[0]
-        trace_function = self.something  # A trace function, e.g. self.something
-        dropdown_var, dropdown_label, dropdown_menu = self.widgetTemp.create_dropdown_menu2("Label Text", options,
-        default_option, 0.73, 0.90,trace_function)
-        setattr(self, "dropdown_var", dropdown_var)
-        setattr(self, "dropdown_label", dropdown_label)
-        setattr(self, "dropdown_menu", dropdown_menu)'''
+
         self.operational_mode_type_var, self.operational_mode_entry_label, self.operational_mode_type_dropdown = self.widgetTemp.create_dropdown_menu2(
             "Operational Mode", 0.67, ['Auto Mode', 'Set Up Mode', 'Manual Mode'], 'Auto Mode', 0.67, 0.0, self.something()
             )
@@ -44,6 +39,12 @@ class ModBusProtocolCalibration:
 
     def something(self,*args):
         print("something")
+
+    def set_entries(self,raw_values):
+
+        self.transmitter_low_entry.config(state='normal')
+        self.transmitter_low_entry.delete(0, 'end')
+        self.transmitter_low_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[161]))
 
     def manage_widgets_visibility(self, *args):
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()
@@ -71,6 +72,8 @@ class ModBusProtocolCalibration:
                 self.widgetTemp.placeOrHide(*widget, True)
 
     def manage_UI(self, *args):
+        print("manage_UI called")
+        print(f"In manage_UI, self is {self}")
         self.entry_index =[("current_operational_mode_entry",(0.01,0.1,)),
                         ("operational_status_entry",(0.15,0.1)),
                         ("primary_feedback_position_low_entry",(0.05,0.3)),
@@ -87,8 +90,10 @@ class ModBusProtocolCalibration:
                         ("transmitter_high_entry",(0.84, 0.85))]
 
         for var_name, index in self.entry_index:
+            #print(f"Creating entry for {var_name} at index {index}")
             entry = self.widgetTemp.create_entry(*index, 12, True, preFilledText=None)
             setattr(self, var_name, entry)
+            #print(f"Created and set attribute for {var_name}")
 
         self.label_index=[("analog_input_label",("Analog input",0.03,0.7)),
                        ("feedback_values_label",("Feedback Values",0.35,0.7)),
@@ -117,6 +122,7 @@ class ModBusProtocolCalibration:
         for  var_name, index in self.label_index:
             label = self.widgetTemp.create_label(*index)
             setattr(self,var_name,label)
+
 
 
 

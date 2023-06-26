@@ -5,15 +5,17 @@ from ratelimiter import RateLimiter
 import threading
 from Names import Names
 from WidgetTemplateCreator import  WidgetTemplateCreator
+from ModBusProtocolCalibration import ModBusProtocolCalibration
 
 class ModBusProtocolStatus:
-    def __init__(self, root, modbus_client,modbus_protocol_connection):
+    def __init__(self, root, modbus_client,modbus_protocol_connection,modbus_protocol_calibration):
         #references to other classes
         self.root = root
         self.modbus_client = modbus_client
         self.names = Names()
         self.ModBusProtocolConnection = modbus_protocol_connection
         self.widgetTemp = WidgetTemplateCreator(self.root)
+        self.ModBusProtocolCalibration = modbus_protocol_calibration
 
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
@@ -37,17 +39,24 @@ class ModBusProtocolStatus:
     def clear_entries(self,raw_values):
 
         self.main_feedback_entry.config(state='normal')
+
         self.main_feedback_entry.delete(0,tk.END)
+
         self.main_feedback_entry.config(state='readonly')
+
         self.redundant_feedback_entry.config(state='normal')
+
         self.redundant_feedback_entry.delete(0,tk.END)
+
         self.redundant_feedback_entry.config(state='readonly')
+
         for widget, _, _ in self.widgets_index:
             # Skip label widgets
             if isinstance(widget, tk.Label):
                 continue
             widget.config(state='normal')
             widget.delete(0, tk.END)
+
         self.set_entries(raw_values)
 
         for widget, _, _ in self.widgets_index:
@@ -65,6 +74,8 @@ class ModBusProtocolStatus:
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
         self.three_month_average_position_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[25], raw_values[26]),3))
 
+
+
     def retrieve_data(self, *args):
 
         if self.modbus_client.is_connected():
@@ -74,7 +85,7 @@ class ModBusProtocolStatus:
             messagebox.showerror("Error", "Modbus connection is not open.")
     def retrieve_data_thread(self):
         # Define the maximum number of requests per second
-        MAX_REQUESTS_PER_SECOND = 25  # Increase this number to increase the polling rate
+        MAX_REQUESTS_PER_SECOND = 50  # Increase this number to increase the polling rate
         # Retrieve data from the Modbus server
         # Create a rate limiter
         rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=1.0)
@@ -104,6 +115,8 @@ class ModBusProtocolStatus:
             # Print the number of elements in raw_values
             print(f"Number of elements in raw_values: {len(raw_values)}")
             self.clear_entries(self.raw_values)  # Clear the entries
+
+
 
         except ValueError:
             print("Invalid unit or count value. Please enter a valid number.")
@@ -201,6 +214,7 @@ class ModBusProtocolStatus:
     def handle_submit(self):
         # Get the input value, selected type, and selected register, and write the value to the register
         # input_value = self.entry.get()
+        self.ModBusProtocolCalibration.set_entries(self.raw_values)
         writables = [self.motor_starts_entry,self.booster_starts_entry,self.accumulator_starts_entry,self.actuator_strokes_entry,self.total_auto_time_entry,self.three_month_average_position_entry]
         for writing in writables:
             writing.delete(0,tk.END)

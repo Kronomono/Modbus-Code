@@ -48,12 +48,15 @@ class ModbusClient:
             return False
 
     def close(self):
-        # Attempt to close the modbus connection
-        if self.client.is_socket_open():
-            self.client.close()
-            print("Modbus connection closed.")
-        else:
-            print("Modbus connection is not open.")
+        try:
+            # Attempt to close the modbus connection
+            if self.client.is_socket_open():
+                self.client.close()
+                print("Modbus connection closed.")
+            else:
+                print("Modbus connection is not open.")
+        except Exception as e:
+            print(f"Exception while closing the Modbus connection: {e}")
 
     def is_connected(self):
         # Check if the Modbus client is connected

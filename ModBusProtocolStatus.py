@@ -5,7 +5,7 @@ from ratelimiter import RateLimiter
 import threading
 from Names import Names
 from WidgetTemplateCreator import  WidgetTemplateCreator
-from ModBusProtocolCalibration import ModBusProtocolCalibration
+
 
 class ModBusProtocolStatus:
     def __init__(self, root, modbus_client,modbus_protocol_connection,modbus_protocol_calibration):
@@ -72,8 +72,10 @@ class ModBusProtocolStatus:
         self.accumulator_pressure_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[12]))
 
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
+
         self.three_month_average_position_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[25], raw_values[26]),3))
-        self.ModBusProtocolCalibration.set_entries(self.raw_values)
+        self.deviation_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[4], raw_values[5]),3))
+        self.ModBusProtocolCalibration.clear_entries(self.raw_values)
 
 
     def retrieve_data(self, *args):

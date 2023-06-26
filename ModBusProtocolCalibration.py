@@ -5,6 +5,7 @@ from ratelimiter import RateLimiter
 import threading
 from Names import Names
 from WidgetTemplateCreator import  WidgetTemplateCreator
+from ModBusProtocolStatus import ModBusProtocolStatus
 
 
 class ModBusProtocolCalibration:
@@ -85,10 +86,10 @@ class ModBusProtocolCalibration:
                         ("transmitter_high_entry",(0.84, 0.85))]
 
         for var_name, index in self.entry_index:
-            #print(f"Creating entry for {var_name} at index {index}")
+
             entry = self.widgetTemp.create_entry(*index, 12, True, preFilledText=None)
             setattr(self, var_name, entry)
-            #print(f"Created and set attribute for {var_name}")
+
 
         self.label_index=[("analog_input_label",("Analog input",0.03,0.7)),
                        ("feedback_values_label",("Feedback Values",0.35,0.7)),
@@ -117,7 +118,7 @@ class ModBusProtocolCalibration:
         for  var_name, index in self.label_index:
             label = self.widgetTemp.create_label(*index)
             setattr(self,var_name,label)
-    def set_entries(self,raw_values):
+    def clear_entries(self,raw_values):
         for var_name, _ in self.entry_index:
             # Get the corresponding entry widget
             entry = getattr(self, var_name)
@@ -126,9 +127,14 @@ class ModBusProtocolCalibration:
             # Clear the existing text in the entry widget
             entry.delete(0, 'end')
 
-        self.transmitter_low_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[161]))
-        self.transmitter_high_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[162]))
+        self.set_entries(raw_values)
+
 
         for var_name, _ in self.entry_index:
             entry = getattr(self, var_name)
             entry.config(state='readonly')
+    def set_entries(self, raw_values):
+        self.transmitter_low_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[161]))
+        self.transmitter_high_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[162]))
+        self.signal_low_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[125], raw_values[126]),3))
+        self.signal_high_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[127], raw_values[128]), 3))

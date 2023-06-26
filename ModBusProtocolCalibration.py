@@ -58,12 +58,16 @@ class ModBusProtocolCalibration:
         if selected_version == 'X3':
             self.widgetTemp.placeOrHide(self.operational_mode_entry_label,0.67,0.0,False)
             self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, False)
+            self.widgetTemp.placeOrHide(self.position_transmitter_entry_label, 0.72, 0.71, False)
+            self.widgetTemp.placeOrHide(self.position_transmitter_type_dropdown, 0.77, 0.74, False)
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
         else:
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(self.operational_mode_entry_label, 0.67, 0.0, True)
                 self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, True)
+                self.widgetTemp.placeOrHide(self.position_transmitter_entry_label, 0.72, 0.71, True)
+                self.widgetTemp.placeOrHide(self.position_transmitter_type_dropdown, 0.77, 0.74, True)
                 self.widgetTemp.placeOrHide(*widget, True)
 
     def manage_UI(self, *args):

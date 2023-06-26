@@ -35,7 +35,7 @@ class ModBusProtocolStatus:
         return progress, progress_label  # return the created progress bar
 
     def clear_entries(self,raw_values):
-        print(f'called on')
+
         self.main_feedback_entry.config(state='normal')
         self.main_feedback_entry.delete(0,tk.END)
         self.main_feedback_entry.config(state='readonly')
@@ -63,6 +63,7 @@ class ModBusProtocolStatus:
         self.accumulator_pressure_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[12]))
 
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
+        self.three_month_average_position_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[25], raw_values[26]),3))
 
     def retrieve_data(self, *args):
 

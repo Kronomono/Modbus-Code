@@ -129,10 +129,10 @@ class ModBusProtocolCalibration:
 
         self.set_entries(raw_values)
 
-
         for var_name, _ in self.entry_index:
             entry = getattr(self, var_name)
             entry.config(state='readonly')
+
     def set_entries(self, raw_values):
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
         self.transmitter_low_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[161]))

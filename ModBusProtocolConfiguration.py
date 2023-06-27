@@ -83,7 +83,17 @@ class ModBusProtocolConfiguration:
                            ("max_manual_speed_entry",(0.45,0.5)),
 
                            ("gain_entry",(0.38,0.63)),
-                           ("deadband_entry", (0.53, 0.63))
+                           ("deadband_entry", (0.53, 0.63)),
+
+                           ("motor_starts_1k_entry", (0.15, 0.84)),
+                           ("booster_starts_1k_entry", (0.25, 0.84)),
+                           ("accumulator_starts_1k_entry", (0.35, 0.84)),
+                           ("strokes_1k_entry", (0.45, 0.84)),
+                           ("total_auto_time_entry", (0.55, 0.84)),
+
+
+
+
                         ]
         self.fail_safe_entry_2 = self.widgetTemp.create_entry(0.19, 0.35, 5, True, preFilledText=None)
         self.minimum_modulating_entry_2 = self.widgetTemp.create_entry(0.21,0.4,5,True,preFilledText=None)
@@ -112,7 +122,14 @@ class ModBusProtocolConfiguration:
             ("max_manual_speed_label",("Max Manual Speed", 0.35,0.5)),
 
             ("gain_label",("Gain",0.35,0.58)),
-            ("deadband_label", ("Deadband", 0.5, 0.58))
+            ("deadband_label", ("Deadband", 0.5, 0.58)),
+
+            ("motor_starts_1k_label", ("Motor Starts \n(1k)", 0.155, 0.78)),
+            ("booster_starts_1k_label", ("Booster Starts \n(1k)", 0.25, 0.78)),
+            ("accumulator_starts_1k_label", ("Accumulator Starts \n(1k)", 0.335, 0.78)),
+            ("strokes_1k_label", ("Strokes \n(1k)", 0.47, 0.78)),
+            ("total_auto_time_label", ("Total Auto Time \n(Hours)", 0.545, 0.78)),
+
 
 
                        ]

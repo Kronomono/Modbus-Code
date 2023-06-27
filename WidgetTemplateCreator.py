@@ -78,7 +78,7 @@ class WidgetTemplateCreator:
         image_label.place(relx=Xpos, rely=Ypos, anchor=tk.N)
         return image_label
 
-    def create_dropdown_menu2(self, label_text,label_textX, options, default_option, relx, rely, trace_function=None):
+    def create_dropdown_menu2(self, label_text,label_textX, options, default_option, relx, rely, trace_function):
         # Create a label
         entry_label = tk.Label(self.root, text=label_text)
         entry_label.config(font=('Arial', 10))
@@ -94,8 +94,8 @@ class WidgetTemplateCreator:
         type_dropdown.place(relx=relx, rely=rely + 0.03, anchor=tk.NW)
 
         # Add a trace to the variable
-        if trace_function is not None:
-            type_var.trace('w', trace_function)
+       # if trace_function is not None:
+        type_var.trace('w', trace_function)
 
         return type_var, entry_label, type_dropdown
 

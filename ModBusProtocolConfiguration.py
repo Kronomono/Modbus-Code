@@ -63,8 +63,8 @@ class ModBusProtocolConfiguration:
                 self.widgetTemp.placeOrHide(*widget, True)
 
     def manage_UI(self, *args):
-        print("manage_UI called")
-        print(f"In manage_UI, self is {self}")
+        #print("manage_UI called")
+       # print(f"In manage_UI, self is {self}")
         self.entry_index =[("current_operational_mode_entry",(0.01,0.1,)),
                         ("operational_status_entry",(0.15,0.1)),
                            ("control_signal_entry",(0.1,0.2)),
@@ -80,7 +80,10 @@ class ModBusProtocolConfiguration:
                            ("max_high_speed_entry",(0.45,0.35)),
                            ("max_down_speed_entry",(0.45,0.4)),
                            ("speed_break_point_entry",(0.45,0.45)),
-                           ("max_manual_speed_entry",(0.45,0.5))
+                           ("max_manual_speed_entry",(0.45,0.5)),
+
+                           ("gain_entry",(0.38,0.63)),
+                           ("deadband_entry", (0.53, 0.63))
                         ]
         self.fail_safe_entry_2 = self.widgetTemp.create_entry(0.19, 0.35, 5, True, preFilledText=None)
         self.minimum_modulating_entry_2 = self.widgetTemp.create_entry(0.21,0.4,5,True,preFilledText=None)
@@ -106,7 +109,10 @@ class ModBusProtocolConfiguration:
             ("max_high_speed_label",("Max High Speed",0.35,0.35)),
             ("max_down_speed_label",("Max Down Speed",0.35,0.4)),
             ("speed_break_point_label",("Speed Break Point",0.35,0.45)),
-            ("max_manual_speed_label",("Max Manual Speed", 0.35,0.5))
+            ("max_manual_speed_label",("Max Manual Speed", 0.35,0.5)),
+
+            ("gain_label",("Gain",0.35,0.58)),
+            ("deadband_label", ("Deadband", 0.5, 0.58))
 
 
                        ]

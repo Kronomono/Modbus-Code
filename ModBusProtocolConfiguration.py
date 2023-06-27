@@ -53,11 +53,25 @@ class ModBusProtocolConfiguration:
             self.widgetTemp.placeOrHide(self.operational_mode_entry_label,0.67,0.0,False)
             self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, False)
 
+            self.widgetTemp.placeOrHide(self.fail_safe_entry_2,0.19,0.35,False)
+            self.widgetTemp.placeOrHide(self.minimum_modulating_entry_2,0.21,0.4,False)
+
+            self.widgetTemp.placeOrHide(self.surge_bkpt_entry, 0.75, 0.3, False)
+            self.widgetTemp.placeOrHide(self.surge_off_entry, 0.81, 0.3, False)
+            self.widgetTemp.placeOrHide(self.surge_dir_entry, 0.87, 0.3, False)
+
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
         else:
             self.widgetTemp.placeOrHide(self.operational_mode_entry_label, 0.67, 0.0, True)
             self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, True)
+
+            self.widgetTemp.placeOrHide(self.fail_safe_entry_2, 0.19, 0.35, True)
+            self.widgetTemp.placeOrHide(self.minimum_modulating_entry_2, 0.21, 0.4, True)
+
+            self.widgetTemp.placeOrHide(self.surge_bkpt_entry,0.75,0.3,True)
+            self.widgetTemp.placeOrHide(self.surge_off_entry, 0.81, 0.3, True)
+            self.widgetTemp.placeOrHide(self.surge_dir_entry, 0.87, 0.3, True)
 
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, True)
@@ -70,10 +84,10 @@ class ModBusProtocolConfiguration:
                            ("control_signal_entry",(0.1,0.2)),
                            ("power_on_entry",(0.1,0.25)),
                            ("ESD_trip_signal_entry",(0.1,0.3)),
-                           ("false_safe_entry_1",(0.1,0.35)),
+                           ("failsafe_entry_1",(0.1,0.35)),
                            ("bumpless_transfer_entry",(0.12,0.4)),
                            ("minimum_modulating_entry_1",(0.12,0.45)),
-                           ("solendnoid_seat_entry",(0.1,0.5)),
+                           ("solenoid_seat_entry",(0.1,0.5)),
                            ("cal_stroke_entry",(0.1,0.55)),
 
                            ("two_speed_entry",(0.45,0.25)),
@@ -122,7 +136,7 @@ class ModBusProtocolConfiguration:
                         ("control_signal_label",("Control Signal",0.01,0.2)),
                         ("power_on_label", ("Power On ", 0.01, 0.25)),
             ("ESD_trip_signal_label",("ESD Trip Signal",0.01,0.3)),
-            ("false_safe_label", ("Fail Safe",0.01, 0.35)),
+            ("failsafe_label", ("Fail Safe",0.01, 0.35)),
             ("bumpless_transfer_label",("Bumpless Transfer",0.01,0.4)),
             ("minimum_modulating_label", ("Minimum Modulating", 0.01, 0.45)),
             ("solenoid_seat_label",("Solenoid Seat",0.01,0.5)),

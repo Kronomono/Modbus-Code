@@ -91,12 +91,25 @@ class ModBusProtocolConfiguration:
                            ("strokes_1k_entry", (0.45, 0.84)),
                            ("total_auto_time_entry", (0.55, 0.84)),
 
+                           ("booster_pump_entry",(0.75,0.2)),
+                           ("recharge_pressure_entry",(0.8,0.38)),
+                           ("power_fail_entry", (0.8, 0.43)),
+                           ("fail_direction",(0.8,0.48)),
+                           ("electronic_position_relay_#1_entry", (0.85, 0.63)),
+                           ("electronic_position_relay_#2_entry", (0.85, 0.68)),
+                           ("electronic_position_relay_#3_entry", (0.85, 0.73)),
+
+
 
 
 
                         ]
         self.fail_safe_entry_2 = self.widgetTemp.create_entry(0.19, 0.35, 5, True, preFilledText=None)
         self.minimum_modulating_entry_2 = self.widgetTemp.create_entry(0.21,0.4,5,True,preFilledText=None)
+
+        self.surge_bkpt_entry = self.widgetTemp.create_entry(0.75,0.3,5,True,preFilledText=None)
+        self.surge_off_entry = self.widgetTemp.create_entry(0.81, 0.3, 5, True, preFilledText=None)
+        self.surge_dir_entry = self.widgetTemp.create_entry(0.87, 0.3, 5, True, preFilledText=None)
         for var_name, index in self.entry_index:
 
             entry = self.widgetTemp.create_entry(*index, 14, True, preFilledText=None)
@@ -130,7 +143,19 @@ class ModBusProtocolConfiguration:
             ("strokes_1k_label", ("Strokes \n(1k)", 0.47, 0.78)),
             ("total_auto_time_label", ("Total Auto Time \n(Hours)", 0.545, 0.78)),
 
+            ("booster_pump_label",("Booster \n Pump",0.7,0.2)),
+            ("surge_bkpt_label",("Surge Bkpt",0.73,0.27)),
+            ("surge_off_label", ("Surge Off", 0.8, 0.27)),
+            ("surge_dir_label", ("Surge Dir", 0.86, 0.27)),
 
+            ("recharge_pressure_label",("Recharge Pressure",0.7,0.38)),
+            ("power_fail_label", ("Power Fail", 0.7, 0.43)),
+            ("fail_direction_label", ("Fail Direction", 0.7, 0.48)),
+
+            ("relay_control_label", ("Relay Control", 0.7, 0.58)),
+            ("electronic_position_relay_#1_label",("Electronic Position Relay #1", 0.7, 0.63)),
+            ("electronic_position_relay_#2_label", ("Electronic Position Relay #2", 0.7, 0.68)),
+            ("electronic_position_relay_#3_label", ("Electronic Position Relay #3", 0.7, 0.73))
 
                        ]
         for  var_name, index in self.label_index:

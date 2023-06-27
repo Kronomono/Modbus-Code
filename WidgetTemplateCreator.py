@@ -94,10 +94,13 @@ class WidgetTemplateCreator:
         type_dropdown.place(relx=relx, rely=rely + 0.03, anchor=tk.NW)
 
         # Add a trace to the variable
-       # if trace_function is not None:
         type_var.trace('w', trace_function)
 
+        # Call the function with the initial option
+        trace_function()
+
         return type_var, entry_label, type_dropdown
+
 
 
 

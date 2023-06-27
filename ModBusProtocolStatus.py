@@ -8,7 +8,7 @@ from WidgetTemplateCreator import  WidgetTemplateCreator
 
 
 class ModBusProtocolStatus:
-    def __init__(self, root, modbus_client,modbus_protocol_connection,modbus_protocol_calibration):
+    def __init__(self, root, modbus_client,modbus_protocol_connection,modbus_protocol_calibration,modbus_protocol_configuration):
         #references to other classes
         self.root = root
         self.modbus_client = modbus_client
@@ -16,6 +16,7 @@ class ModBusProtocolStatus:
         self.ModBusProtocolConnection = modbus_protocol_connection
         self.widgetTemp = WidgetTemplateCreator(self.root)
         self.ModBusProtocolCalibration = modbus_protocol_calibration
+        self.ModBusProtocolConfiguration = modbus_protocol_configuration
 
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
@@ -75,11 +76,11 @@ class ModBusProtocolStatus:
         self.actuator_position_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[2], raw_values[3]), 3))
         self.three_month_average_position_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[25], raw_values[26]),3))
         self.deviation_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[4], raw_values[5]),3))
-        self.accumulator_starts_entry.insert(0,self.modbus_client.translate_value("Unsigned Int 32 bit",raw_values[562],raw_values[563]))
-        self.actuator_strokes_entry.insert(0,self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[558],raw_values[559]))
+
 
 
         self.ModBusProtocolCalibration.clear_entries(self.raw_values)
+        self.ModBusProtocolConfiguration.clear_entries(self.raw_values)
 
 
     def retrieve_data(self, *args):

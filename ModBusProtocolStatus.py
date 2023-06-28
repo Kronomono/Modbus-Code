@@ -8,7 +8,7 @@ from WidgetTemplateCreator import  WidgetTemplateCreator
 
 
 class ModBusProtocolStatus:
-    def __init__(self, root, modbus_client,modbus_protocol_connection,modbus_protocol_calibration,modbus_protocol_configuration):
+    def __init__(self, root, modbus_client,modbus_protocol_connection,modbus_protocol_calibration,modbus_protocol_configuration, modbus_protocol_pst):
         #references to other classes
         self.root = root
         self.modbus_client = modbus_client
@@ -17,6 +17,7 @@ class ModBusProtocolStatus:
         self.widgetTemp = WidgetTemplateCreator(self.root)
         self.ModBusProtocolCalibration = modbus_protocol_calibration
         self.ModBusProtocolConfiguration = modbus_protocol_configuration
+        self.ModBusProtocolPST = modbus_protocol_pst
 
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)

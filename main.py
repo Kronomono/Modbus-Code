@@ -9,6 +9,7 @@ from Tab1ModBusProtocolConnection import Tab1ModBusProtocolConnection
 from Tab2ModBusProtocolStatus import Tab2ModBusProtocolStatus
 from Tab5ModBusProtocolCalibration import Tab5ModBusProtocolCalibration
 from Tab6ModBusProtocolConfiguration import Tab6ModBusProtocolConfiguration
+from Tab3ModBusProtocolPST import Tab3ModBusProtocolPST
 import logging
 import atexit
 #logging.basicConfig()
@@ -49,8 +50,9 @@ modbus_client = ModbusClient("", 0)
 tab1 = Tab1ModBusProtocolConnection(notebook, options, modbus_client)
 tab5 = Tab5ModBusProtocolCalibration(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget)
 tab6 = Tab6ModBusProtocolConfiguration(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget)
+tab3 = Tab3ModBusProtocolPST(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget)
 
-tab2 = Tab2ModBusProtocolStatus(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget,tab5.ModBusProtocolCalibration_widget, tab6.ModBusProtocolConfiguration_widget)
+tab2 = Tab2ModBusProtocolStatus(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget,tab5.ModBusProtocolCalibration_widget, tab6.ModBusProtocolConfiguration_widget,tab3.ModBusProtocolPST_widget)
 
 tab7 = DataTableBeta(notebook, options, modbus_client)
 tab8 = WriteRegistryBeta(notebook, options, modbus_client)  # Pass any necessary arguments to your tab classes
@@ -58,6 +60,7 @@ tab8 = WriteRegistryBeta(notebook, options, modbus_client)  # Pass any necessary
 # Add the frames to the notebook with their respective labels
 notebook.add(tab1.frame, text='Connection')
 notebook.add(tab2.frame, text='Status')
+notebook.add(tab3.frame, text='PST')
 notebook.add(tab5.frame, text='Calibration')
 notebook.add(tab6.frame, text='Configuration')
 notebook.add(tab7.frame, text='Data Table')

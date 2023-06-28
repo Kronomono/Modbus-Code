@@ -146,7 +146,7 @@ class ModBusProtocolStatus:
         if selected_version == 'X3':
             self.progress_label.place(relx=0.5, rely=0.93, anchor=tk.CENTER)
             self.progress_bar.place(relx=0.5, rely=0.98, relwidth=0.8, anchor=tk.CENTER)
-            self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93, False)
+            self.widgetTemp.placeOrHide(self.updateDataBtn, 0.0, 0.96, False)
             self.widgetTemp.placeOrHide(self.main_feedback_entry,0.25,0.2,False)
             self.widgetTemp.placeOrHide(self.redundant_feedback_entry, 0.25, 0.23, False)
             self.widgetTemp.placeOrHide(self.reset_current_odometer_btn,0.8,0.8,False)
@@ -157,7 +157,7 @@ class ModBusProtocolStatus:
         else:
             self.progress_bar.place_forget()
             self.progress_label.place_forget()
-            self.widgetTemp.placeOrHide(self.updateDataBtn, 0.05, 0.93, True)
+            self.widgetTemp.placeOrHide(self.updateDataBtn, 0.0, 0.96, True)
             self.widgetTemp.placeOrHide(self.main_feedback_entry, 0.25, 0.2, True)
             self.widgetTemp.placeOrHide(self.redundant_feedback_entry, 0.25, 0.23, True)
             self.widgetTemp.placeOrHide(self.reset_current_odometer_btn, 0.8, 0.8, True)
@@ -212,7 +212,7 @@ class ModBusProtocolStatus:
 
 
         self.progress_bar, self.progress_label = self.create_progress_bar(0.5, 0.98)
-        self.updateDataBtn = self.widgetTemp.create_button('Update Data', 0.05, 0.93, 10, 1, 10, self.retrieve_data)
+        self.updateDataBtn = self.widgetTemp.create_button('Update Data', 0.0, 0.96, 10, 1, 12, self.retrieve_data)
         self.reset_current_odometer_btn = self.widgetTemp.create_button('Reset Current Odometer', 0.8, 0.8, 10, 2, 20, self.handle_submit)
         self.main_feedback_entry = self.widgetTemp.create_entry(0.25,0.2,5,True,preFilledText=None)
         self.redundant_feedback_entry = self.widgetTemp.create_entry(0.25, 0.23, 5, True, preFilledText=None)

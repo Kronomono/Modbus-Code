@@ -77,8 +77,8 @@ class ModBusProtocolConfiguration:
                 self.widgetTemp.placeOrHide(*widget, True)
 
     def manage_UI(self, *args):
-        #print("manage_UI called")
-       # print(f"In manage_UI, self is {self}")
+        self.save_button = self.widgetTemp.create_button("Save Configuration", 0.85,0.8, 10, 2,14,self.save_config)
+        self.load_button = self.widgetTemp.create_button("Load Configuration", 0.73, 0.8, 10, 2, 14, self.load_config)
         self.entry_index =[("current_operational_mode_entry",(0.01,0.1,)),
                         ("operational_status_entry",(0.15,0.1)),
                            ("control_signal_entry",(0.1,0.2)),
@@ -111,19 +111,14 @@ class ModBusProtocolConfiguration:
                            ("fail_direction",(0.8,0.48)),
                            ("electronic_position_relay_#1_entry", (0.85, 0.63)),
                            ("electronic_position_relay_#2_entry", (0.85, 0.68)),
-                           ("electronic_position_relay_#3_entry", (0.85, 0.73)),
-
-
-
-
-
-                        ]
+                           ("electronic_position_relay_#3_entry", (0.85, 0.73)),   ]
         self.fail_safe_entry_2 = self.widgetTemp.create_entry(0.19, 0.35, 5, True, preFilledText=None)
         self.minimum_modulating_entry_2 = self.widgetTemp.create_entry(0.21,0.4,5,True,preFilledText=None)
 
         self.surge_bkpt_entry = self.widgetTemp.create_entry(0.75,0.3,5,True,preFilledText=None)
         self.surge_off_entry = self.widgetTemp.create_entry(0.81, 0.3, 5, True, preFilledText=None)
         self.surge_dir_entry = self.widgetTemp.create_entry(0.87, 0.3, 5, True, preFilledText=None)
+
         for var_name, index in self.entry_index:
 
             entry = self.widgetTemp.create_entry(*index, 14, True, preFilledText=None)
@@ -175,6 +170,12 @@ class ModBusProtocolConfiguration:
         for  var_name, index in self.label_index:
             label = self.widgetTemp.create_label(*index)
             setattr(self,var_name,label)
+
+    def save_config(self):
+        print("saved")
+
+    def load_config(self):
+        print("load")
     def clear_entries(self,raw_values):
         for var_name, _ in self.entry_index:
             # Get the corresponding entry widget

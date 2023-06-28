@@ -57,11 +57,12 @@ class ModBusProtocolConfiguration:
             self.widgetTemp.placeOrHide(self.fail_safe_entry_2,0.19,0.35,False)
             self.widgetTemp.placeOrHide(self.minimum_modulating_entry_2,0.21,0.4,False)
 
-            self.widgetTemp.placeOrHide(self.surge_bkpt_entry, 0.75, 0.3, False)
-            self.widgetTemp.placeOrHide(self.surge_off_entry, 0.81, 0.3, False)
-            self.widgetTemp.placeOrHide(self.surge_dir_entry, 0.87, 0.3, False)
-            self.widgetTemp.placeOrHide(self.save_button,0.85,0.8,False)
-            self.widgetTemp.placeOrHide(self.load_button,0.73,0.8,False)
+            self.widgetTemp.placeOrHide(self.surge_bkpt_entry, 0.71, 0.3, False)
+            self.widgetTemp.placeOrHide(self.surge_off_entry, 0.8, 0.3, False)
+            self.widgetTemp.placeOrHide(self.surge_dir_entry, 0.9, 0.3, False)
+
+            self.widgetTemp.placeOrHide(self.save_button,0.85,0.85,False)
+            self.widgetTemp.placeOrHide(self.load_button,0.73,0.85,False)
 
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
@@ -72,19 +73,19 @@ class ModBusProtocolConfiguration:
             self.widgetTemp.placeOrHide(self.fail_safe_entry_2, 0.19, 0.35, True)
             self.widgetTemp.placeOrHide(self.minimum_modulating_entry_2, 0.21, 0.4, True)
 
-            self.widgetTemp.placeOrHide(self.surge_bkpt_entry,0.75,0.3,True)
-            self.widgetTemp.placeOrHide(self.surge_off_entry, 0.81, 0.3, True)
-            self.widgetTemp.placeOrHide(self.surge_dir_entry, 0.87, 0.3, True)
+            self.widgetTemp.placeOrHide(self.surge_bkpt_entry,0.71,0.3,True)
+            self.widgetTemp.placeOrHide(self.surge_off_entry, 0.8, 0.3, True)
+            self.widgetTemp.placeOrHide(self.surge_dir_entry, 0.9, 0.3, True)
 
-            self.widgetTemp.placeOrHide(self.save_button, 0.85, 0.8, True)
-            self.widgetTemp.placeOrHide(self.load_button, 0.73, 0.8, True)
+            self.widgetTemp.placeOrHide(self.save_button, 0.85, 0.85, True)
+            self.widgetTemp.placeOrHide(self.load_button, 0.73, 0.85, True)
 
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, True)
 
     def manage_UI(self, *args):
-        self.save_button = self.widgetTemp.create_button("Save Configuration", 0.85,0.8, 10, 2,14,self.save_config)
-        self.load_button = self.widgetTemp.create_button("Load Configuration", 0.73, 0.8, 10, 2, 14, self.load_config)
+        self.save_button = self.widgetTemp.create_button("Save Configuration", 0.85,0.85, 10, 2,14,self.save_config)
+        self.load_button = self.widgetTemp.create_button("Load Configuration", 0.73, 0.85, 10, 2, 14, self.load_config)
         self.entry_index =[("current_operational_mode_entry",(0.01,0.1,)),
                         ("operational_status_entry",(0.15,0.1)),
                            ("control_signal_entry",(0.1,0.2)),
@@ -121,9 +122,9 @@ class ModBusProtocolConfiguration:
         self.fail_safe_entry_2 = self.widgetTemp.create_entry(0.19, 0.35, 5, True, preFilledText=None)
         self.minimum_modulating_entry_2 = self.widgetTemp.create_entry(0.21,0.4,5,True,preFilledText=None)
 
-        self.surge_bkpt_entry = self.widgetTemp.create_entry(0.75,0.3,5,True,preFilledText=None)
-        self.surge_off_entry = self.widgetTemp.create_entry(0.81, 0.3, 5, True, preFilledText=None)
-        self.surge_dir_entry = self.widgetTemp.create_entry(0.87, 0.3, 5, True, preFilledText=None)
+        self.surge_bkpt_entry = self.widgetTemp.create_entry(0.71,0.3,5,True,preFilledText=None)
+        self.surge_off_entry = self.widgetTemp.create_entry(0.8, 0.3, 5, True, preFilledText=None)
+        self.surge_dir_entry = self.widgetTemp.create_entry(0.9, 0.3, 5, True, preFilledText=None)
 
         for var_name, index in self.entry_index:
 
@@ -159,9 +160,9 @@ class ModBusProtocolConfiguration:
             ("total_auto_time_label", ("Total Auto Time \n(Hours)", 0.545, 0.78)),
 
             ("booster_pump_label",("Booster \n Pump",0.7,0.2)),
-            ("surge_bkpt_label",("Surge Bkpt",0.73,0.27)),
-            ("surge_off_label", ("Surge Off", 0.8, 0.27)),
-            ("surge_dir_label", ("Surge Dir", 0.86, 0.27)),
+            ("surge_bkpt_label",("Surge Bkpt",0.7,0.27)),
+            ("surge_off_label", ("Surge Off", 0.79, 0.27)),
+            ("surge_dir_label", ("Surge Dir", 0.89, 0.27)),
 
             ("recharge_pressure_label",("Recharge Pressure",0.7,0.38)),
             ("power_fail_label", ("Power Fail", 0.7, 0.43)),
@@ -170,7 +171,31 @@ class ModBusProtocolConfiguration:
             ("relay_control_label", ("Relay Control", 0.7, 0.58)),
             ("electronic_position_relay_#1_label",("Electronic Position Relay #1", 0.7, 0.63)),
             ("electronic_position_relay_#2_label", ("Electronic Position Relay #2", 0.7, 0.68)),
-            ("electronic_position_relay_#3_label", ("Electronic Position Relay #3", 0.7, 0.73))
+            ("electronic_position_relay_#3_label", ("Electronic Position Relay #3", 0.7, 0.73)),
+
+
+            ("configuration_parameters_label",("Configuration Parameters",0.01,0.15)),
+            ("speed_label", ("Speed", 0.33, 0.2)),
+            ("historic_actuator_odometer_label",("Historic Actuator Odometer",0.1,0.73)),
+            ("drives_label", ("Drives", 0.68, 0.15)),
+            ("accumulator_systems_label", ("Accumulator Systems", 0.68, 0.335)),
+
+            ("surge_bkpt_label_%", ("%", 0.76, 0.3)),
+            ("surge_off_label_%", ("%", 0.85, 0.3)),
+            ("surge_dir_label_%", ("%", 0.95, 0.3)),
+
+            ("electronic_position_relay_#1_label_%", ("%", 0.94, 0.63)),
+            ("electronic_position_relay_#2_label_%", ("%", 0.94, 0.68)),
+
+            ("max_high_speed_label_%", ("%", 0.54, 0.35)),
+            ("max_down_speed_label_%", ("%", 0.54, 0.4)),
+            ("speed_break_point_label_%", ("%", 0.54, 0.45)),
+            ("max_manual_speed_label_%", ("%", 0.54, 0.5)),
+
+            ("deadband_%", ("%",0.63, 0.63)),
+
+            ("failsafe_%", ("%", 0.23, 0.35)),
+            ("bumpless_transfer_%", ("%", 0.25, 0.4)),
 
                        ]
         for  var_name, index in self.label_index:

@@ -116,9 +116,9 @@ class ModBusProtocolConfiguration:
                            ("recharge_pressure_entry",(0.8,0.38)),
                            ("power_fail_entry", (0.8, 0.43)),
                            ("fail_direction",(0.8,0.48)),
-                           ("electronic_position_relay_#1_entry", (0.85, 0.63)),
-                           ("electronic_position_relay_#2_entry", (0.85, 0.68)),
-                           ("electronic_position_relay_#3_entry", (0.85, 0.73)),   ]
+                           ("electronic_position_relay_1_entry", (0.85, 0.63)),
+                           ("electronic_position_relay_2_entry", (0.85, 0.68)),
+                           ("electronic_position_relay_3_entry", (0.85, 0.73)),   ]
         self.fail_safe_entry_2 = self.widgetTemp.create_entry(0.19, 0.35, 5, True, preFilledText=None)
         self.minimum_modulating_entry_2 = self.widgetTemp.create_entry(0.21,0.4,5,True,preFilledText=None)
 
@@ -169,9 +169,9 @@ class ModBusProtocolConfiguration:
             ("fail_direction_label", ("Fail Direction", 0.7, 0.48)),
 
             ("relay_control_label", ("Relay Control", 0.7, 0.58)),
-            ("electronic_position_relay_#1_label",("Electronic Position Relay #1", 0.7, 0.63)),
-            ("electronic_position_relay_#2_label", ("Electronic Position Relay #2", 0.7, 0.68)),
-            ("electronic_position_relay_#3_label", ("Electronic Position Relay #3", 0.7, 0.73)),
+            ("electronic_position_relay_1_label",("Electronic Position Relay #1", 0.7, 0.63)),
+            ("electronic_position_relay_2_label", ("Electronic Position Relay #2", 0.7, 0.68)),
+            ("electronic_position_relay_3_label", ("Electronic Position Relay #3", 0.7, 0.73)),
 
 
             ("configuration_parameters_label",("Configuration Parameters",0.01,0.15)),
@@ -253,25 +253,24 @@ class ModBusProtocolConfiguration:
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
 
         self.failsafe_entry_1.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]),3))
-
         self.minimum_modulating_entry_1.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[131], raw_values[132]),3))
-
         self.cal_stroke_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[133], raw_values[134]),3))
-
         self.speed_break_point_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[139], raw_values[140]), 3))
+        self.deadband_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[137], raw_values[138]), 3))
+        self.surge_bkpt_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[141], raw_values[142]), 3))
+        self.surge_off_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[143], raw_values[144]), 3))
+        self.electronic_position_relay_1_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[145], raw_values[146]), 3))
+        self.electronic_position_relay_2_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[147], raw_values[148]), 3))
 
         self.max_high_speed_entry.insert(0,self.modbus_client.translate_value("Unsigned Int 8 bit", raw_values[168]))
         self.max_down_speed_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 8 bit", raw_values[167]))
         self.max_manual_speed_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 8 bit", raw_values[169]))
 
         self.gain_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[166]))
-
-        self.deadband_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[137], raw_values[138]), 3))
-
-        self.surge_bkpt_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[141], raw_values[142]), 3))
-        self.surge_off_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[143], raw_values[144]), 3))
-
+        self.recharge_pressure_entry.insert(0,self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[432]))
         self.recharge_pressure_entry.insert(0,self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[165]))
 
         self.strokes_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[558], raw_values[559]),3))
         self.accumulator_starts_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[562], raw_values[563]),3))
+
+

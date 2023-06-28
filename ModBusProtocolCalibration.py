@@ -135,8 +135,10 @@ class ModBusProtocolCalibration:
 
     def set_entries(self, raw_values):
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
+
         self.transmitter_low_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[161]))
         self.transmitter_high_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[162]))
+
         self.signal_low_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[125], raw_values[126]),3))
         self.signal_high_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[127], raw_values[128]), 3))
         self.primary_feedback_position_low_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[117], raw_values[118]), 3))

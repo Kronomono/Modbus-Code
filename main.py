@@ -10,6 +10,7 @@ from Tab2ModBusProtocolStatus import Tab2ModBusProtocolStatus
 from Tab5ModBusProtocolCalibration import Tab5ModBusProtocolCalibration
 from Tab6ModBusProtocolConfiguration import Tab6ModBusProtocolConfiguration
 from Tab3ModBusProtocolPST import Tab3ModBusProtocolPST
+from Tab4ModBusProtocolDiagnostics import Tab4ModBusProtocolDiagnostics
 import logging
 import atexit
 #logging.basicConfig()
@@ -35,7 +36,7 @@ notebook_frame.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 # Create a custom style for the notebook and set the tab position to 's' (south)
 style = ttk.Style()
 style.configure("TNotebook", tabposition="s")
-style.configure("TNotebook.Tab", padding=[50, 10])  # Adjust the padding values as desired
+style.configure("TNotebook.Tab", padding=[60, 10])  # Adjust the padding values as desired
 notebook = ttk.Notebook(notebook_frame, style="TNotebook")  # Create the notebook (tabbed window)
 
 # This is a list of the options that the user can select from when choosing what type of data to write to the modbus.
@@ -51,8 +52,9 @@ tab1 = Tab1ModBusProtocolConnection(notebook, options, modbus_client)
 tab5 = Tab5ModBusProtocolCalibration(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget)
 tab6 = Tab6ModBusProtocolConfiguration(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget)
 tab3 = Tab3ModBusProtocolPST(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget)
+tab4 = Tab4ModBusProtocolDiagnostics(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget)
 
-tab2 = Tab2ModBusProtocolStatus(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget,tab5.ModBusProtocolCalibration_widget, tab6.ModBusProtocolConfiguration_widget,tab3.ModBusProtocolPST_widget)
+tab2 = Tab2ModBusProtocolStatus(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget,tab5.ModBusProtocolCalibration_widget, tab6.ModBusProtocolConfiguration_widget,tab3.ModBusProtocolPST_widget,tab4.ModBusProtocolDiagnostics_widget)
 
 tab7 = DataTableBeta(notebook, options, modbus_client)
 tab8 = WriteRegistryBeta(notebook, options, modbus_client)  # Pass any necessary arguments to your tab classes
@@ -61,6 +63,7 @@ tab8 = WriteRegistryBeta(notebook, options, modbus_client)  # Pass any necessary
 notebook.add(tab1.frame, text='Connection')
 notebook.add(tab2.frame, text='Status')
 notebook.add(tab3.frame, text='PST')
+notebook.add(tab4.frame, text='Diagnostics')
 notebook.add(tab5.frame, text='Calibration')
 notebook.add(tab6.frame, text='Configuration')
 notebook.add(tab7.frame, text='Data Table')

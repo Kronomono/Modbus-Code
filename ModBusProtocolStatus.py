@@ -22,6 +22,8 @@ class ModBusProtocolStatus:
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
 
+        self.raw_values = {}
+
     def create_widgets(self):
         # Create the Connect
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
@@ -221,10 +223,13 @@ class ModBusProtocolStatus:
     def handle_submit(self):
         # Get the input value, selected type, and selected register, and write the value to the register
         # input_value = self.entry.get()
-        writables = [self.motor_starts_entry,self.booster_starts_entry,self.accumulator_starts_entry,self.actuator_strokes_entry,self.total_auto_time_entry,self.three_month_average_position_entry]
-        for writing in writables:
-            writing.delete(0,tk.END)
-            writing.insert(0,0)
+        if self.raw_values:
+            writables = [self.motor_starts_entry,self.booster_starts_entry,self.accumulator_starts_entry,self.actuator_strokes_entry,self.total_auto_time_entry,self.three_month_average_position_entry]
+            for writing in writables:
+                writing.delete(0,tk.END)
+                writing.insert(0,0)
+        else:
+            messagebox.showerror("Error","data not collected")
 
         motor_starts_value = self.motor_starts_entry.get()
         booster_starts_value = self.booster_starts_entry.get()

@@ -24,8 +24,6 @@ class ModBusProtocolConfiguration:
         self.main_frame.pack(fill='both', expand=True)
         self.raw_data = {}
 
-
-
     def create_widgets(self):
         # Create the Connect
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)

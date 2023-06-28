@@ -22,7 +22,7 @@ class ModBusProtocolPST:
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
-        self.raw_data = {}
+
 
     def create_widgets(self):
         # Create the Connect
@@ -57,6 +57,14 @@ class ModBusProtocolPST:
         self.entry_index =[("current_operational_mode_entry",(0.01,0.1,)),
                         ("operational_status_entry",(0.15,0.1)),
 
+                           ("signal_deviation_entry",(0.79,0.3)),
+                           ("auto_schedule_entry",(0.79,0.35)),
+                           ("time_entry",(0.79,0.6)),
+                           ("off_point_entry",(0.79,0.65)),
+                           ("target_entry",(0.79,0.7)),
+                           ("increment_entry",(0.79,0.8)),
+                           ("maximum_target_entry",(0.79,0.85))
+
                            ]
 
         for var_name, index in self.entry_index:
@@ -66,9 +74,18 @@ class ModBusProtocolPST:
 
 
         self.label_index=[
-                       ("current_operational_mode_label",("Current Operational Mode",0,0.07)),
-                       ("operational_status_label",("Operational Status",0.14,0.07)),
+            ("current_operational_mode_label",("Current Operational Mode",0,0.07)),
+            ("operational_status_label",("Operational Status",0.14,0.07)),
 
+            ("pst_trigger_label", ("PST Trigger:", 0.70, 0.2)),
+            ("signal_deviation_label",("Signal Deviation",0.70,0.3)),
+            ("auto_schedule_label", ("Auto Schedule", 0.70, 0.35)),
+
+            ("time_label", ("Time", 0.70, 0.6)),
+            ("off_point_label", ("Off Point", 0.70, 0.65)),
+            ("target_label", ("Target", 0.70, 0.7)),
+            ("increment_label",("Increment",0.7,0.8)),
+            ("maximum_target_label", ("Maximum Target", 0.7, 0.85)),
                        ]
         for  var_name, index in self.label_index:
             label = self.widgetTemp.create_label(*index)

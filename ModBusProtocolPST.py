@@ -26,7 +26,7 @@ class ModBusProtocolPST:
         # Create a second frame to hold the table and the scrollbar
         self.frame = tk.Frame(self.main_frame)
 
-        self.frame.place(relx=0.01, rely=0.5, anchor="w", relwidth=0.65, relheight=0.7)
+        self.frame.place(relx=0.01, rely=0.5, anchor="w", relwidth=0.65, relheight=0.6)
         # Create the table
         self.table = ttk.Treeview(self.frame,
                                   columns=("Event", "Status", "Trigger", "Total Elapsed Time", "Target", "Occurred"),
@@ -65,7 +65,6 @@ class ModBusProtocolPST:
         self.ModBusProtocolConnection.protocol_type_var.trace('w', self.manage_widgets_visibility)
         self.ModBusProtocolConnection.rexa_version_type_var.trace('w', self.manage_widgets_visibility)
 
-
         self.manage_UI()
 
     def manage_widgets_visibility(self, *args):
@@ -98,7 +97,8 @@ class ModBusProtocolPST:
                            ("off_point_entry",(0.79,0.65)),
                            ("target_entry",(0.79,0.7)),
                            ("increment_entry",(0.79,0.8)),
-                           ("maximum_target_entry",(0.79,0.85))
+                           ("maximum_target_entry",(0.79,0.85)),
+                           ("last_pst_event_entry",(0.3,0.92))
 
                            ]
 
@@ -121,10 +121,18 @@ class ModBusProtocolPST:
             ("target_label", ("Target", 0.70, 0.7)),
             ("increment_label",("Increment",0.7,0.8)),
             ("maximum_target_label", ("Maximum Target", 0.7, 0.85)),
+            ("last_pst_event_label",("Last Pst Event", 0.2, 0.92))
                        ]
         for  var_name, index in self.label_index:
             label = self.widgetTemp.create_label(*index)
             setattr(self,var_name,label)
+        self.export_to_excel_button = self.widgetTemp.create_button("Export to Excel", 0.15,0.8,10,2,15,self.export_to_excel)
+        self.clear_pst_data_button = self.widgetTemp.create_button("Clear PST Data", 0.3, 0.8, 10, 2, 15,self.clear_pst_data)
+    def export_to_excel(self):
+        print('export excel')
+    def clear_pst_data(self):
+        print('clear pst data')
+
 
     def clear_entries(self,raw_values):
         self.raw_data = raw_values

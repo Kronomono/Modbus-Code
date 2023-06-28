@@ -22,7 +22,7 @@ class ModBusProtocolDiagnostics:
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
-        self.raw_data = {}
+
 
     def create_widgets(self):
         # Create the Connect

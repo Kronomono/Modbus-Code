@@ -23,6 +23,41 @@ class ModBusProtocolPST:
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
 
+        # Create a second frame to hold the table and the scrollbar
+        self.frame = tk.Frame(self.main_frame)
+
+        self.frame.place(relx=0.01, rely=0.5, anchor="w", relwidth=0.65, relheight=0.7)
+        # Create the table
+        self.table = ttk.Treeview(self.frame,
+                                  columns=("Event", "Status", "Trigger", "Total Elapsed Time", "Target", "Occurred"),
+                                  show='headings')
+        self.table.heading("Event", text="Event")
+        self.table.heading("Status", text="Status")
+        self.table.heading("Trigger", text="Trigger")
+        self.table.heading("Total Elapsed Time", text="Total Elapsed Time")
+        self.table.heading("Target", text="Target")
+        self.table.heading("Occurred", text="Occured")
+
+        # Create scroll bar
+        scrollbar = tk.Scrollbar(self.frame)
+        # Link the scrollbar to the table
+        self.table.configure(yscrollcommand=scrollbar.set)
+        scrollbar.configure(command=self.table.yview)
+
+        # Use grid instead of pack for placement
+        self.table.grid(row=0, column=0, sticky="nsew")
+        scrollbar.grid(row=0, column=1, sticky="ns")
+
+        # Configure the grid to expand properly
+        self.frame.grid_columnconfigure(0, weight=1)
+        self.frame.grid_rowconfigure(0, weight=1)
+
+        # Distribute the column widths equally
+        total_width = self.table.winfo_width()
+        n_columns = len(self.table["columns"])
+        for column in self.table["columns"]:
+            self.table.column(column, width=int(total_width / n_columns))
+
 
     def create_widgets(self):
         # Create the Connect

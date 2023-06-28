@@ -1,5 +1,7 @@
 #ModBusProtocolCalibration.py
 import tkinter as tk
+import json
+from tkinter import filedialog
 from tkinter import messagebox, ttk
 from ratelimiter import RateLimiter
 import threading
@@ -20,6 +22,7 @@ class ModBusProtocolConfiguration:
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
+        self.raw_data = {}
 
 
 
@@ -59,6 +62,8 @@ class ModBusProtocolConfiguration:
             self.widgetTemp.placeOrHide(self.surge_bkpt_entry, 0.75, 0.3, False)
             self.widgetTemp.placeOrHide(self.surge_off_entry, 0.81, 0.3, False)
             self.widgetTemp.placeOrHide(self.surge_dir_entry, 0.87, 0.3, False)
+            self.widgetTemp.placeOrHide(self.save_button,0.85,0.8,False)
+            self.widgetTemp.placeOrHide(self.load_button,0.73,0.8,False)
 
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
@@ -72,6 +77,9 @@ class ModBusProtocolConfiguration:
             self.widgetTemp.placeOrHide(self.surge_bkpt_entry,0.75,0.3,True)
             self.widgetTemp.placeOrHide(self.surge_off_entry, 0.81, 0.3, True)
             self.widgetTemp.placeOrHide(self.surge_dir_entry, 0.87, 0.3, True)
+
+            self.widgetTemp.placeOrHide(self.save_button, 0.85, 0.8, True)
+            self.widgetTemp.placeOrHide(self.load_button, 0.73, 0.8, True)
 
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, True)
@@ -172,11 +180,20 @@ class ModBusProtocolConfiguration:
             setattr(self,var_name,label)
 
     def save_config(self):
-        print("saved")
+        raw_data = self.raw_data
+        # Open a file dialog for the user to choose the directory to save the file
+        file_path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=(("JSON files", "*.json"), ("All files", "*.*")))
+
+        # If a file path was provided, write the raw_values to a JSON file at that path
+        if file_path:
+            with open(file_path, 'w') as f:
+                json.dump(raw_data, f, indent=4)
+
 
     def load_config(self):
         print("load")
     def clear_entries(self,raw_values):
+        self.raw_data = raw_values
         for var_name, _ in self.entry_index:
             # Get the corresponding entry widget
             entry = getattr(self, var_name)

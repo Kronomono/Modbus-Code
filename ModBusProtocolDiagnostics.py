@@ -24,6 +24,8 @@ class ModBusProtocolDiagnostics:
         self.main_frame.pack(fill='both', expand=True)
 
 
+
+
     def create_widgets(self):
         # Create the Connect
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
@@ -57,6 +59,11 @@ class ModBusProtocolDiagnostics:
         self.entry_index =[("current_operational_mode_entry",(0.01,0.1,)),
                         ("operational_status_entry",(0.15,0.1)),
 
+                        ("accumulator_warning_pressure_entry", (0.81, 0.2)),
+                        ("accumulator_recharge_timeout_entry", (0.81, 0.25)),
+                        ("delta_pressure_output_warning_entry", (0.81, 0.3)),
+                        ("delta_pressure_output_alarm_entry", (0.81, 0.35)),
+
                            ]
 
         for var_name, index in self.entry_index:
@@ -66,8 +73,14 @@ class ModBusProtocolDiagnostics:
 
 
         self.label_index=[
-                       ("current_operational_mode_label",("Current Operational Mode",0,0.07)),
-                       ("operational_status_label",("Operational Status",0.14,0.07)),
+           ("current_operational_mode_label",("Current Operational Mode",0,0.07)),
+            ("operational_status_label",("Operational Status",0.14,0.07)),
+
+            ("accumulator_warning_pressure_label", ("Accumulator Warning Pressure", 0.65, 0.2)),
+            ("accumulator_recharge_timeout_label", ("Accumulator Recharge Timeout", 0.65, 0.25)),
+            ("delta_pressure_output_warning_label", ("Delta Pressure Output Warning", 0.65, 0.3)),
+            ("delta_pressure_output_alarm_label", ("Delta Pressure Output Alarm", 0.65, 0.35)),
+
 
                        ]
         for  var_name, index in self.label_index:

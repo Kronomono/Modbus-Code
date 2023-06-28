@@ -204,19 +204,31 @@ class ModBusProtocolConfiguration:
 
     def save_config(self):
         raw_data = self.raw_data
-        # Open a file dialog for the user to choose the directory to save the file
-        file_path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=(("JSON files", "*.json"), ("All files", "*.*")))
+        if raw_data:
+            # Open a file dialog for the user to choose the directory to save the file
+            file_path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=(("JSON files", "*.json"), ("All files", "*.*")))
 
-        # If a file path was provided, write the raw_values to a JSON file at that path
-        if file_path:
-            with open(file_path, 'w') as f:
-                json.dump(raw_data, f, indent=4)
+            # If a file path was provided, write the raw_values to a JSON file at that path
+            if file_path:
+                with open(file_path, 'w') as f:
+                    json.dump(raw_data, f, indent=4)
+        else:
+            messagebox.showerror("Error", "data is empty")
 
 
     def load_config(self):
         print("load")
+        #self.clear_entries(self.raw_data)
     def clear_entries(self,raw_values):
         self.raw_data = raw_values
+
+        self.fail_safe_entry_2.config(state='normal')
+        self.minimum_modulating_entry_2.config(state='normal')
+
+        self.surge_bkpt_entry.config(state='normal')
+        self.surge_off_entry.config(state='normal')
+        self.surge_dir_entry.config(state='normal')
+
         for var_name, _ in self.entry_index:
             # Get the corresponding entry widget
             entry = getattr(self, var_name)
@@ -227,6 +239,12 @@ class ModBusProtocolConfiguration:
 
         self.set_entries(raw_values)
 
+        self.fail_safe_entry_2.config(state='readonly')
+        self.minimum_modulating_entry_2.config(state='readonly')
+
+        self.surge_bkpt_entry.config(state='readonly')
+        self.surge_off_entry.config(state='readonly')
+        self.surge_dir_entry.config(state='readonly')
 
         for var_name, _ in self.entry_index:
             entry = getattr(self, var_name)

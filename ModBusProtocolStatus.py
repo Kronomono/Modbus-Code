@@ -72,63 +72,24 @@ class ModBusProtocolStatus:
                 continue
             widget.config(state='readonly')
 
+    def process_segment(self,range_start, range_end, entry,raw_values):
+        character = ""
+        entry.configure(state="normal")
+        for i in range(range_start, range_end):
+            segment = self.modbus_client.translate_value("ASCII 16 bit", raw_values[i])
+            if segment == "unknown":
+                character += str(raw_values[i])
+            else:
+                character += segment
+        entry.insert(0, character)
+        entry.configure(state="readonly")
 
     def set_entries(self,raw_values):
-
-        self.ModBusProtocolConnection.model_entry.configure(state="normal")
-        self.ModBusProtocolConnection.tag_entry.configure(state="normal")
-        self.ModBusProtocolConnection.serial_entry.configure(state="normal")
-        self.ModBusProtocolConnection.software_version_entry.configure(state="normal")
-        self.ModBusProtocolConnection.display_version_entry.configure(state="normal")
-
-        self.model_character = ""
-        for i in range(205, 230):  # This will iterate through the numbers 205 to 229 inclusive.
-            segment = self.modbus_client.translate_value("ASCII 16 bit", raw_values[i])
-            if segment == "unknown":
-                self.model_character += str(raw_values[i])
-            else:
-                self.model_character += segment
-        self.ModBusProtocolConnection.model_entry.insert(0,self.model_character)
-        self.tag_character = ""
-        for i in range(230, 262):  # This will iterate through the numbers 205 to 229 inclusive.
-            segment = self.modbus_client.translate_value("ASCII 16 bit", raw_values[i])
-            if segment == "unknown":
-                self.tag_character += str(raw_values[i])
-            else:
-                self.tag_character += segment
-        self.ModBusProtocolConnection.tag_entry.insert(0, self.tag_character)
-
-        self.serial_character = ""
-        for i in range(262, 276):  # This will iterate through the numbers 205 to 229 inclusive.
-            segment = self.modbus_client.translate_value("ASCII 16 bit", raw_values[i])
-            if segment == "unknown":
-                self.serial_character += str(raw_values[i])
-            else:
-                self.serial_character += segment
-        self.ModBusProtocolConnection.serial_entry.insert(0, self.serial_character)
-
-        self.software_version_character = ""
-        for i in range(276, 290):  # This will iterate through the numbers 205 to 229 inclusive.
-            segment = self.modbus_client.translate_value("ASCII 16 bit", raw_values[i])
-            if segment == "unknown":
-                self.software_version_character += str(raw_values[i])
-            else:
-                self.software_version_character += segment
-        self.ModBusProtocolConnection.software_version_entry.insert(0, self.software_version_character)
-
-        self.display_version_character = ""
-        for i in range(290, 304):  # This will iterate through the numbers 205 to 229 inclusive.
-            segment = self.modbus_client.translate_value("ASCII 16 bit", raw_values[i])
-            if segment == "unknown":
-                self.display_version_character += str(raw_values[i])
-            else:
-                self.display_version_character += segment
-        self.ModBusProtocolConnection.display_version_entry.insert(0, self.display_version_character)
-        self.ModBusProtocolConnection.model_entry.configure(state="readonly")
-        self.ModBusProtocolConnection.tag_entry.configure(state="readonly")
-        self.ModBusProtocolConnection.serial_entry.configure(state="readonly")
-        self.ModBusProtocolConnection.software_version_entry.configure(state="readonly")
-        self.ModBusProtocolConnection.display_version_entry.configure(state="readonly")
+        self.process_segment(205, 230, self.ModBusProtocolConnection.model_entry,raw_values)
+        self.process_segment(230, 262, self.ModBusProtocolConnection.tag_entry,raw_values)
+        self.process_segment(262, 276, self.ModBusProtocolConnection.serial_entry,raw_values)
+        self.process_segment(276, 290, self.ModBusProtocolConnection.software_version_entry,raw_values)
+        self.process_segment(290, 304, self.ModBusProtocolConnection.display_version_entry,raw_values)
 
 
         # write what values should be in the registry here

@@ -159,4 +159,13 @@ class ModBusProtocolPST:
     def set_entries(self, raw_values):
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
 
+        self.signal_deviation_entry.insert(0,self.modbus_client.translate_value("Boolean",raw_values[202]))
+        self.auto_schedule_entry.insert(0, self.modbus_client.translate_value("Boolean", raw_values[203]))
+        self.off_point_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[155], raw_values[156]), 3))
+        self.target_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[157], raw_values[158]), 3))
+        self.increment_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[149], raw_values[150]), 3))
+        self.maximum_target_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[159], raw_values[160]), 3))
+
+
+
 

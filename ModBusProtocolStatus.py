@@ -104,6 +104,9 @@ class ModBusProtocolStatus:
 
         self.ModBusProtocolCalibration.clear_entries(self.raw_values)
         self.ModBusProtocolConfiguration.clear_entries(self.raw_values)
+        self.ModBusProtocolDiagnostics.clear_entries(self.raw_values)
+        self.ModBusProtocolPST.clear_entries(self.raw_values)
+
 
 
     def retrieve_data(self, *args):

@@ -173,4 +173,9 @@ class ModBusProtocolDiagnostics:
     def set_entries(self, raw_values):
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
 
+        self.accumulator_recharge_timeout_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[163]))
+        self.accumulator_warning_pressure_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[164]))
+        self.delta_pressure_output_warning_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[171]))
+        self.delta_pressure_output_alarm_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[170]))
+
 

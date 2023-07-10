@@ -22,7 +22,36 @@ class ModBusProtocolDiagnostics:
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
+        # Create a second frame to hold the table and the scrollbar
+        self.frame = tk.Frame(self.main_frame)
 
+        self.frame.place(relx=0.01, rely=0.3, anchor="w", relwidth=0.65, relheight=0.3)
+        # Create the table
+        self.table = ttk.Treeview(self.frame,columns=("#","Event", "Occurred", "Cleared"),show='headings')
+        self.table.heading("#", text="#")
+        self.table.heading("Event", text="Event")
+        self.table.heading("Occurred", text="Occurred")
+        self.table.heading("Cleared", text="Cleared")
+
+        # Create scroll bar
+        scrollbar = tk.Scrollbar(self.frame)
+        # Link the scrollbar to the table
+        self.table.configure(yscrollcommand=scrollbar.set)
+        scrollbar.configure(command=self.table.yview)
+
+        # Use grid instead of pack for placement
+        self.table.grid(row=0, column=0, sticky="nsew")
+        scrollbar.grid(row=0, column=1, sticky="ns")
+
+        # Configure the grid to expand properly
+        self.frame.grid_columnconfigure(0, weight=1)
+        self.frame.grid_rowconfigure(0, weight=1)
+
+        # Set the column widths
+        self.table.column("#", width=50)
+        self.table.column("Event", width=100)
+        self.table.column("Occurred", width=100)
+        self.table.column("Cleared", width=100)
 
 
 
@@ -59,10 +88,10 @@ class ModBusProtocolDiagnostics:
         self.entry_index =[("current_operational_mode_entry",(0.01,0.1,)),
                         ("operational_status_entry",(0.15,0.1)),
 
-                        ("accumulator_warning_pressure_entry", (0.81, 0.2)),
-                        ("accumulator_recharge_timeout_entry", (0.81, 0.25)),
-                        ("delta_pressure_output_warning_entry", (0.81, 0.3)),
-                        ("delta_pressure_output_alarm_entry", (0.81, 0.35)),
+                        ("accumulator_warning_pressure_entry", (0.85, 0.2)),
+                        ("accumulator_recharge_timeout_entry", (0.85, 0.25)),
+                        ("delta_pressure_output_warning_entry", (0.85, 0.3)),
+                        ("delta_pressure_output_alarm_entry", (0.85, 0.35)),
 
                            ]
 
@@ -76,10 +105,10 @@ class ModBusProtocolDiagnostics:
            ("current_operational_mode_label",("Current Operational Mode",0,0.07)),
             ("operational_status_label",("Operational Status",0.14,0.07)),
 
-            ("accumulator_warning_pressure_label", ("Accumulator Warning Pressure", 0.65, 0.2)),
-            ("accumulator_recharge_timeout_label", ("Accumulator Recharge Timeout", 0.65, 0.25)),
-            ("delta_pressure_output_warning_label", ("Delta Pressure Output Warning", 0.65, 0.3)),
-            ("delta_pressure_output_alarm_label", ("Delta Pressure Output Alarm", 0.65, 0.35)),
+            ("accumulator_warning_pressure_label", ("Accumulator Warning Pressure", 0.68, 0.2)),
+            ("accumulator_recharge_timeout_label", ("Accumulator Recharge Timeout", 0.68, 0.25)),
+            ("delta_pressure_output_warning_label", ("Delta Pressure Output Warning", 0.68, 0.3)),
+            ("delta_pressure_output_alarm_label", ("Delta Pressure Output Alarm", 0.68, 0.35)),
 
 
                        ]

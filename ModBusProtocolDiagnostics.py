@@ -88,9 +88,13 @@ class ModBusProtocolDiagnostics:
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.ModBusProtocolConnection.protocol_type_var.trace('w', self.manage_widgets_visibility)
         self.ModBusProtocolConnection.rexa_version_type_var.trace('w', self.manage_widgets_visibility)
+        self.clear_data_button = self.widgetTemp.create_button("Clear Data", 0.25, 0.9, 10, 2, 15,self.clear_data)
 
 
         self.manage_UI()
+
+    def clear_data(self):
+        print('clear data')
 
     def manage_widgets_visibility(self, *args):
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()
@@ -104,11 +108,15 @@ class ModBusProtocolDiagnostics:
             elif len(index) == 2:
                 self.widgets_index.append((getattr(self, var_name), index[0], index[1]))
         if selected_version == 'X3':
-
+            self.frame.place(relx=0.01, rely=0.3, anchor="w", relwidth=0.65, relheight=0.3)
+            self.frame2.place(relx=0.01, rely=0.65, anchor="w", relwidth=0.65, relheight=0.3)
+            self.widgetTemp.placeOrHide(self.clear_data_button, 0.25, 0.9, False)
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
         else:
-
+            self.widgetTemp.placeOrHide(self.frame, 0.01, 0.3, True)
+            self.widgetTemp.placeOrHide(self.frame2, 0.01, 0.65, True)
+            self.widgetTemp.placeOrHide(self.clear_data_button, 0.25, 0.9, True)
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, True)
 

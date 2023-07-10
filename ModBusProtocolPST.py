@@ -79,11 +79,15 @@ class ModBusProtocolPST:
             elif len(index) == 2:
                 self.widgets_index.append((getattr(self, var_name), index[0], index[1]))
         if selected_version == 'X3':
-
+            self.frame.place(relx=0.01, rely=0.5, anchor="w", relwidth=0.65, relheight=0.6)
+            self.widgetTemp.placeOrHide(self.export_to_excel_button, 0.15, 0.8, False)
+            self.widgetTemp.placeOrHide(self.clear_pst_data_button, 0.3, 0.8, False)
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
         else:
-
+            self.widgetTemp.placeOrHide(self.frame,0.01,0.5,True)
+            self.widgetTemp.placeOrHide(self.export_to_excel_button, 0.15, 0.8, True)
+            self.widgetTemp.placeOrHide(self.clear_pst_data_button, 0.3, 0.8, True)
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, True)
 

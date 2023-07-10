@@ -53,6 +53,34 @@ class ModBusProtocolDiagnostics:
         self.table.column("Occurred", width=100)
         self.table.column("Cleared", width=100)
 
+        # Create a third frame to hold the second table and the scrollbar
+        self.frame2 = tk.Frame(self.main_frame)
+
+        self.frame2.place(relx=0.01, rely=0.65, anchor="w", relwidth=0.65, relheight=0.3)
+        # Create the second table
+        self.table2 = ttk.Treeview(self.frame2, columns=("Error Type", "Current Total", "Historic Total"), show='headings')
+        self.table2.heading("Error Type", text="Error Type")
+        self.table2.heading("Current Total", text="Current Total")
+        self.table2.heading("Historic Total", text="Historic Total")
+
+        # Create scroll bar for the second table
+        scrollbar2 = tk.Scrollbar(self.frame2)
+        # Link the scrollbar to the second table
+        self.table2.configure(yscrollcommand=scrollbar2.set)
+        scrollbar2.configure(command=self.table2.yview)
+
+        # Use grid instead of pack for placement of the second table
+        self.table2.grid(row=0, column=0, sticky="nsew")
+        scrollbar2.grid(row=0, column=1, sticky="ns")
+
+        # Configure the grid to expand properly for the second table
+        self.frame2.grid_columnconfigure(0, weight=1)
+        self.frame2.grid_rowconfigure(0, weight=1)
+
+        # Set the column widths for the second table
+        self.table2.column("Error Type", width=100)
+        self.table2.column("Current Total", width=100)
+        self.table2.column("Historic Total", width=100)
 
 
     def create_widgets(self):

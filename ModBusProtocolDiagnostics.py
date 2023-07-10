@@ -128,7 +128,7 @@ class ModBusProtocolDiagnostics:
                         ("accumulator_recharge_timeout_entry", (0.85, 0.25)),
                         ("delta_pressure_output_warning_entry", (0.85, 0.3)),
                         ("delta_pressure_output_alarm_entry", (0.85, 0.35)),
-
+                        ("last_error_entry", (0.85, 0.55)),
                            ]
 
         for var_name, index in self.entry_index:
@@ -145,7 +145,7 @@ class ModBusProtocolDiagnostics:
             ("accumulator_recharge_timeout_label", ("Accumulator Recharge Timeout", 0.68, 0.25)),
             ("delta_pressure_output_warning_label", ("Delta Pressure Output Warning", 0.68, 0.3)),
             ("delta_pressure_output_alarm_label", ("Delta Pressure Output Alarm", 0.68, 0.35)),
-
+            ("last_error_label", ("Last Error", 0.68, 0.55)),
 
                        ]
         for  var_name, index in self.label_index:

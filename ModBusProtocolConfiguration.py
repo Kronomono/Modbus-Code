@@ -115,7 +115,7 @@ class ModBusProtocolConfiguration:
                            ("booster_pump_entry",(0.75,0.2)),
                            ("recharge_pressure_entry",(0.8,0.38)),
                            ("power_fail_entry", (0.8, 0.43)),
-                           ("fail_direction",(0.8,0.48)),
+                           ("fail_direction_entry",(0.8,0.48)),
                            ("electronic_position_relay_1_entry", (0.85, 0.63)),
                            ("electronic_position_relay_2_entry", (0.85, 0.68)),
                            ("electronic_position_relay_3_entry", (0.85, 0.73)),   ]
@@ -252,6 +252,7 @@ class ModBusProtocolConfiguration:
     def set_entries(self, raw_values):
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
 
+        self.control_signal_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[0], raw_values[1]), 3))
         self.failsafe_entry_1.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]),3))
         self.minimum_modulating_entry_1.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[131], raw_values[132]),3))
         self.cal_stroke_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[133], raw_values[134]),3))
@@ -267,8 +268,8 @@ class ModBusProtocolConfiguration:
         self.max_manual_speed_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 8 bit", raw_values[169]))
 
         self.gain_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[166]))
-        self.recharge_pressure_entry.insert(0,self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[432]))
         self.recharge_pressure_entry.insert(0,self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[165]))
+        self.fail_direction_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[432]))
 
         self.strokes_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[558], raw_values[559]),3))
         self.accumulator_starts_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[562], raw_values[563]),3))

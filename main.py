@@ -66,7 +66,7 @@ notebook.add(tab3.frame, text='PST')
 notebook.add(tab4.frame, text='Diagnostics')
 notebook.add(tab5.frame, text='Calibration')
 notebook.add(tab6.frame, text='Configuration')
-#notebook.add(tab7.frame, text='Data Table')
+notebook.add(tab7.frame, text='Data Table')
 #notebook.add(tab8.frame, text='Writing Registry')
 
 notebook.pack(fill=tk.BOTH, expand=True)  # Add the notebook to the notebook frame

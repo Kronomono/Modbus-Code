@@ -29,6 +29,36 @@ class ModBusProtocolConnection:
         self.unit_label = tk.Label(self.root, text="Unit:")
         self.unit_entry =  self.widgetTemp.create_entry(self,0.22,0.65,20,False,"10")
 
+        self.model_label = tk.Label(self.root, text="Model Character:")
+        self.widgetTemp.placeOrHide(self,self.model_label, 0.65, 0.3, False)
+
+        self.model_entry =  self.widgetTemp.create_entry(self,0.75,0.3,30,False,None)
+
+        self.tag_label = tk.Label(self.root, text="Tag Character:")
+        self.widgetTemp.placeOrHide(self, self.tag_label, 0.65, 0.35, False)
+
+        self.tag_entry = self.widgetTemp.create_entry(self, 0.75, 0.35, 40, False, None)
+
+        self.serial_label = tk.Label(self.root, text="Serial Number:")
+        self.widgetTemp.placeOrHide(self, self.serial_label, 0.65, 0.40, False)
+
+        self.serial_entry = self.widgetTemp.create_entry(self, 0.75, 0.40, 20, False, None)
+
+        self.software_version_label = tk.Label(self.root, text="Serial Number:")
+        self.widgetTemp.placeOrHide(self, self.software_version_label, 0.65, 0.45, False)
+
+        self.software_version_entry = self.widgetTemp.create_entry(self, 0.75, 0.45, 20, False, None)
+
+        self.display_version_label = tk.Label(self.root, text="Display Version:")
+        self.widgetTemp.placeOrHide(self, self.display_version_label, 0.65, 0.5, False)
+
+        self.display_version_entry = self.widgetTemp.create_entry(self, 0.75, 0.5, 20, False, None)
+        self.model_entry.configure(state="readonly")
+        self.tag_entry.configure(state="readonly")
+        self.serial_entry.configure(state="readonly")
+        self.software_version_entry.configure(state="readonly")
+        self.display_version_entry.configure(state="readonly")
+
         self.protocol_type_var, self.protocol_entry_label, self.protocol_type_dropdown = self.widgetTemp.create_dropdown_menu(self,
             "Protocol",0.38, ['Modbus TCP', 'Ethernet/IP'], 'Modbus TCP', 0.35, 0.30, self.manage_entries_and_version
         )
@@ -50,6 +80,16 @@ class ModBusProtocolConnection:
             self.widgetTemp.placeOrHide(self,self.port_label, 0.22, 0.55, False)
             self.widgetTemp.placeOrHide(self,self.port_entry, 0.38, 0.55, False)
             self.box.place(relx=0.1, rely=0.15, anchor=tk.N)
+            self.widgetTemp.placeOrHide(self, self.model_label, 0.65, 0.3, False)
+            self.widgetTemp.placeOrHide(self, self.model_entry, 0.75, 0.3, False)
+            self.widgetTemp.placeOrHide(self, self.tag_label, 0.65, 0.35, False)
+            self.widgetTemp.placeOrHide(self, self.tag_entry, 0.75, 0.35, False)
+            self.widgetTemp.placeOrHide(self, self.serial_label, 0.65, 0.4, False)
+            self.widgetTemp.placeOrHide(self, self.serial_entry, 0.75, 0.4, False)
+            self.widgetTemp.placeOrHide(self, self.software_version_label, 0.65, 0.45, False)
+            self.widgetTemp.placeOrHide(self, self.software_version_entry, 0.75, 0.45, False)
+            self.widgetTemp.placeOrHide(self, self.display_version_label, 0.65, 0.5, False)
+            self.widgetTemp.placeOrHide(self, self.display_version_entry, 0.75, 0.5, False)
 
             if selected_protocol == 'Modbus TCP':
                 self.widgetTemp.placeOrHide(self,self.unit_label, 0.22, 0.65, False)
@@ -68,6 +108,18 @@ class ModBusProtocolConnection:
             self.widgetTemp.placeOrHide(self,self.unit_label, 0.22, 0.65, True)
             self.widgetTemp.placeOrHide(self,self.unit_entry, 0.38, 0.65, True)
             self.box.place_forget()
+
+            self.widgetTemp.placeOrHide(self,self.model_label,0.65,0.3,True)
+            self.widgetTemp.placeOrHide(self, self.model_entry, 0.75, 0.3, True)
+            self.widgetTemp.placeOrHide(self, self.tag_label, 0.65, 0.35, True)
+            self.widgetTemp.placeOrHide(self, self.tag_entry, 0.75, 0.35, True)
+            self.widgetTemp.placeOrHide(self,self.serial_label,0.65,0.4,True)
+            self.widgetTemp.placeOrHide(self, self.serial_entry, 0.75, 0.4, True)
+            self.widgetTemp.placeOrHide(self, self.software_version_label, 0.65, 0.45, True)
+            self.widgetTemp.placeOrHide(self, self.software_version_entry, 0.75, 0.45, True)
+            self.widgetTemp.placeOrHide(self, self.display_version_label, 0.65, 0.5, True)
+            self.widgetTemp.placeOrHide(self, self.display_version_entry, 0.75, 0.5, True)
+
 
     def toggle_connection(self, *args):
         # Toggle the Modbus connection based on the current state

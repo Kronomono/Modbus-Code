@@ -126,7 +126,7 @@ class ModbusClient:
                 if not decoded_value.isprintable():
                     decoded_value = unicodedata.name(decoded_value, 'unknown')
             except ValueError:
-                decoded_value = 'unknown'
+                decoded_value = 'ValueError'
             return decoded_value
         elif data_type == "Unsigned Int 16 bit":
             # Interpret as unsigned int

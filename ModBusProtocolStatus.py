@@ -72,11 +72,70 @@ class ModBusProtocolStatus:
                 continue
             widget.config(state='readonly')
 
+
     def set_entries(self,raw_values):
-        #write what values should be in the registry here
+
+        self.ModBusProtocolConnection.model_entry.configure(state="normal")
+        self.ModBusProtocolConnection.tag_entry.configure(state="normal")
+        self.ModBusProtocolConnection.serial_entry.configure(state="normal")
+        self.ModBusProtocolConnection.software_version_entry.configure(state="normal")
+        self.ModBusProtocolConnection.display_version_entry.configure(state="normal")
+
+        self.model_character = ""
+        for i in range(205, 230):  # This will iterate through the numbers 205 to 229 inclusive.
+            segment = self.modbus_client.translate_value("ASCII 16 bit", raw_values[i])
+            if segment == "unknown":
+                self.model_character += str(raw_values[i])
+            else:
+                self.model_character += segment
+        self.ModBusProtocolConnection.model_entry.insert(0,self.model_character)
+        self.tag_character = ""
+        for i in range(230, 262):  # This will iterate through the numbers 205 to 229 inclusive.
+            segment = self.modbus_client.translate_value("ASCII 16 bit", raw_values[i])
+            if segment == "unknown":
+                self.tag_character += str(raw_values[i])
+            else:
+                self.tag_character += segment
+        self.ModBusProtocolConnection.tag_entry.insert(0, self.tag_character)
+
+        self.serial_character = ""
+        for i in range(262, 276):  # This will iterate through the numbers 205 to 229 inclusive.
+            segment = self.modbus_client.translate_value("ASCII 16 bit", raw_values[i])
+            if segment == "unknown":
+                self.serial_character += str(raw_values[i])
+            else:
+                self.serial_character += segment
+        self.ModBusProtocolConnection.serial_entry.insert(0, self.serial_character)
+
+        self.software_version_character = ""
+        for i in range(276, 290):  # This will iterate through the numbers 205 to 229 inclusive.
+            segment = self.modbus_client.translate_value("ASCII 16 bit", raw_values[i])
+            if segment == "unknown":
+                self.software_version_character += str(raw_values[i])
+            else:
+                self.software_version_character += segment
+        self.ModBusProtocolConnection.software_version_entry.insert(0, self.software_version_character)
+
+        self.display_version_character = ""
+        for i in range(290, 304):  # This will iterate through the numbers 205 to 229 inclusive.
+            segment = self.modbus_client.translate_value("ASCII 16 bit", raw_values[i])
+            if segment == "unknown":
+                self.display_version_character += str(raw_values[i])
+            else:
+                self.display_version_character += segment
+        self.ModBusProtocolConnection.display_version_entry.insert(0, self.display_version_character)
+        self.ModBusProtocolConnection.model_entry.configure(state="readonly")
+        self.ModBusProtocolConnection.tag_entry.configure(state="readonly")
+        self.ModBusProtocolConnection.serial_entry.configure(state="readonly")
+        self.ModBusProtocolConnection.software_version_entry.configure(state="readonly")
+        self.ModBusProtocolConnection.display_version_entry.configure(state="readonly")
+
+
+        # write what values should be in the registry here
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
 
         self.accumulator_pressure_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[12]))
+
 
         self.actuator_position_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[2], raw_values[3]), 3))
         self.three_month_average_position_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[25], raw_values[26]),3))

@@ -7,6 +7,7 @@ from Names import Names
 from WidgetTemplateCreator import  WidgetTemplateCreator
 
 
+
 class ModBusProtocolStatus:
     def __init__(self, root, modbus_client,modbus_protocol_connection,modbus_protocol_calibration,modbus_protocol_configuration, modbus_protocol_pst,modbus_protocol_diagnostics):
         #references to other classes
@@ -256,7 +257,13 @@ class ModBusProtocolStatus:
         accumulator_starts_value = self.accumulator_starts_entry.get()
         actuator_strokes_value = self.actuator_strokes_entry.get()
         total_auto_time_value = self.total_auto_time_entry.get()
+
         three_month_average_position_value = self.three_month_average_position_entry.get()
+
+        #self.modbus_client.write_register(569, 0)
+        #self.client = ModbusTcpClient("192.168.1.100", "2011")
+        #self.client.write_register(571, 1, 10)
+
 
         #address_value = self.available_registers[self.selected_register.get()]
         print(f"motor_starts_value: {motor_starts_value}\n"

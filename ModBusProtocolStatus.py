@@ -239,12 +239,12 @@ class ModBusProtocolStatus:
 
         self.progress_bar, self.progress_label = self.create_progress_bar(0.5, 0.98)
         self.updateDataBtn = self.widgetTemp.create_button('Update Data', 0.0, 0.96, 10, 1, 12, self.retrieve_data)
-        self.reset_current_odometer_btn = self.widgetTemp.create_button('Reset Current Odometer', 0.8, 0.8, 10, 2, 20, self.handle_submit)
+        self.reset_current_odometer_btn = self.widgetTemp.create_button('Reset Current Odometer', 0.8, 0.8, 10, 2, 20, self.reset_current_odometer)
         self.main_feedback_entry = self.widgetTemp.create_entry(0.25,0.2,5,True,preFilledText=None)
         self.redundant_feedback_entry = self.widgetTemp.create_entry(0.25, 0.23, 5, True, preFilledText=None)
         self.manage_widgets_visibility()
 
-    def handle_submit(self):
+    def reset_current_odometer(self):
         # Get the input value, selected type, and selected register, and write the value to the register
         # input_value = self.entry.get()
         if self.raw_values:

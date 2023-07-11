@@ -29,9 +29,9 @@ class ModBusProtocolCalibration:
         self.ModBusProtocolConnection.protocol_type_var.trace('w', self.manage_widgets_visibility)
         self.ModBusProtocolConnection.rexa_version_type_var.trace('w', self.manage_widgets_visibility)
 
-        self.operational_mode_type_var, self.operational_mode_entry_label, self.operational_mode_type_dropdown = self.widgetTemp.create_dropdown_menu2(
-            "Operational Mode", 0.67, ['Auto Mode', 'Set Up Mode', 'Manual Mode'], 'Auto Mode', 0.67, 0.0, self.something
-            )
+       # self.operational_mode_type_var, self.operational_mode_entry_label, self.operational_mode_type_dropdown = self.widgetTemp.create_dropdown_menu2(
+          #  "Operational Mode", 0.67, ['Auto Mode', 'Set Up Mode', 'Manual Mode'], 'Auto Mode', 0.67, 0.0, self.something
+           # )
         self.position_transmitter_type_var, self.position_transmitter_entry_label, self.position_transmitter_type_dropdown = self.widgetTemp.create_dropdown_menu2(
             "Position Transmitter", 0.72, ['Option 1', 'Option 2', 'Option 3'], 'Option 1', 0.77, 0.71,
             self.something

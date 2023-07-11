@@ -95,17 +95,28 @@ class ModBusProtocolStatus:
         # write what values should be in the registry here
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
 
+        self.operational_status_entry.insert(0,self.modbus_client.translate_value("Byte",raw_values[16]))
+        self.main_feedback_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[16]))
+
         self.accumulator_pressure_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[12]))
 
-
+        self.control_command_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[0], raw_values[1]), 3))
         self.actuator_position_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[2], raw_values[3]), 3))
         self.three_month_average_position_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[25], raw_values[26]),3))
         self.deviation_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[4], raw_values[5]),3))
+
+
 
         self.ModBusProtocolCalibration.clear_entries(self.raw_values)
         self.ModBusProtocolConfiguration.clear_entries(self.raw_values)
         self.ModBusProtocolDiagnostics.clear_entries(self.raw_values)
         self.ModBusProtocolPST.clear_entries(self.raw_values)
+
+        #Calibration Tab math
+        self.actuator_position = float(self.actuator_position_entry.get())/20
+        self.current_cs_input = (float(self.ModBusProtocolCalibration.signal_high_entry.get())*self.actuator_position) + (float(self.ModBusProtocolCalibration.signal_low_entry.get())*self.actuator_position)
+
+        self.current_cs_input_entry.insert(0, self.position_transmitter)
 
 
 
@@ -118,10 +129,11 @@ class ModBusProtocolStatus:
             messagebox.showerror("Error", "Modbus connection is not open.")
     def retrieve_data_thread(self):
         # Define the maximum number of requests per second
-        MAX_REQUESTS_PER_SECOND = 50  # Increase this number to increase the polling rate
+        #call every 1.2 seconds
+        MAX_REQUESTS_PER_SECOND = 100  # Increase this number to increase the polling rate
         # Retrieve data from the Modbus server
         # Create a rate limiter
-        rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=1.0)
+        rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=0.2)
         try:
             unit = self.modbus_client.unit
             #print(f"This is unit in ModbusMasterClientWidget.py {unit}")

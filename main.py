@@ -77,4 +77,7 @@ notebook.pack(fill=tk.BOTH, expand=True)  # Add the notebook to the notebook fra
 root.mainloop()  # This is the main event loop for the tkinter application.
 #Task to do
 # all integrated be
-# need display epoch support
+# Add all values from data table
+# make save json file into format but variable name and translated value
+# populate data into the diagnostics table
+# make each tab refresh entries every 1 second

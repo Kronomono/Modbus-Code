@@ -89,7 +89,8 @@ class ModBusProtocolDiagnostics:
         self.ModBusProtocolConnection.protocol_type_var.trace('w', self.manage_widgets_visibility)
         self.ModBusProtocolConnection.rexa_version_type_var.trace('w', self.manage_widgets_visibility)
         self.clear_data_button = self.widgetTemp.create_button("Clear Data", 0.25, 0.9, 10, 2, 15,self.clear_data)
-
+        self.generate_service_report_button = self.widgetTemp.create_button("Generate Service\nReport", 0.65, 0.92, 10, 2, 15, self.clear_data)
+        self.view_edit_service_note_button = self.widgetTemp.create_button("View/Edit Service\n Notes", 0.85, 0.92, 10,2, 15, self.clear_data)
 
         self.manage_UI()
 
@@ -111,12 +112,16 @@ class ModBusProtocolDiagnostics:
             self.frame.place(relx=0.01, rely=0.3, anchor="w", relwidth=0.65, relheight=0.3)
             self.frame2.place(relx=0.01, rely=0.65, anchor="w", relwidth=0.65, relheight=0.3)
             self.widgetTemp.placeOrHide(self.clear_data_button, 0.25, 0.9, False)
+            self.widgetTemp.placeOrHide(self.generate_service_report_button, 0.65, 0.92, False)
+            self.widgetTemp.placeOrHide(self.view_edit_service_note_button, 0.85, 0.92, False)
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
         else:
             self.widgetTemp.placeOrHide(self.frame, 0.01, 0.3, True)
             self.widgetTemp.placeOrHide(self.frame2, 0.01, 0.65, True)
             self.widgetTemp.placeOrHide(self.clear_data_button, 0.25, 0.9, True)
+            self.widgetTemp.placeOrHide(self.generate_service_report_button, 0.65, 0.92, True)
+            self.widgetTemp.placeOrHide(self.view_edit_service_note_button, 0.85, 0.92, True)
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, True)
 

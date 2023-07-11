@@ -158,7 +158,7 @@ class ModbusMasterClientWidget:
             messagebox.showerror("Error", "Modbus connection is not open.")
     def retrieve_data_thread(self):
         # Define the maximum number of requests per second
-        MAX_REQUESTS_PER_SECOND = 25  # Increase this number to increase the polling rate
+        MAX_REQUESTS_PER_SECOND = 50  # Increase this number to increase the polling rate
         # Retrieve data from the Modbus server
         # Create a rate limiter
         rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=1.0)

@@ -274,4 +274,3 @@ class ModBusProtocolConfiguration:
         self.strokes_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[558], raw_values[559]),3))
         self.accumulator_starts_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[562], raw_values[563]),3))
 
-

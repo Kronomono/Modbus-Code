@@ -41,7 +41,6 @@ class ModBusProtocolConfiguration:
 
     def manage_widgets_visibility(self, *args):
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()
-        selected_protocol = self.ModBusProtocolConnection.protocol_type_var.get()
 
         self.widgets_index = []
 

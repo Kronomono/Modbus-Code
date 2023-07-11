@@ -278,15 +278,9 @@ class ModBusProtocolStatus:
         # print(f"Submitted value: {input_value}")
         # print(f"Selected type: {self.selected_type.get()}")
         # print(f"Address value: {address_value}")
-    '''
-                try:
-                    if input_value.isdigit():
-                        self.modbus_client.write_register(address_value, input_value)
-                    else:
-                        raise ValueError("Invalid selection")
 
-                except ValueError:
-                    messagebox.showerror("Error", "Invalid input value. Please try again.")'''
+    '''self.modbus_client.write_register(address_value, input_value)'''
+
 
 
 

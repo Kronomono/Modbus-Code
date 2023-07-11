@@ -178,4 +178,7 @@ class ModBusProtocolDiagnostics:
         self.delta_pressure_output_warning_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[171]))
         self.delta_pressure_output_alarm_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[170]))
 
+        self.fault_time_stamp_1 = self.modbus_client.translate_value("Epoch 64 bit",raw_values[328],raw_values[329],raw_values[330],raw_values[331])
+        print(f"Epoch value", self.fault_time_stamp_1)
+
 

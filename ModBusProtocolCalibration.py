@@ -117,7 +117,7 @@ class ModBusProtocolCalibration:
         for  var_name, index in self.label_index:
             label = self.widgetTemp.create_label(*index)
             setattr(self,var_name,label)
-    def clear_entries(self,raw_values):
+    def clear_entries(self,raw_values,control_command_entry_value):
         for var_name, _ in self.entry_index:
             # Get the corresponding entry widget
             entry = getattr(self, var_name)
@@ -126,13 +126,13 @@ class ModBusProtocolCalibration:
             # Clear the existing text in the entry widget
             entry.delete(0, 'end')
 
-        self.set_entries(raw_values)
+        self.set_entries(raw_values,  control_command_entry_value)
 
         for var_name, _ in self.entry_index:
             entry = getattr(self, var_name)
             entry.config(state='readonly')
 
-    def set_entries(self, raw_values):
+    def set_entries(self, raw_values, control_command_entry_value):
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
 
         self.transmitter_low_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[161]))
@@ -146,3 +146,8 @@ class ModBusProtocolCalibration:
         self.primary_feedback_position_high_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[119], raw_values[120]), 3))
         self.redundant_feedback_position_low_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[121], raw_values[122]), 3))
         self.redundant_feedback_position_high_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[123], raw_values[124]), 3))
+
+        #CurrentCsInput Math
+        control_command_entry_value = float(control_command_entry_value)/100
+        self.current_cs_input = (float(self.signal_low_entry.get())*control_command_entry_value) + (float(self.signal_high_entry.get())*control_command_entry_value)
+        self.current_cs_input_entry.insert(0,self.current_cs_input)

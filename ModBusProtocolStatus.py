@@ -107,16 +107,16 @@ class ModBusProtocolStatus:
 
 
 
-        self.ModBusProtocolCalibration.clear_entries(self.raw_values)
+        self.ModBusProtocolCalibration.clear_entries(self.raw_values,self.control_command_entry.get())
         self.ModBusProtocolConfiguration.clear_entries(self.raw_values)
         self.ModBusProtocolDiagnostics.clear_entries(self.raw_values)
         self.ModBusProtocolPST.clear_entries(self.raw_values)
 
-        #Calibration Tab math
+        #Position_transmitter math
         self.actuator_position = float(self.actuator_position_entry.get())/20
-        self.current_cs_input = (float(self.ModBusProtocolCalibration.signal_high_entry.get())*self.actuator_position) + (float(self.ModBusProtocolCalibration.signal_low_entry.get())*self.actuator_position)
+        self.position_transmitter = (float(self.ModBusProtocolCalibration.transmitter_low_entry.get())*self.actuator_position) + (float(self.ModBusProtocolCalibration.transmitter_high_entry.get())*self.actuator_position)
 
-        self.current_cs_input_entry.insert(0, self.position_transmitter)
+        self.position_transmitter_entry.insert(0, self.position_transmitter)
 
 
 

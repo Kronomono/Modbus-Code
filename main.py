@@ -78,5 +78,3 @@ root.mainloop()  # This is the main event loop for the tkinter application.
 #Task to do
 # all integrated be
 # need display epoch support
-#implement epochs
-# no window for connect. Just Entries

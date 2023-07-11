@@ -68,8 +68,7 @@ class ModBusProtocolCalibration:
                 self.widgetTemp.placeOrHide(*widget, True)
 
     def manage_UI(self, *args):
-        #print("manage_UI called")
-        #print(f"In manage_UI, self is {self}")
+
         self.entry_index =[("current_operational_mode_entry",(0.01,0.1,)),
                         ("operational_status_entry",(0.15,0.1)),
                         ("primary_feedback_position_low_entry",(0.05,0.3)),

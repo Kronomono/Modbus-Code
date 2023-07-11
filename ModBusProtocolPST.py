@@ -94,7 +94,7 @@ class ModBusProtocolPST:
     def manage_UI(self, *args):
         self.entry_index =[("current_operational_mode_entry",(0.01,0.1,)),
                         ("operational_status_entry",(0.15,0.1)),
-
+                           ("pst_trigger_entry", (0.79, 0.2)),
                            ("signal_deviation_entry",(0.79,0.3)),
                            ("auto_schedule_entry",(0.79,0.35)),
                            ("time_entry",(0.79,0.6)),

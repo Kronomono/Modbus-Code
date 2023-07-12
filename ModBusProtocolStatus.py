@@ -92,7 +92,7 @@ class ModBusProtocolStatus:
         self.process_segment(276, 290, self.ModBusProtocolConnection.software_version_entry,raw_values)
         self.process_segment(290, 304, self.ModBusProtocolConnection.display_version_entry,raw_values)
 
-        # write what values should be in the registry here
+
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
 
         self.operational_status_entry.insert(0,self.modbus_client.translate_value("Byte",raw_values[15]))

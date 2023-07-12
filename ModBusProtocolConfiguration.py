@@ -317,9 +317,9 @@ class ModBusProtocolConfiguration:
             self.max_down_speed_entry.insert(0, self.modbus_client.translate_value("Unsigned 8 bit", raw_values[167]))
 
 
-        #Booster motor enabled
+        #Booster motor pump logic
         if self.modbus_client.translate_value("Boolean", raw_values[186]) == "True":
-            self.booster_pump_entry.insert(0, self.modbus_client.translate_value("Float 32 bit", raw_values[141],raw_values[142]))
+            self.booster_pump_entry.insert(0,"Motor Enabled")
             #Direction logic
                 #if surge is enabled
             if self.modbus_client.translate_value("Boolean",raw_values[193]) == "True":

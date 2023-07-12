@@ -220,7 +220,7 @@ class ModBusProtocolConfiguration:
         raw_data["surge_off_entry"] = self.surge_off_entry.get()
         raw_data["surge_dir_entry"] = self.surge_dir_entry.get()
 
-        if raw_data:
+        if any(raw_data.values()):
             # Open a file dialog for the user to choose the directory to save the file
             file_path = filedialog.asksaveasfilename(defaultextension=".json",
                                                      filetypes=(("JSON files", "*.json"), ("All files", "*.*")))
@@ -230,7 +230,7 @@ class ModBusProtocolConfiguration:
                 with open(file_path, 'w') as f:
                     json.dump(raw_data, f, indent=4)
         else:
-            messagebox.showerror("Error", "Data is empty")
+            messagebox.showerror("Error", "Data is empty. Cannot save the file.")
 
     def load_config(self):
         print("load")

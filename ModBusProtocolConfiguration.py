@@ -265,24 +265,17 @@ class ModBusProtocolConfiguration:
 
         self.bumpless_transfer_entry.insert(0, self.modbus_client.translate_value("Boolean", raw_values[182]))
         self.minimum_modulating_entry_1.insert(0, self.modbus_client.translate_value("Boolean", raw_values[183]))
-
         self.solenoid_seat_entry.insert(0, self.modbus_client.translate_value("Boolean", raw_values[184]))
         self.electronic_position_relay_3_entry.insert(0, self.modbus_client.translate_value("Boolean", raw_values[197]))
 
         self.control_signal_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[0], raw_values[1]), 3))
-
         self.minimum_modulating_entry_2.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[131], raw_values[132]),3))
-
         self.cal_stroke_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[133], raw_values[134]),3))
-
-
         self.deadband_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[137], raw_values[138]), 3))
-
         self.electronic_position_relay_1_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[145], raw_values[146]), 3))
         self.electronic_position_relay_2_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[147], raw_values[148]), 3))
 
         self.max_high_speed_entry.insert(0,self.modbus_client.translate_value("Unsigned Int 8 bit", raw_values[168]))
-
         self.max_manual_speed_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 8 bit", raw_values[169]))
 
         self.gain_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[166]))

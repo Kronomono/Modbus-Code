@@ -111,7 +111,7 @@ class ModBusProtocolStatus:
 
 
 
-        self.ModBusProtocolCalibration.clear_entries(self.raw_values,self.control_command_entry.get())
+        self.ModBusProtocolCalibration.clear_entries(self.raw_values,self.control_command_entry.get(),self.actuator_position_entry.get())
         self.ModBusProtocolConfiguration.clear_entries(self.raw_values)
         self.ModBusProtocolDiagnostics.clear_entries(self.raw_values)
         self.ModBusProtocolPST.clear_entries(self.raw_values)

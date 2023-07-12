@@ -50,8 +50,8 @@ class ModBusProtocolConfiguration:
             elif len(index) == 2:
                 self.widgets_index.append((getattr(self, var_name), index[0], index[1]))
         if selected_version == 'X3':
-            self.widgetTemp.placeOrHide(self.operational_mode_entry_label,0.67,0.0,False)
-            self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, False)
+            #self.widgetTemp.placeOrHide(self.operational_mode_entry_label,0.67,0.0,False)
+           # self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, False)
 
             self.widgetTemp.placeOrHide(self.fail_safe_entry_2,0.19,0.35,False)
             self.widgetTemp.placeOrHide(self.minimum_modulating_entry_2,0.23,0.4,False)
@@ -66,8 +66,8 @@ class ModBusProtocolConfiguration:
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
         else:
-            self.widgetTemp.placeOrHide(self.operational_mode_entry_label, 0.67, 0.0, True)
-            self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, True)
+            #self.widgetTemp.placeOrHide(self.operational_mode_entry_label, 0.67, 0.0, True)
+            #self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, True)
 
             self.widgetTemp.placeOrHide(self.fail_safe_entry_2, 0.19, 0.35, True)
             self.widgetTemp.placeOrHide(self.minimum_modulating_entry_2, 0.23, 0.4, True)
@@ -267,6 +267,7 @@ class ModBusProtocolConfiguration:
         self.minimum_modulating_entry_1.insert(0, self.modbus_client.translate_value("Boolean", raw_values[183]))
 
         self.solenoid_seat_entry.insert(0, self.modbus_client.translate_value("Boolean", raw_values[184]))
+        self.electronic_position_relay_3_entry.insert(0, self.modbus_client.translate_value("Boolean", raw_values[197]))
 
         self.control_signal_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[0], raw_values[1]), 3))
         self.fail_safe_entry_2.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]),3))

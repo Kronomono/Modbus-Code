@@ -32,10 +32,10 @@ class ModBusProtocolCalibration:
        # self.operational_mode_type_var, self.operational_mode_entry_label, self.operational_mode_type_dropdown = self.widgetTemp.create_dropdown_menu2(
           #  "Operational Mode", 0.67, ['Auto Mode', 'Set Up Mode', 'Manual Mode'], 'Auto Mode', 0.67, 0.0, self.something
            # )
-        self.position_transmitter_type_var, self.position_transmitter_entry_label, self.position_transmitter_type_dropdown = self.widgetTemp.create_dropdown_menu2(
-            "Position Transmitter", 0.72, ['Option 1', 'Option 2', 'Option 3'], 'Option 1', 0.77, 0.71,
-            self.something
-        )
+       # self.position_transmitter_type_var, self.position_transmitter_entry_label, self.position_transmitter_type_dropdown = self.widgetTemp.create_dropdown_menu2(
+           # "Position Transmitter", 0.72, ['Option 1', 'Option 2', 'Option 3'], 'Option 1', 0.77, 0.71,
+           # self.something
+       # )
         self.manage_UI()
 
     def something(self,*args):
@@ -53,17 +53,17 @@ class ModBusProtocolCalibration:
             elif len(index) == 2:
                 self.widgets_index.append((getattr(self, var_name), index[0], index[1]))
         if selected_version == 'X3':
-            self.widgetTemp.placeOrHide(self.operational_mode_entry_label,0.67,0.0,False)
-            self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, False)
-            self.widgetTemp.placeOrHide(self.position_transmitter_entry_label, 0.72, 0.71, False)
-            self.widgetTemp.placeOrHide(self.position_transmitter_type_dropdown, 0.77, 0.74, False)
+            #self.widgetTemp.placeOrHide(self.operational_mode_entry_label,0.67,0.0,False)
+           # self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, False)
+            #self.widgetTemp.placeOrHide(self.position_transmitter_entry_label, 0.72, 0.71, False)
+            #self.widgetTemp.placeOrHide(self.position_transmitter_type_dropdown, 0.77, 0.74, False)
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
         else:
-            self.widgetTemp.placeOrHide(self.operational_mode_entry_label, 0.67, 0.0, True)
-            self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, True)
-            self.widgetTemp.placeOrHide(self.position_transmitter_entry_label, 0.72, 0.71, True)
-            self.widgetTemp.placeOrHide(self.position_transmitter_type_dropdown, 0.77, 0.74, True)
+           # self.widgetTemp.placeOrHide(self.operational_mode_entry_label, 0.67, 0.0, True)
+            #self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, True)
+            #self.widgetTemp.placeOrHide(self.position_transmitter_entry_label, 0.72, 0.71, True)
+           # self.widgetTemp.placeOrHide(self.position_transmitter_type_dropdown, 0.77, 0.74, True)
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, True)
 
@@ -82,7 +82,8 @@ class ModBusProtocolCalibration:
                         ("primary_entry",(0.4, 0.75)),
                         ("redundant_entry",(0.4, 0.78,)),
                         ("transmitter_low_entry",(0.73, 0.85)),
-                        ("transmitter_high_entry",(0.84, 0.85))
+                        ("transmitter_high_entry",(0.84, 0.85)),
+                           ("position_transmitter_entry", (0.785, 0.75))
                         ]
 
         for var_name, index in self.entry_index:
@@ -114,11 +115,13 @@ class ModBusProtocolCalibration:
                        ("primary_label",("Primary",0.35,0.75)),
                        ("redundant_label",("Redundant",0.34,0.78)),
                        ("transmitter_low_label",("Transmitter Low",0.72,0.82)),
-                       ("transmitter_high_label",("Transmitter High",0.83,0.82))]
+                       ("transmitter_high_label",("Transmitter High",0.83,0.82)),
+                    ("position_transmitter_label", ("Position Transmitter", 0.77, 0.72))
+                          ]
         for  var_name, index in self.label_index:
             label = self.widgetTemp.create_label(*index)
             setattr(self,var_name,label)
-    def clear_entries(self,raw_values,control_command_entry_value):
+    def clear_entries(self,raw_values,control_command_entry_value,actuator_position_entry_value):
         for var_name, _ in self.entry_index:
             # Get the corresponding entry widget
             entry = getattr(self, var_name)
@@ -127,13 +130,13 @@ class ModBusProtocolCalibration:
             # Clear the existing text in the entry widget
             entry.delete(0, 'end')
 
-        self.set_entries(raw_values,  control_command_entry_value)
+        self.set_entries(raw_values,  control_command_entry_value,actuator_position_entry_value)
 
         for var_name, _ in self.entry_index:
             entry = getattr(self, var_name)
             entry.config(state='readonly')
 
-    def set_entries(self, raw_values, control_command_entry_value):
+    def set_entries(self, raw_values, control_command_entry_value,actuator_position_entry_value):
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
         self.operational_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[15]))
 
@@ -154,3 +157,9 @@ class ModBusProtocolCalibration:
         control_command_entry_value = float(control_command_entry_value)/100
         self.current_cs_input = (float(self.signal_low_entry.get())*control_command_entry_value) + (float(self.signal_high_entry.get())*control_command_entry_value)
         self.current_cs_input_entry.insert(0,self.current_cs_input)
+
+        #Position_transmitter math
+        self.actuator_position = float(actuator_position_entry_value) / 20
+        self.position_transmitter = (float(self.transmitter_low_entry.get()) * self.actuator_position) + (float(self.transmitter_high_entry.get()) * self.actuator_position)
+
+        self.position_transmitter_entry.insert(0, self.position_transmitter)

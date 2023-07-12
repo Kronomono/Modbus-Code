@@ -271,7 +271,6 @@ class ModBusProtocolConfiguration:
 
         self.control_signal_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[0], raw_values[1]), 3))
 
-
         self.minimum_modulating_entry_2.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[131], raw_values[132]),3))
 
         self.cal_stroke_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[133], raw_values[134]),3))
@@ -294,13 +293,17 @@ class ModBusProtocolConfiguration:
         self.strokes_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[558], raw_values[559]),3))
         self.accumulator_starts_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[562], raw_values[563]),3))
 
-        #Failsafe logic
-        #Position
+
+
+        #Failsafe logic and power on logic
+        #Position / power up
         if self.modbus_client.translate_value("Boolean", raw_values[178]) == "True":
+            self.power_on_entry.insert(0,"Power-up Last")
             self.fail_safe_entry_1.insert(0,"Position")
             self.fail_safe_entry_2.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]), 3))
         #in-place
         if self.modbus_client.translate_value("Boolean", raw_values[179]) == "True":
+            self.power_on_entry.insert(0, "Local")
             self.fail_safe_entry_1.insert(0, "In-place")
             self.fail_safe_entry_2.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]), 3))
 

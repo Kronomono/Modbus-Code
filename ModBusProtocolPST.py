@@ -180,8 +180,9 @@ class ModBusProtocolPST:
             self.maximum_target_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[159], raw_values[160]), 3))
 
         #Pst mode contact unpowered
-        self.pst_trigger_entry.insert(0, "Contact Unpwer")
+
         if self.modbus_client.translate_value("Boolean", raw_values[204]) == "True":
+            self.pst_trigger_entry.insert(0, "Contact Unpwer")
             self.maximum_target_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[159], raw_values[160]), 3))
 
 

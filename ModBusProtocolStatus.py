@@ -48,13 +48,11 @@ class ModBusProtocolStatus:
 
         self.main_feedback_entry.delete(0,tk.END)
 
-        self.main_feedback_entry.config(state='readonly')
-
         self.redundant_feedback_entry.config(state='normal')
 
         self.redundant_feedback_entry.delete(0,tk.END)
 
-        self.redundant_feedback_entry.config(state='readonly')
+
 
         for widget, _, _ in self.widgets_index:
             # Skip label widgets
@@ -72,6 +70,8 @@ class ModBusProtocolStatus:
             if isinstance(widget, tk.Label):
                 continue
             widget.config(state='readonly')
+            self.main_feedback_entry.config(state='readonly')
+            self.redundant_feedback_entry.config(state='readonly')
 
     def process_segment(self,range_start, range_end, entry,raw_values):
         character = ""
@@ -95,10 +95,14 @@ class ModBusProtocolStatus:
         # write what values should be in the registry here
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
 
-        self.operational_status_entry.insert(0,self.modbus_client.translate_value("Byte",raw_values[16]))
+        self.operational_status_entry.insert(0,self.modbus_client.translate_value("Byte",raw_values[15]))
         self.main_feedback_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[16]))
+        self.redundant_feedback_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[16]))
 
         self.accumulator_pressure_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[12]))
+
+        self.motor_starts_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 32 bit",raw_values[562],raw_values[563]))
+        self.actuator_strokes_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 32 bit",raw_values[558],raw_values[559]))
 
         self.control_command_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[0], raw_values[1]), 3))
         self.actuator_position_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[2], raw_values[3]), 3))

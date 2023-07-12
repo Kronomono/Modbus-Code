@@ -146,9 +146,9 @@ class ModbusClient:
         elif data_type == "Boolean":
             # Translate 0/1 to True/False
             if value1 == 0:
-                return False
+                return "False"
             elif value1 == 1:
-                return True
+                return "True"
             else:
                 return 'Not a Boolean'
         elif data_type == "Byte":

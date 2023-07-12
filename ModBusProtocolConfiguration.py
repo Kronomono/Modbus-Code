@@ -54,7 +54,7 @@ class ModBusProtocolConfiguration:
             self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, False)
 
             self.widgetTemp.placeOrHide(self.fail_safe_entry_2,0.19,0.35,False)
-            self.widgetTemp.placeOrHide(self.minimum_modulating_entry_2,0.21,0.4,False)
+            self.widgetTemp.placeOrHide(self.minimum_modulating_entry_2,0.23,0.4,False)
 
             self.widgetTemp.placeOrHide(self.surge_bkpt_entry, 0.71, 0.3, False)
             self.widgetTemp.placeOrHide(self.surge_off_entry, 0.8, 0.3, False)
@@ -70,7 +70,7 @@ class ModBusProtocolConfiguration:
             self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, True)
 
             self.widgetTemp.placeOrHide(self.fail_safe_entry_2, 0.19, 0.35, True)
-            self.widgetTemp.placeOrHide(self.minimum_modulating_entry_2, 0.21, 0.4, True)
+            self.widgetTemp.placeOrHide(self.minimum_modulating_entry_2, 0.23, 0.4, True)
 
             self.widgetTemp.placeOrHide(self.surge_bkpt_entry,0.71,0.3,True)
             self.widgetTemp.placeOrHide(self.surge_off_entry, 0.8, 0.3, True)
@@ -92,7 +92,7 @@ class ModBusProtocolConfiguration:
                            ("ESD_trip_signal_entry",(0.1,0.3)),
                            ("failsafe_entry_1",(0.1,0.35)),
                            ("bumpless_transfer_entry",(0.12,0.4)),
-                           ("minimum_modulating_entry_1",(0.12,0.45)),
+                           ("minimum_modulating_entry_1",(0.13,0.45)),
                            ("solenoid_seat_entry",(0.1,0.5)),
                            ("cal_stroke_entry",(0.1,0.55)),
 
@@ -119,7 +119,7 @@ class ModBusProtocolConfiguration:
                            ("electronic_position_relay_2_entry", (0.85, 0.68)),
                            ("electronic_position_relay_3_entry", (0.85, 0.73)),   ]
         self.fail_safe_entry_2 = self.widgetTemp.create_entry(0.19, 0.35, 5, True, preFilledText=None)
-        self.minimum_modulating_entry_2 = self.widgetTemp.create_entry(0.21,0.4,5,True,preFilledText=None)
+        self.minimum_modulating_entry_2 = self.widgetTemp.create_entry(0.23,0.45,6,True,preFilledText=None)
 
         self.surge_bkpt_entry = self.widgetTemp.create_entry(0.71,0.3,5,True,preFilledText=None)
         self.surge_off_entry = self.widgetTemp.create_entry(0.8, 0.3, 5, True, preFilledText=None)
@@ -194,7 +194,7 @@ class ModBusProtocolConfiguration:
             ("deadband_%", ("%",0.63, 0.63)),
 
             ("failsafe_%", ("%", 0.23, 0.35)),
-            ("bumpless_transfer_%", ("%", 0.25, 0.4)),
+            ("minimum_modulating_%", ("%", 0.27, 0.45)),
 
                        ]
         for  var_name, index in self.label_index:
@@ -236,6 +236,13 @@ class ModBusProtocolConfiguration:
             # Clear the existing text in the entry widget
             entry.delete(0, 'end')
 
+        self.fail_safe_entry_2.delete(0, 'end')
+        self.minimum_modulating_entry_2.delete(0, 'end')
+
+        self.surge_bkpt_entry.delete(0, 'end')
+        self.surge_off_entry.delete(0, 'end')
+        self.surge_dir_entry.delete(0, 'end')
+
         self.set_entries(raw_values)
 
         self.fail_safe_entry_2.config(state='readonly')
@@ -251,9 +258,20 @@ class ModBusProtocolConfiguration:
     def set_entries(self, raw_values):
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
 
+        self.operational_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[15]))
+        self.ESD_trip_signal_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[174]))
+
+
+
+        self.bumpless_transfer_entry.insert(0, self.modbus_client.translate_value("Boolean", raw_values[182]))
+        self.minimum_modulating_entry_1.insert(0, self.modbus_client.translate_value("Boolean", raw_values[183]))
+
+        self.solenoid_seat_entry.insert(0, self.modbus_client.translate_value("Boolean", raw_values[184]))
+
         self.control_signal_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[0], raw_values[1]), 3))
-        self.failsafe_entry_1.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]),3))
-        self.minimum_modulating_entry_1.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[131], raw_values[132]),3))
+        self.fail_safe_entry_2.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]),3))
+
+        self.minimum_modulating_entry_2.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[131], raw_values[132]),3))
         self.cal_stroke_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[133], raw_values[134]),3))
         self.speed_break_point_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[139], raw_values[140]), 3))
         self.deadband_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[137], raw_values[138]), 3))

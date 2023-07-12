@@ -200,28 +200,32 @@ class ModBusProtocolConfiguration:
         for  var_name, index in self.label_index:
             label = self.widgetTemp.create_label(*index)
             setattr(self,var_name,label)
+
+    import json
+
     def save_config(self):
-        raw_data = []
+        raw_data = {}
 
         for var_name, _ in self.entry_index:
             # Get the corresponding entry widget
             entry = getattr(self, var_name)
             # Get the value in the entry
             entry_value = entry.get()
-            # Append the entry name and value as a tuple to the raw_data list
-            raw_data.append((var_name, entry_value))
-        raw_data.append(("fail_safe_entry_2",self.fail_safe_entry_2.get()))
-        raw_data.append(("minimum_modulating_entry_2", self.minimum_modulating_entry_2.get()))
-        raw_data.append(("surge_bkpt_entry", self.surge_bkpt_entry.get()))
-        raw_data.append(("surge_off_entry", self.surge_off_entry.get()))
-        raw_data.append(("surge_dir_entry", self.surge_dir_entry.get()))
+            # Add the entry name and value to the raw_data dictionary
+            raw_data[var_name] = entry_value
+
+        raw_data["fail_safe_entry_2"] = self.fail_safe_entry_2.get()
+        raw_data["minimum_modulating_entry_2"] = self.minimum_modulating_entry_2.get()
+        raw_data["surge_bkpt_entry"] = self.surge_bkpt_entry.get()
+        raw_data["surge_off_entry"] = self.surge_off_entry.get()
+        raw_data["surge_dir_entry"] = self.surge_dir_entry.get()
 
         if raw_data:
             # Open a file dialog for the user to choose the directory to save the file
             file_path = filedialog.asksaveasfilename(defaultextension=".json",
                                                      filetypes=(("JSON files", "*.json"), ("All files", "*.*")))
 
-            # If a file path was provided, write the raw_values to a JSON file at that path
+            # If a file path was provided, write the raw_data to a JSON file at that path
             if file_path:
                 with open(file_path, 'w') as f:
                     json.dump(raw_data, f, indent=4)

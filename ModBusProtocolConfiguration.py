@@ -272,8 +272,10 @@ class ModBusProtocolConfiguration:
         self.fail_safe_entry_2.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]),3))
 
         self.minimum_modulating_entry_2.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[131], raw_values[132]),3))
+
         self.cal_stroke_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[133], raw_values[134]),3))
-        self.speed_break_point_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[139], raw_values[140]), 3))
+
+
         self.deadband_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[137], raw_values[138]), 3))
         self.surge_bkpt_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[141], raw_values[142]), 3))
         self.surge_off_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[143], raw_values[144]), 3))
@@ -281,13 +283,35 @@ class ModBusProtocolConfiguration:
         self.electronic_position_relay_2_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[147], raw_values[148]), 3))
 
         self.max_high_speed_entry.insert(0,self.modbus_client.translate_value("Unsigned Int 8 bit", raw_values[168]))
-        self.max_down_speed_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 8 bit", raw_values[167]))
+
         self.max_manual_speed_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 8 bit", raw_values[169]))
 
         self.gain_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[166]))
         self.recharge_pressure_entry.insert(0,self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[165]))
         self.fail_direction_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[432]))
 
+        self.motor_starts_1k_entry.insert(0, round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[562], raw_values[563]), 3))
         self.strokes_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[558], raw_values[559]),3))
         self.accumulator_starts_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[562], raw_values[563]),3))
 
+        if self.modbus_client.translate_value("Boolean",
+                                              raw_values[191]) == "True" and self.modbus_client.translate_value(
+                "Boolean", raw_values[192]) == "True":
+            self.two_speed_entry.insert(0, "Up/Dn On and Breakpoint On")
+            self.max_down_speed_entry.insert(0, self.modbus_client.translate_value("Unsigned 8 bit", raw_values[167]))
+            self.speed_break_point_entry.insert(0, self.modbus_client.translate_value("Float 32 bit", raw_values[139],raw_values[140]))
+
+        elif self.modbus_client.translate_value("Boolean", raw_values[192]) == "True":
+            self.two_speed_entry.insert(0, "Breakpoint On")
+            self.speed_break_point_entry.insert(0, self.modbus_client.translate_value("Float 32 bit", raw_values[139],
+                                                                                      raw_values[140]))
+
+        elif self.modbus_client.translate_value("Boolean", raw_values[191]) == "True":
+            self.two_speed_entry.insert(0, "Up/Dn On")
+            self.max_down_speed_entry.insert(0, self.modbus_client.translate_value("Unsigned 8 bit", raw_values[167]))
+        else:
+            self.max_down_speed_entry.delete(0, 'end')
+            self.speed_break_point_entry.delete(0, 'end')
+
+        if self.modbus_client.translate_value("Boolean", raw_values[186]) == "True":
+            self.booster_pump_entry.insert(0, self.modbus_client.translate_value("Float 32 bit", raw_values[141],raw_values[142]))

@@ -161,7 +161,7 @@ class ModBusProtocolCalibration:
         self.current_cs_input_entry.insert(0,self.current_cs_input)
 
         #Position_transmitter math
-        self.actuator_position = float(actuator_position_entry_value) / 20
-        self.position_transmitter = (float(self.transmitter_low_entry.get()) * self.actuator_position) + (float(self.transmitter_high_entry.get()) * self.actuator_position)
+        self.actuator_position = float(actuator_position_entry_value)
+        self.position_transmitter = 635 * self.actuator_position + 500
 
         self.position_transmitter_entry.insert(0, self.position_transmitter)

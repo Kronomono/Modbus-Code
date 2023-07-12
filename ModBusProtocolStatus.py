@@ -117,8 +117,8 @@ class ModBusProtocolStatus:
         self.ModBusProtocolPST.clear_entries(self.raw_values)
 
         #Position_transmitter math
-        self.actuator_position = float(self.actuator_position_entry.get())/20
-        self.position_transmitter = (float(self.ModBusProtocolCalibration.transmitter_low_entry.get())*self.actuator_position) + (float(self.ModBusProtocolCalibration.transmitter_high_entry.get())*self.actuator_position)
+        self.actuator_position = float(self.actuator_position_entry.get())
+        self.position_transmitter = 635*self.actuator_position+500
 
         self.position_transmitter_entry.insert(0, self.position_transmitter)
 

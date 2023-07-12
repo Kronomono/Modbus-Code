@@ -200,20 +200,33 @@ class ModBusProtocolConfiguration:
         for  var_name, index in self.label_index:
             label = self.widgetTemp.create_label(*index)
             setattr(self,var_name,label)
-
     def save_config(self):
-        raw_data = self.raw_data
+        raw_data = []
+
+        for var_name, _ in self.entry_index:
+            # Get the corresponding entry widget
+            entry = getattr(self, var_name)
+            # Get the value in the entry
+            entry_value = entry.get()
+            # Append the entry name and value as a tuple to the raw_data list
+            raw_data.append((var_name, entry_value))
+        raw_data.append(("fail_safe_entry_2",self.fail_safe_entry_2.get()))
+        raw_data.append(("minimum_modulating_entry_2", self.minimum_modulating_entry_2.get()))
+        raw_data.append(("surge_bkpt_entry", self.surge_bkpt_entry.get()))
+        raw_data.append(("surge_off_entry", self.surge_off_entry.get()))
+        raw_data.append(("surge_dir_entry", self.surge_dir_entry.get()))
+
         if raw_data:
             # Open a file dialog for the user to choose the directory to save the file
-            file_path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=(("JSON files", "*.json"), ("All files", "*.*")))
+            file_path = filedialog.asksaveasfilename(defaultextension=".json",
+                                                     filetypes=(("JSON files", "*.json"), ("All files", "*.*")))
 
             # If a file path was provided, write the raw_values to a JSON file at that path
             if file_path:
                 with open(file_path, 'w') as f:
                     json.dump(raw_data, f, indent=4)
         else:
-            messagebox.showerror("Error", "data is empty")
-
+            messagebox.showerror("Error", "Data is empty")
 
     def load_config(self):
         print("load")
@@ -334,7 +347,6 @@ class ModBusProtocolConfiguration:
                     self.surge_dir_entry.insert(0, "PH")
                 self.surge_bkpt_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[141], raw_values[142]), 3))
                 self.surge_off_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[143], raw_values[144]), 3))
-
 
         #power fail logic
         # Accumulator

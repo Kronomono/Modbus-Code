@@ -277,8 +277,7 @@ class ModBusProtocolConfiguration:
 
 
         self.deadband_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[137], raw_values[138]), 3))
-        self.surge_bkpt_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[141], raw_values[142]), 3))
-        self.surge_off_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[143], raw_values[144]), 3))
+
         self.electronic_position_relay_1_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[145], raw_values[146]), 3))
         self.electronic_position_relay_2_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[147], raw_values[148]), 3))
 
@@ -288,7 +287,7 @@ class ModBusProtocolConfiguration:
 
         self.gain_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[166]))
         self.recharge_pressure_entry.insert(0,self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[165]))
-        self.fail_direction_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[432]))
+
 
         self.motor_starts_1k_entry.insert(0, round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[562], raw_values[563]), 3))
         self.strokes_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[558], raw_values[559]),3))
@@ -315,3 +314,8 @@ class ModBusProtocolConfiguration:
 
         if self.modbus_client.translate_value("Boolean", raw_values[186]) == "True":
             self.booster_pump_entry.insert(0, self.modbus_client.translate_value("Float 32 bit", raw_values[141],raw_values[142]))
+
+        self.surge_bkpt_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[141], raw_values[142]), 3))
+        self.surge_off_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[143], raw_values[144]), 3))
+
+        self.fail_direction_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[432]))

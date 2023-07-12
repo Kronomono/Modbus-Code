@@ -236,7 +236,6 @@ class ModBusProtocolConfiguration:
         print("load")
         #self.clear_entries(self.raw_data)
     def clear_entries(self,raw_values):
-        self.raw_data = raw_values
 
         self.fail_safe_entry_2.config(state='normal')
         self.minimum_modulating_entry_2.config(state='normal')
@@ -366,4 +365,3 @@ class ModBusProtocolConfiguration:
         #In place
         if  self.modbus_client.translate_value("Boolean",raw_values[188]) == "True":
             self.power_fail_entry.insert(0, "In place")
-

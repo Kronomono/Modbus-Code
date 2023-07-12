@@ -217,6 +217,7 @@ class ModBusProtocolDiagnostics:
         self.model_change_time_stamp_8 = self.modbus_client.translate_value("Epoch 64 bit", raw_values[406], raw_values[407],raw_values[408], raw_values[409])
         self.model_change_time_stamp_9 = self.modbus_client.translate_value("Epoch 64 bit", raw_values[410], raw_values[411],raw_values[412], raw_values[413])
         self.model_change_time_stamp_10 = self.modbus_client.translate_value("Epoch 64 bit", raw_values[414], raw_values[415],raw_values[416], raw_values[417])
+
         '''   print(f"Model_Epoch1 value", self.model_change_time_stamp_1)
         print(f"Model_Epoch2 value", self.model_change_time_stamp_2)
         print(f"Model_Epoch3 value", self.model_change_time_stamp_3)

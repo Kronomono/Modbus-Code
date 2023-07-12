@@ -177,11 +177,13 @@ class ModBusProtocolDiagnostics:
             entry.config(state='readonly')
     def set_entries(self, raw_values):
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
+        self.operational_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[15]))
 
         self.accumulator_recharge_timeout_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[163]))
         self.accumulator_warning_pressure_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[164]))
         self.delta_pressure_output_warning_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[171]))
         self.delta_pressure_output_alarm_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[170]))
+        self.last_error_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[14]))
 
         self.fault_time_stamp_1 = self.modbus_client.translate_value("Epoch 64 bit",raw_values[328],raw_values[329],raw_values[330],raw_values[331])
         self.fault_time_stamp_2 = self.modbus_client.translate_value("Epoch 64 bit", raw_values[332], raw_values[333],raw_values[334], raw_values[335])

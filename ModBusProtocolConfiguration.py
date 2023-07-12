@@ -90,7 +90,7 @@ class ModBusProtocolConfiguration:
                            ("control_signal_entry",(0.1,0.2)),
                            ("power_on_entry",(0.1,0.25)),
                            ("ESD_trip_signal_entry",(0.1,0.3)),
-                           ("failsafe_entry_1",(0.1,0.35)),
+                           ("fail_safe_entry_1",(0.1,0.35)),
                            ("bumpless_transfer_entry",(0.12,0.4)),
                            ("minimum_modulating_entry_1",(0.13,0.45)),
                            ("solenoid_seat_entry",(0.1,0.5)),
@@ -123,7 +123,7 @@ class ModBusProtocolConfiguration:
 
         self.surge_bkpt_entry = self.widgetTemp.create_entry(0.71,0.3,5,True,preFilledText=None)
         self.surge_off_entry = self.widgetTemp.create_entry(0.8, 0.3, 5, True, preFilledText=None)
-        self.surge_dir_entry = self.widgetTemp.create_entry(0.9, 0.3, 5, True, preFilledText=None)
+        self.surge_dir_entry = self.widgetTemp.create_entry(0.9, 0.3, 8, True, preFilledText=None)
 
         for var_name, index in self.entry_index:
 
@@ -137,7 +137,7 @@ class ModBusProtocolConfiguration:
                         ("control_signal_label",("Control Signal",0.01,0.2)),
                         ("power_on_label", ("Power On ", 0.01, 0.25)),
             ("ESD_trip_signal_label",("ESD Trip Signal",0.01,0.3)),
-            ("failsafe_label", ("Fail Safe",0.01, 0.35)),
+            ("fail_safe_label", ("Fail Safe",0.01, 0.35)),
             ("bumpless_transfer_label",("Bumpless Transfer",0.01,0.4)),
             ("minimum_modulating_label", ("Minimum Modulating", 0.01, 0.45)),
             ("solenoid_seat_label",("Solenoid Seat",0.01,0.5)),
@@ -181,7 +181,7 @@ class ModBusProtocolConfiguration:
 
             ("surge_bkpt_label_%", ("%", 0.76, 0.3)),
             ("surge_off_label_%", ("%", 0.85, 0.3)),
-            ("surge_dir_label_%", ("%", 0.95, 0.3)),
+            ("surge_dir_label_%", ("%", 0.97, 0.3)),
 
             ("electronic_position_relay_#1_label_%", ("%", 0.94, 0.63)),
             ("electronic_position_relay_#2_label_%", ("%", 0.94, 0.68)),
@@ -270,7 +270,7 @@ class ModBusProtocolConfiguration:
         self.electronic_position_relay_3_entry.insert(0, self.modbus_client.translate_value("Boolean", raw_values[197]))
 
         self.control_signal_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[0], raw_values[1]), 3))
-        self.fail_safe_entry_2.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]),3))
+
 
         self.minimum_modulating_entry_2.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[131], raw_values[132]),3))
 
@@ -294,9 +294,19 @@ class ModBusProtocolConfiguration:
         self.strokes_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[558], raw_values[559]),3))
         self.accumulator_starts_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[562], raw_values[563]),3))
 
-        if self.modbus_client.translate_value("Boolean",
-                                              raw_values[191]) == "True" and self.modbus_client.translate_value(
-                "Boolean", raw_values[192]) == "True":
+        #Failsafe logic
+        #Position
+        if self.modbus_client.translate_value("Boolean", raw_values[178]) == "True":
+            self.fail_safe_entry_1.insert(0,"Position")
+            self.fail_safe_entry_2.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]), 3))
+        #in-place
+        if self.modbus_client.translate_value("Boolean", raw_values[179]) == "True":
+            self.fail_safe_entry_1.insert(0, "In-place")
+            self.fail_safe_entry_2.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]), 3))
+
+
+        #Two speed logic
+        if self.modbus_client.translate_value("Boolean",raw_values[191]) == "True" and self.modbus_client.translate_value("Boolean", raw_values[192]) == "True":
             self.two_speed_entry.insert(0, "Up/Dn On and Breakpoint On")
             self.max_down_speed_entry.insert(0, self.modbus_client.translate_value("Unsigned 8 bit", raw_values[167]))
             self.speed_break_point_entry.insert(0, self.modbus_client.translate_value("Float 32 bit", raw_values[139],raw_values[140]))
@@ -309,14 +319,39 @@ class ModBusProtocolConfiguration:
         elif self.modbus_client.translate_value("Boolean", raw_values[191]) == "True":
             self.two_speed_entry.insert(0, "Up/Dn On")
             self.max_down_speed_entry.insert(0, self.modbus_client.translate_value("Unsigned 8 bit", raw_values[167]))
-        else:
-            self.max_down_speed_entry.delete(0, 'end')
-            self.speed_break_point_entry.delete(0, 'end')
 
+
+        #Booster motor enabled
         if self.modbus_client.translate_value("Boolean", raw_values[186]) == "True":
             self.booster_pump_entry.insert(0, self.modbus_client.translate_value("Float 32 bit", raw_values[141],raw_values[142]))
+            #Direction logic
+                #if surge is enabled
+            if self.modbus_client.translate_value("Boolean",raw_values[193]) == "True":
+                # if PL & PH enabled
+                if self.modbus_client.translate_value("Boolean",raw_values[194]) == "True" and self.modbus_client.translate_value("Boolean",raw_values[195]) == "True":
+                    self.surge_dir_entry.insert(0,"PL & PH")
+                #if PL only is enabled
+                elif self.modbus_client.translate_value("Boolean",raw_values[194]) == "True":
+                    self.surge_dir_entry.insert(0, "PL")
+                #if PH only is enabled
+                elif self.modbus_client.translate_value("Boolean", raw_values[195]) == "True":
+                    self.surge_dir_entry.insert(0, "PH")
+                self.surge_bkpt_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[141], raw_values[142]), 3))
+                self.surge_off_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[143], raw_values[144]), 3))
 
-        self.surge_bkpt_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[141], raw_values[142]), 3))
-        self.surge_off_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[143], raw_values[144]), 3))
 
-        self.fail_direction_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[432]))
+        #power fail logic
+        # Accumulator
+        if self.modbus_client.translate_value("Boolean",raw_values[187]) == "True":
+            self.power_fail_entry.insert(0,"Accumulator")
+            #fail direction
+            if self.modbus_client.translate_value("Boolean",raw_values[189]) == "True" and self.modbus_client.translate_value("Boolean", raw_values[190]) == "True":
+                self.fail_direction_entry.insert(0, "PL/PH")
+            elif self.modbus_client.translate_value("Boolean",raw_values[189]) == "True":
+                self.fail_direction_entry.insert(0,"PL")
+            elif self.modbus_client.translate_value("Boolean", raw_values[190]) == "True":
+                self.fail_direction_entry.insert(0, "PH")
+        #In place
+        if  self.modbus_client.translate_value("Boolean",raw_values[188]) == "True":
+            self.power_fail_entry.insert(0, "In place")
+

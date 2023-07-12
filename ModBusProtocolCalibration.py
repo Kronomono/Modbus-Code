@@ -154,8 +154,10 @@ class ModBusProtocolCalibration:
         self.redundant_feedback_position_high_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[123], raw_values[124]), 3))
 
         #CurrentCsInput Math
-        control_command_entry_value = float(control_command_entry_value)/100
-        self.current_cs_input = (float(self.signal_low_entry.get())*control_command_entry_value) + (float(self.signal_high_entry.get())*control_command_entry_value)
+        control_command_entry_value = float(control_command_entry_value)
+        self.current_cs_input = 0.16 * control_command_entry_value + 4
+
+        #self.current_cs_input = (float(self.signal_low_entry.get())*control_command_entry_value) + (float(self.signal_high_entry.get())*control_command_entry_value)
         self.current_cs_input_entry.insert(0,self.current_cs_input)
 
         #Position_transmitter math

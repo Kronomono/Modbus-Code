@@ -30,6 +30,17 @@ atexit.register(on_exit)
 # Create a Frame for the notebook
 notebook_frame = ttk.Frame(root)
 notebook_frame.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+current_tab = None
+
+def update_tab(event):
+    global current_tab
+    new_tab = notebook.tab(notebook.select(), "text")
+    if new_tab != current_tab:
+        current_tab = new_tab
+        #print(f"Current tab: {current_tab}")
+        tab2.ModBusProtocolStatus_widget.update_current_tab(new_tab)
+
+
 
 # Create a custom style for the notebook and set the tab position to 's' (south)
 style = ttk.Style()
@@ -42,7 +53,7 @@ options = ["Float", "Signed 16-bit", "Unsigned 16-bit", "Boolean", "ASCII", "Byt
 
 # Create an instance of the Modbus client with initial empty settings
 modbus_client = ModbusClient("", 0)
-
+current_tab = notebook.select()
 # Create the tabs and add them to the notebook
 tab1 = Tab1ModBusProtocolConnection(notebook, options, modbus_client)
 tab5 = Tab5ModBusProtocolCalibration(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget)
@@ -50,10 +61,10 @@ tab6 = Tab6ModBusProtocolConfiguration(notebook, options, modbus_client, tab1.Mo
 tab3 = Tab3ModBusProtocolPST(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget)
 tab4 = Tab4ModBusProtocolDiagnostics(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget)
 
-tab2 = Tab2ModBusProtocolStatus(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget,tab5.ModBusProtocolCalibration_widget, tab6.ModBusProtocolConfiguration_widget,tab3.ModBusProtocolPST_widget,tab4.ModBusProtocolDiagnostics_widget)
+tab2 = Tab2ModBusProtocolStatus(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget,tab5.ModBusProtocolCalibration_widget, tab6.ModBusProtocolConfiguration_widget,tab3.ModBusProtocolPST_widget,tab4.ModBusProtocolDiagnostics_widget,current_tab)
 
-tab7 = DataTableBeta(notebook, options, modbus_client)
-tab8 = WriteRegistryBeta(notebook, options, modbus_client)  # Pass any necessary arguments to your tab classes
+#tab7 = DataTableBeta(notebook, options, modbus_client)
+#tab8 = WriteRegistryBeta(notebook, options, modbus_client)  # Pass any necessary arguments to your tab classes
 
 # Add the frames to the notebook with their respective labels
 notebook.add(tab1.frame, text='Connection')
@@ -62,11 +73,11 @@ notebook.add(tab3.frame, text='PST')
 notebook.add(tab4.frame, text='Diagnostics')
 notebook.add(tab5.frame, text='Calibration')
 notebook.add(tab6.frame, text='Configuration')
-notebook.add(tab7.frame, text='Data Table')
-notebook.add(tab8.frame, text='Writing Registry')
+#notebook.add(tab7.frame, text='Data Table')
+#notebook.add(tab8.frame, text='Writing Registry')
 
 notebook.pack(fill=tk.BOTH, expand=True)  # Add the notebook to the notebook frame
-
+notebook.bind("<<NotebookTabChanged>>", update_tab)
 
 
 

@@ -7,7 +7,7 @@ from Names import Names
 from WidgetTemplateCreator import  WidgetTemplateCreator
 import time
 class ModBusProtocolStatus:
-    def __init__(self, root, modbus_client,modbus_protocol_connection,modbus_protocol_calibration,modbus_protocol_configuration, modbus_protocol_pst,modbus_protocol_diagnostics):
+    def __init__(self, root, modbus_client,modbus_protocol_connection,modbus_protocol_calibration,modbus_protocol_configuration, modbus_protocol_pst,modbus_protocol_diagnostics,current_tab):
         #references to other classes
         self.root = root
         self.modbus_client = modbus_client
@@ -18,6 +18,7 @@ class ModBusProtocolStatus:
         self.ModBusProtocolConfiguration = modbus_protocol_configuration
         self.ModBusProtocolPST = modbus_protocol_pst
         self.ModBusProtocolDiagnostics = modbus_protocol_diagnostics
+        self.current_tab = current_tab
 
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
@@ -31,6 +32,7 @@ class ModBusProtocolStatus:
         self.ModBusProtocolConnection.protocol_type_var.trace('w', self.manage_widgets_visibility)
         self.ModBusProtocolConnection.rexa_version_type_var.trace('w', self.manage_widgets_visibility)
         self.manage_UI()
+
     def create_progress_bar(self, relx, rely):
         progress = ttk.Progressbar(self.root, length=200, mode='determinate')
         progress.place(relx=relx, rely=rely, relwidth=0.8, anchor=tk.CENTER)
@@ -115,6 +117,7 @@ class ModBusProtocolStatus:
 
     def retrieve_data_thread(self):
         # Define the maximum number of requests per second
+
         #call every 1.2 seconds
         MAX_REQUESTS_PER_SECOND = 100  # Increase this number to increase the polling rate
         # Retrieve data from the Modbus server
@@ -155,9 +158,13 @@ class ModBusProtocolStatus:
             messagebox.showerror("Error", f"Exception while reading data from Modbus server: {e}")
         threading.Timer(1.5, self.retrieve_data).start()
 
+    def update_current_tab(self, new_tab):
+        self.current_tab = new_tab
+
     def manage_widgets_visibility(self, *args):
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()
         selected_protocol = self.ModBusProtocolConnection.protocol_type_var.get()
+
         self.widgets_index = []
 
         for var_name, index in self.label_index + self.entry_index:

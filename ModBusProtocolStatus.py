@@ -110,14 +110,12 @@ class ModBusProtocolStatus:
 
     def retrieve_data(self, *args):
         if self.modbus_client.is_connected():
-            threading.Thread(target=self.retrieve_data_thread, daemon=True).start()
+            threading.Thread(target=self.retrieve_data_thread_initialize, daemon=True).start()
         else:
             messagebox.showerror("Error", "Modbus connection is not open.")
-
-
-    def retrieve_data_thread(self):
+    def retrieve_data_thread_initialize(self):
         # Define the maximum number of requests per second
-
+        print(f"Current tab: ", self.current_tab)
         #call every 1.2 seconds
         MAX_REQUESTS_PER_SECOND = 100  # Increase this number to increase the polling rate
         # Retrieve data from the Modbus server
@@ -147,16 +145,54 @@ class ModBusProtocolStatus:
                     except Exception as e:
                         print(f"Exception while reading register at address {address}: {e}")
             self.clear_entries(self.raw_values)  # Clear the entries
-
-
-
         except ValueError:
             print("Invalid unit or count value. Please enter a valid number.")
             messagebox.showerror("Error", "Invalid unit or count value. Please enter a valid number.")
         except Exception as e:
             print(f"Exception while reading data from Modbus server: {e}")
             messagebox.showerror("Error", f"Exception while reading data from Modbus server: {e}")
-        threading.Timer(1.5, self.retrieve_data).start()
+        #threading.Timer(1.5, self.retrieve_data).start()
+
+    def retrieve_data_thread(self):
+        # Define the maximum number of requests per second
+        print(f"Current tab: ", self.current_tab)
+        #call every 1.2 seconds
+        MAX_REQUESTS_PER_SECOND = 100  # Increase this number to increase the polling rate
+        # Retrieve data from the Modbus server
+        # Create a rate limiter
+        rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=0.2)
+        try:
+            unit = self.modbus_client.unit
+            #print(f"This is unit in ModbusMasterClientWidget.py {unit}")
+            count = 571
+            raw_values = []  # Initialize raw_values outside the loop
+            self.raw_values = raw_values
+            self.progress_bar['maximum'] = count
+            self.progress_bar['value'] = 0  # Reset the progress bar
+            for address in range(0, count):
+                with rate_limiter:
+                    try:
+                        result = self.modbus_client.client.read_holding_registers(address, 1 , unit)
+                        if not result.isError():
+                            raw_values.append(result.registers[0])
+                            self.progress_bar['value'] += 1  # Increment the progress bar
+                            self.progress_label['text'] = f"{self.progress_bar['value']}/{count}"  # Update the label text
+                            self.root.update_idletasks()  # Update the GUI
+                        else:
+                            print(f"Error reading register at address {address}: {result}")
+                            messagebox.showerror("Error",f"Error reading register at address {address}: {result}")
+                            break;
+                    except Exception as e:
+                        print(f"Exception while reading register at address {address}: {e}")
+            self.clear_entries(self.raw_values)  # Clear the entries
+        except ValueError:
+            print("Invalid unit or count value. Please enter a valid number.")
+            messagebox.showerror("Error", "Invalid unit or count value. Please enter a valid number.")
+        except Exception as e:
+            print(f"Exception while reading data from Modbus server: {e}")
+            messagebox.showerror("Error", f"Exception while reading data from Modbus server: {e}")
+        #threading.Timer(1.5, self.retrieve_data).start()
+
 
     def update_current_tab(self, new_tab):
         self.current_tab = new_tab

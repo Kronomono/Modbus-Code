@@ -122,12 +122,10 @@ class ModBusProtocolStatus:
 
         self.position_transmitter_entry.insert(0, self.position_transmitter)
 
-
-
     def retrieve_data(self, *args):
-
         if self.modbus_client.is_connected():
-            threading.Thread(target=self.retrieve_data_thread).start()
+            self.retrieve_data_thread()  # Call the function immediately
+            threading.Timer(1.5, self.retrieve_data).start()  # Schedule the next call after 1.5 seconds
             self.root.update()
         else:
             messagebox.showerror("Error", "Modbus connection is not open.")

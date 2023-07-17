@@ -72,8 +72,5 @@ notebook.pack(fill=tk.BOTH, expand=True)  # Add the notebook to the notebook fra
 
 root.mainloop()  # This is the main event loop for the tkinter application.
 #Task to do
-# all integrated be
-# Add all values from data table
-# make save json file into format but variable name and translated value
-# populate data into the diagnostics table
-# make each tab refresh entries every 1 second
+# make it so table only imports once rather than always updating
+# make it so it only updates on the live tab and everything else is static

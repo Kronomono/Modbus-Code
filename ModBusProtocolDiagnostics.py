@@ -187,28 +187,15 @@ class ModBusProtocolDiagnostics:
         self.last_error_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[14]))
 
 #Fault time stamps
-        self.table.insert("","end",values=("1",self.names.get_name(329),self.modbus_client.translate_value("Epoch 64 bit",raw_values[328],raw_values[329],raw_values[330],raw_values[331])))
-        self.table.insert("", "end", values=("2", self.names.get_name(333),self.modbus_client.translate_value("Epoch 64 bit", raw_values[332],raw_values[333], raw_values[334],raw_values[335])))
-        self.table.insert("", "end", values=("3", self.names.get_name(337),self.modbus_client.translate_value("Epoch 64 bit", raw_values[336], raw_values[337],raw_values[338], raw_values[339])))
-        self.table.insert("", "end", values=("4", self.names.get_name(341),self.modbus_client.translate_value("Epoch 64 bit", raw_values[340],raw_values[341], raw_values[342],raw_values[343])))
-        self.table.insert("", "end", values=("5", self.names.get_name(345),self.modbus_client.translate_value("Epoch 64 bit", raw_values[344],raw_values[345], raw_values[346],raw_values[347])))
-        self.table.insert("", "end", values=("6", self.names.get_name(349),self.modbus_client.translate_value("Epoch 64 bit", raw_values[348],raw_values[349], raw_values[350],raw_values[351])))
-        self.table.insert("", "end", values=("7", self.names.get_name(353),self.modbus_client.translate_value("Epoch 64 bit", raw_values[352],raw_values[353], raw_values[354],raw_values[355])))
-        self.table.insert("", "end", values=("8", self.names.get_name(357),self.modbus_client.translate_value("Epoch 64 bit", raw_values[356],raw_values[357], raw_values[358],raw_values[359])))
-        self.table.insert("", "end", values=("9", self.names.get_name(361),self.modbus_client.translate_value("Epoch 64 bit", raw_values[360],raw_values[361], raw_values[362],raw_values[363])))
-        self.table.insert("", "end", values=("10", self.names.get_name(365),self.modbus_client.translate_value("Epoch 64 bit", raw_values[364],raw_values[365], raw_values[366],raw_values[367])))
+        self.table.delete(*self.table.get_children())
+        for i in range(329, 368, 4):
+            row_number = (i - 329) // 4 + 1
+            self.table.insert("", "end", values=(str(row_number),self.names.get_name(i),self.modbus_client.translate_value("Epoch 64 bit",raw_values[i - 1],raw_values[i],raw_values[i + 1],raw_values[i + 2])))
 
-#model_change_time_stamp
-        self.table.insert("", "end", values=("1", self.names.get_name(379),self.modbus_client.translate_value("Epoch 64 bit", raw_values[378],raw_values[380], raw_values[381],raw_values[382])))
-        self.table.insert("", "end", values=("2", self.names.get_name(383),self.modbus_client.translate_value("Epoch 64 bit", raw_values[382],raw_values[383], raw_values[384],raw_values[385])))
-        self.table.insert("", "end", values=("3", self.names.get_name(387),self.modbus_client.translate_value("Epoch 64 bit", raw_values[386],raw_values[387], raw_values[388],raw_values[389])))
-        self.table.insert("", "end", values=("4", self.names.get_name(391),self.modbus_client.translate_value("Epoch 64 bit", raw_values[390],raw_values[391], raw_values[392],raw_values[393])))
-        self.table.insert("", "end", values=("5", self.names.get_name(395),self.modbus_client.translate_value("Epoch 64 bit", raw_values[394],raw_values[395], raw_values[396],raw_values[397])))
-        self.table.insert("", "end", values=("6", self.names.get_name(399),self.modbus_client.translate_value("Epoch 64 bit", raw_values[398],raw_values[399], raw_values[400],raw_values[401])))
-        self.table.insert("", "end", values=("7", self.names.get_name(403),self.modbus_client.translate_value("Epoch 64 bit", raw_values[402],raw_values[403], raw_values[404],raw_values[405])))
-        self.table.insert("", "end", values=("8", self.names.get_name(407),self.modbus_client.translate_value("Epoch 64 bit", raw_values[406],raw_values[407], raw_values[408],raw_values[409])))
-        self.table.insert("", "end", values=("9", self.names.get_name(411),self.modbus_client.translate_value("Epoch 64 bit", raw_values[410],raw_values[411], raw_values[412],raw_values[413])))
-        self.table.insert("", "end", values=("10", self.names.get_name(415),self.modbus_client.translate_value("Epoch 64 bit", raw_values[414],raw_values[415], raw_values[416],raw_values[417])))
+        #model_change_time_stamp
+        for i in range(379, 418, 4):
+            row_number = (i - 379) // 4 + 1
+            self.table.insert("", "end", values=(str(row_number),self.names.get_name(i),self.modbus_client.translate_value("Epoch 64 bit",raw_values[i - 1],raw_values[i],raw_values[i + 1],raw_values[i + 2])))
 
         self.table2.delete(*self.table2.get_children())
         for i in range(419, 489):

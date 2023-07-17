@@ -27,14 +27,17 @@ class ModBusProtocolStatus:
 
         self.raw_values = {}
 
+
     def create_widgets(self):
         # Create the Connect
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.ModBusProtocolConnection.protocol_type_var.trace('w', self.manage_widgets_visibility)
         self.ModBusProtocolConnection.rexa_version_type_var.trace('w', self.manage_widgets_visibility)
-
-
         self.manage_UI()
+
+
+
+
     def create_progress_bar(self, relx, rely):
         progress = ttk.Progressbar(self.root, length=200, mode='determinate')
         progress.place(relx=relx, rely=rely, relwidth=0.8, anchor=tk.CENTER)
@@ -125,10 +128,12 @@ class ModBusProtocolStatus:
     def retrieve_data(self, *args):
         if self.modbus_client.is_connected():
             self.retrieve_data_thread()  # Call the function immediately
-            threading.Timer(1.5, self.retrieve_data).start()  # Schedule the next call after 1.5 seconds
-            self.root.update()
+            self.root.after(1500, self.retrieve_data)
+
         else:
             messagebox.showerror("Error", "Modbus connection is not open.")
+
+
     def retrieve_data_thread(self):
         # Define the maximum number of requests per second
         #call every 1.2 seconds
@@ -249,10 +254,9 @@ class ModBusProtocolStatus:
                 readOnly = False
             entry = self.widgetTemp.create_entry(*index, 13, readOnly, preFilledText=None)
             setattr(self, var_name, entry)
-
-
         self.progress_bar, self.progress_label = self.create_progress_bar(0.5, 0.98)
         self.updateDataBtn = self.widgetTemp.create_button('Update Data', 0.0, 0.96, 10, 1, 12, self.retrieve_data)
+
         self.reset_current_odometer_btn = self.widgetTemp.create_button('Reset Current Odometer', 0.8, 0.8, 10, 2, 20, self.reset_current_odometer)
         self.main_feedback_entry = self.widgetTemp.create_entry(0.25,0.2,5,True,preFilledText=None)
         self.redundant_feedback_entry = self.widgetTemp.create_entry(0.25, 0.23, 5, True, preFilledText=None)
@@ -276,23 +280,12 @@ class ModBusProtocolStatus:
         total_auto_time_value = self.total_auto_time_entry.get()
 
         three_month_average_position_value = self.three_month_average_position_entry.get()
-
-        #self.modbus_client.write_register(569, 0)
-        #self.client = ModbusTcpClient("192.168.1.100", "2011")
-        #self.client.write_register(571, 1, 10)
-
-
-        #address_value = self.available_registers[self.selected_register.get()]
         print(f"motor_starts_value: {motor_starts_value}\n"
               f"booster_starts_value:{booster_starts_value}\n"
               f"accumulator_starts_value:{accumulator_starts_value}\n"
               f"actuator_strokes_value:{actuator_strokes_value}\n"
               f"total_auto_time_value:{total_auto_time_value}\n"
               f"three_month_average_position_value:{three_month_average_position_value}")
-        # print(f"Submitted value: {input_value}")
-        # print(f"Selected type: {self.selected_type.get()}")
-        # print(f"Address value: {address_value}")
-
     '''self.modbus_client.write_register(address_value, input_value)'''
 
 

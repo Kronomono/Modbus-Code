@@ -5,9 +5,7 @@ from ratelimiter import RateLimiter
 import threading
 from Names import Names
 from WidgetTemplateCreator import  WidgetTemplateCreator
-
-
-
+import time
 class ModBusProtocolStatus:
     def __init__(self, root, modbus_client,modbus_protocol_connection,modbus_protocol_calibration,modbus_protocol_configuration, modbus_protocol_pst,modbus_protocol_diagnostics):
         #references to other classes
@@ -27,17 +25,12 @@ class ModBusProtocolStatus:
 
         self.raw_values = {}
 
-
     def create_widgets(self):
         # Create the Connect
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.ModBusProtocolConnection.protocol_type_var.trace('w', self.manage_widgets_visibility)
         self.ModBusProtocolConnection.rexa_version_type_var.trace('w', self.manage_widgets_visibility)
         self.manage_UI()
-
-
-
-
     def create_progress_bar(self, relx, rely):
         progress = ttk.Progressbar(self.root, length=200, mode='determinate')
         progress.place(relx=relx, rely=rely, relwidth=0.8, anchor=tk.CENTER)
@@ -46,17 +39,10 @@ class ModBusProtocolStatus:
         return progress, progress_label  # return the created progress bar
 
     def clear_entries(self,raw_values):
-
         self.main_feedback_entry.config(state='normal')
-
         self.main_feedback_entry.delete(0,tk.END)
-
         self.redundant_feedback_entry.config(state='normal')
-
         self.redundant_feedback_entry.delete(0,tk.END)
-
-
-
         for widget, _, _ in self.widgets_index:
             # Skip label widgets
             if isinstance(widget, tk.Label):
@@ -95,9 +81,7 @@ class ModBusProtocolStatus:
         self.process_segment(276, 290, self.ModBusProtocolConnection.software_version_entry,raw_values)
         self.process_segment(290, 304, self.ModBusProtocolConnection.display_version_entry,raw_values)
 
-
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
-
         self.operational_status_entry.insert(0,self.modbus_client.translate_value("Byte",raw_values[15]))
         self.main_feedback_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[16]))
         self.redundant_feedback_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[16]))
@@ -112,18 +96,15 @@ class ModBusProtocolStatus:
         self.three_month_average_position_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[25], raw_values[26]),3))
         self.deviation_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[4], raw_values[5]),3))
 
-
-
         self.ModBusProtocolCalibration.clear_entries(self.raw_values,self.control_command_entry.get(),self.actuator_position_entry.get())
         self.ModBusProtocolConfiguration.clear_entries(self.raw_values)
         self.ModBusProtocolDiagnostics.clear_entries(self.raw_values)
         self.ModBusProtocolPST.clear_entries(self.raw_values)
-
         #Position_transmitter math
         self.actuator_position = float(self.actuator_position_entry.get())
         self.position_transmitter = 635*self.actuator_position+500
-
         self.position_transmitter_entry.insert(0, self.position_transmitter)
+
 
     def retrieve_data(self, *args):
         if self.modbus_client.is_connected():
@@ -162,8 +143,6 @@ class ModBusProtocolStatus:
                             break;
                     except Exception as e:
                         print(f"Exception while reading register at address {address}: {e}")
-            # Print the number of elements in raw_values
-            print(f"Number of elements in raw_values: {len(raw_values)}")
             self.clear_entries(self.raw_values)  # Clear the entries
 
 

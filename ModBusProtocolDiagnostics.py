@@ -185,18 +185,27 @@ class ModBusProtocolDiagnostics:
         self.delta_pressure_output_warning_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[171]))
         self.delta_pressure_output_alarm_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[170]))
         self.last_error_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[14]))
+        self.set_table(raw_values)
 
-#Fault time stamps
+
+    def set_table(self,raw_values):
+        # Fault time stamps
         self.table.delete(*self.table.get_children())
         for i in range(329, 368, 4):
             row_number = (i - 329) // 4 + 1
-            self.table.insert("", "end", values=(str(row_number),self.names.get_name(i),self.modbus_client.translate_value("Epoch 64 bit",raw_values[i - 1],raw_values[i],raw_values[i + 1],raw_values[i + 2])))
-
-        #model_change_time_stamp
+            self.table.insert("", "end", values=(str(row_number), self.names.get_name(i),
+                                                 self.modbus_client.translate_value("Epoch 64 bit", raw_values[i - 1],
+                                                                                    raw_values[i], raw_values[i + 1],
+                                                                                    raw_values[i + 2])))
+        # model_change_time_stamp
         for i in range(379, 418, 4):
             row_number = (i - 379) // 4 + 1
-            self.table.insert("", "end", values=(str(row_number),self.names.get_name(i),self.modbus_client.translate_value("Epoch 64 bit",raw_values[i - 1],raw_values[i],raw_values[i + 1],raw_values[i + 2])))
-
+            self.table.insert("", "end", values=(str(row_number), self.names.get_name(i),
+                                                 self.modbus_client.translate_value("Epoch 64 bit", raw_values[i - 1],
+                                                                                    raw_values[i], raw_values[i + 1],
+                                                                                    raw_values[i + 2])))
         self.table2.delete(*self.table2.get_children())
         for i in range(419, 489):
-            self.table2.insert("", "end", values=(self.names.get_name(i),self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[i - 1]),self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[i + 69])))
+            self.table2.insert("", "end", values=(
+            self.names.get_name(i), self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[i - 1]),
+            self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[i + 69])))

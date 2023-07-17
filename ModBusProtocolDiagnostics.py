@@ -97,6 +97,7 @@ class ModBusProtocolDiagnostics:
     def clear_data(self):
         print('clear data')
 
+
     def manage_widgets_visibility(self, *args):
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()
 
@@ -229,5 +230,17 @@ class ModBusProtocolDiagnostics:
         print(f"Model_Epoch9 value", self.model_change_time_stamp_9)
         print(f"Model_Epoch10 value", self.model_change_time_stamp_10)'''
 
+        self.table.insert("","end",values=("1",self.names.get_name(329),self.modbus_client.translate_value("Epoch 64 bit",raw_values[328],raw_values[329],raw_values[330],raw_values[331])))
+        self.table.insert("", "end", values=("2", self.names.get_name(333),self.modbus_client.translate_value("Epoch 64 bit", raw_values[332],raw_values[333], raw_values[334],raw_values[335])))
+        self.table.insert("", "end", values=("3", self.names.get_name(337),self.modbus_client.translate_value("Epoch 64 bit", raw_values[336], raw_values[337],raw_values[338], raw_values[339])))
+        self.table.insert("", "end", values=("4", self.names.get_name(341),self.modbus_client.translate_value("Epoch 64 bit", raw_values[340],raw_values[341], raw_values[342],raw_values[343])))
+        self.table.insert("", "end", values=("5", self.names.get_name(345),self.modbus_client.translate_value("Epoch 64 bit", raw_values[344],raw_values[345], raw_values[346],raw_values[347])))
+        self.table.insert("", "end", values=("6", self.names.get_name(349),self.modbus_client.translate_value("Epoch 64 bit", raw_values[348],raw_values[349], raw_values[350],raw_values[351])))
+        self.table.insert("", "end", values=("7", self.names.get_name(353),self.modbus_client.translate_value("Epoch 64 bit", raw_values[352],raw_values[353], raw_values[354],raw_values[355])))
+        self.table.insert("", "end", values=("8", self.names.get_name(357),self.modbus_client.translate_value("Epoch 64 bit", raw_values[356],raw_values[357], raw_values[358],raw_values[359])))
+        self.table.insert("", "end", values=("9", self.names.get_name(361),self.modbus_client.translate_value("Epoch 64 bit", raw_values[360],raw_values[361], raw_values[362],raw_values[363])))
+        self.table.insert("", "end", values=("10", self.names.get_name(365),self.modbus_client.translate_value("Epoch 64 bit", raw_values[364],raw_values[365], raw_values[366],raw_values[367])))
+
+        self.table2.delete(*self.table2.get_children())
         for i in range(419, 489):
             self.table2.insert("", "end", values=(self.names.get_name(i),self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[i - 1]),self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[i + 69])))

@@ -127,9 +127,7 @@ class ModBusProtocolStatus:
 
     def retrieve_data(self, *args):
         if self.modbus_client.is_connected():
-            self.retrieve_data_thread()  # Call the function immediately
-            self.root.after(1500, self.retrieve_data)
-
+            threading.Thread(target=self.retrieve_data_thread, daemon=True).start()
         else:
             messagebox.showerror("Error", "Modbus connection is not open.")
 
@@ -176,6 +174,7 @@ class ModBusProtocolStatus:
         except Exception as e:
             print(f"Exception while reading data from Modbus server: {e}")
             messagebox.showerror("Error", f"Exception while reading data from Modbus server: {e}")
+        threading.Timer(1.5, self.retrieve_data).start()
 
     def manage_widgets_visibility(self, *args):
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()

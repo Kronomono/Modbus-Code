@@ -1,13 +1,9 @@
 #ModbusClient.py
 from pymodbus.client import ModbusTcpClient
 from pymodbus.exceptions import ModbusIOException
-from pymodbus.payload import BinaryPayloadBuilder
-from pymodbus.payload import BinaryPayloadDecoder
 import time
-from pymodbus.constants import Endian
 import struct
 import unicodedata
-import tkinter as tk
 from tkinter import messagebox, ttk
 
 

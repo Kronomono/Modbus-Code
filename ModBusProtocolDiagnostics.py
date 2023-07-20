@@ -101,8 +101,6 @@ class ModBusProtocolDiagnostics:
         # set flag back to false
         self.called = False
 
-
-
     def manage_widgets_visibility(self, *args):
         # get variable from connection tab
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()

@@ -27,6 +27,7 @@ class ModBusProtocolStatus:
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
 
+        #fill raw values with 571 0s. Change if registers increase or decrease
         self.raw_values = [0]*571
         # progress bar if u want to visually see registers being updated
 

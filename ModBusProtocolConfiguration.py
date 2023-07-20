@@ -23,26 +23,27 @@ class ModBusProtocolConfiguration:
 
 
     def create_widgets(self):
-        # Create the Connect
+        # Create the widgets
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.ModBusProtocolConnection.protocol_type_var.trace('w', self.manage_widgets_visibility)
         self.ModBusProtocolConnection.rexa_version_type_var.trace('w', self.manage_widgets_visibility)
 
+        #call manage_UI function to manage the UI
         self.manage_UI()
 
-    def something(self,*args):
-        print("something")
-
     def manage_widgets_visibility(self, *args):
+        # get variable from connection tab
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()
-
+        # create index list of widgets
         self.widgets_index = []
 
+        #take lable index and entry index and combine them
         for var_name, index in self.label_index + self.entry_index:
             if len(index) == 3:
                 self.widgets_index.append((getattr(self, var_name), index[1], index[2]))
             elif len(index) == 2:
                 self.widgets_index.append((getattr(self, var_name), index[0], index[1]))
+                #if X3 option selected in connection tab show stuff
         if selected_version == 'X3':
 
             self.widgetTemp.placeOrHide(self.fail_safe_entry_2,0.19,0.35,False)
@@ -57,6 +58,7 @@ class ModBusProtocolConfiguration:
 
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
+        # otherwise hide it all
         else:
             #self.widgetTemp.placeOrHide(self.operational_mode_entry_label, 0.67, 0.0, True)
             #self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, True)
@@ -75,8 +77,10 @@ class ModBusProtocolConfiguration:
                 self.widgetTemp.placeOrHide(*widget, True)
 
     def manage_UI(self, *args):
+        # create save and load button
         self.save_button = self.widgetTemp.create_button("Save Configuration", 0.85,0.85, 10, 2,14,self.save_config)
         self.load_button = self.widgetTemp.create_button("Load Configuration", 0.73, 0.85, 10, 2, 14, self.load_config)
+        # entry index with their variable names, and coordinates
         self.entry_index =[("current_operational_mode_entry",(0.01,0.1,)),
                         ("operational_status_entry",(0.15,0.1)),
                            ("control_signal_entry",(0.1,0.2)),
@@ -110,6 +114,7 @@ class ModBusProtocolConfiguration:
                            ("electronic_position_relay_1_entry", (0.85, 0.63)),
                            ("electronic_position_relay_2_entry", (0.85, 0.68)),
                            ("electronic_position_relay_3_entry", (0.85, 0.73)),   ]
+        # create custom sized entries
         self.fail_safe_entry_2 = self.widgetTemp.create_entry(0.19, 0.35, 5, True, preFilledText=None)
         self.minimum_modulating_entry_2 = self.widgetTemp.create_entry(0.23,0.45,6,True,preFilledText=None)
 
@@ -117,12 +122,13 @@ class ModBusProtocolConfiguration:
         self.surge_off_entry = self.widgetTemp.create_entry(0.8, 0.3, 5, True, preFilledText=None)
         self.surge_dir_entry = self.widgetTemp.create_entry(0.9, 0.3, 8, True, preFilledText=None)
 
+        #for loop that create the entries from index
         for var_name, index in self.entry_index:
 
             entry = self.widgetTemp.create_entry(*index, 14, True, preFilledText=None)
             setattr(self, var_name, entry)
 
-
+        # label index, with variable name, displayed text, and coordinates
         self.label_index=[
                        ("current_operational_mode_label",("Current Operational Mode",0,0.07)),
                        ("operational_status_label",("Operational Status",0.14,0.07)),
@@ -189,15 +195,17 @@ class ModBusProtocolConfiguration:
             ("minimum_modulating_%", ("%", 0.27, 0.45)),
 
                        ]
+        # for loop for label creation
         for  var_name, index in self.label_index:
             label = self.widgetTemp.create_label(*index)
             setattr(self,var_name,label)
 
-    import json
-
+    #save data function
     def save_config(self):
+        # create a ist
         raw_data = {}
 
+        # get value of all entries and put them in list
         for var_name, _ in self.entry_index:
             # Get the corresponding entry widget
             entry = getattr(self, var_name)
@@ -212,6 +220,7 @@ class ModBusProtocolConfiguration:
         raw_data["surge_off_entry"] = self.surge_off_entry.get()
         raw_data["surge_dir_entry"] = self.surge_dir_entry.get()
 
+        # if there is anything in raw_data then save it to json file with varaible names
         if any(raw_data.values()):
             # Open a file dialog for the user to choose the directory to save the file
             file_path = filedialog.asksaveasfilename(defaultextension=".json",
@@ -225,10 +234,12 @@ class ModBusProtocolConfiguration:
             messagebox.showerror("Error", "Data is empty. Cannot save the file.")
 
     def load_config(self):
+        #temporary load config function
         print("load")
-        #self.clear_entries(self.raw_data)
-    def clear_entries(self,raw_values):
 
+    def clear_entries(self,raw_values):
+        # clears all the entries for configuration tab
+        # manually  clearing because not in index due to size being different
         self.fail_safe_entry_2.config(state='normal')
         self.minimum_modulating_entry_2.config(state='normal')
 
@@ -236,6 +247,7 @@ class ModBusProtocolConfiguration:
         self.surge_off_entry.config(state='normal')
         self.surge_dir_entry.config(state='normal')
 
+        # for loop going through every entry
         for var_name, _ in self.entry_index:
             # Get the corresponding entry widget
             entry = getattr(self, var_name)
@@ -251,8 +263,11 @@ class ModBusProtocolConfiguration:
         self.surge_off_entry.delete(0, 'end')
         self.surge_dir_entry.delete(0, 'end')
 
+        # mapping entries by calling function
         self.set_entries(raw_values)
 
+
+        # set all entries back to read only
         self.fail_safe_entry_2.config(state='readonly')
         self.minimum_modulating_entry_2.config(state='readonly')
 
@@ -264,6 +279,7 @@ class ModBusProtocolConfiguration:
             entry = getattr(self, var_name)
             entry.config(state='readonly')
     def set_entries(self, raw_values):
+        # maps out entries
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
 
         self.operational_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[15]))

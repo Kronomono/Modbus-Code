@@ -5,7 +5,7 @@ from ratelimiter import RateLimiter
 import threading
 from Names import Names
 from WidgetTemplateCreator import  WidgetTemplateCreator
-import time
+
 class ModBusProtocolStatus:
     def __init__(self, root, modbus_client,modbus_protocol_connection,modbus_protocol_calibration,modbus_protocol_configuration, modbus_protocol_pst,modbus_protocol_diagnostics,current_tab):
         #references to other classes

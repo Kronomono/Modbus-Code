@@ -72,7 +72,7 @@ class ModBusProtocolConnection:
         selected_protocol = self.protocol_type_var.get()
 
         if selected_version == 'X3':
-            # Hide X3-specific fields
+            #show elements
             self.widgetTemp.placeOrHide(self, self.connection_button, 0.22, 0.35, False)
             self.widgetTemp.placeOrHide(self, self.protocol_entry_label, 0.38, 0.30, False)
             self.widgetTemp.placeOrHide(self, self.protocol_type_dropdown, 0.35, 0.35, False)
@@ -99,7 +99,7 @@ class ModBusProtocolConnection:
                 self.widgetTemp.placeOrHide(self, self.unit_label, 0.22, 0.65, True)
                 self.widgetTemp.placeOrHide(self, self.unit_entry, 0.38, 0.65, True)
         else:
-            # Show X3-specific fields
+            # Show hide elements
             self.widgetTemp.placeOrHide(self, self.connection_button, 0.22, 0.35, True)
             self.widgetTemp.placeOrHide(self, self.protocol_entry_label, 0.38, 0.30, True)
             self.widgetTemp.placeOrHide(self, self.protocol_type_dropdown, 0.35, 0.35, True)

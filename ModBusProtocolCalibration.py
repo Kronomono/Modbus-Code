@@ -1,11 +1,8 @@
 #ModBusProtocolCalibration.py
 import tkinter as tk
-from tkinter import messagebox, ttk
-from ratelimiter import RateLimiter
-import threading
 from Names import Names
 from WidgetTemplateCreator import  WidgetTemplateCreator
-from ModBusProtocolStatus import ModBusProtocolStatus
+
 
 
 class ModBusProtocolCalibration:
@@ -24,51 +21,39 @@ class ModBusProtocolCalibration:
 
 
     def create_widgets(self):
-        # Create the Connect
+        # Create the widgets/ gui elements
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.ModBusProtocolConnection.protocol_type_var.trace('w', self.manage_widgets_visibility)
         self.ModBusProtocolConnection.rexa_version_type_var.trace('w', self.manage_widgets_visibility)
 
-       # self.operational_mode_type_var, self.operational_mode_entry_label, self.operational_mode_type_dropdown = self.widgetTemp.create_dropdown_menu2(
-          #  "Operational Mode", 0.67, ['Auto Mode', 'Set Up Mode', 'Manual Mode'], 'Auto Mode', 0.67, 0.0, self.something
-           # )
-       # self.position_transmitter_type_var, self.position_transmitter_entry_label, self.position_transmitter_type_dropdown = self.widgetTemp.create_dropdown_menu2(
-           # "Position Transmitter", 0.72, ['Option 1', 'Option 2', 'Option 3'], 'Option 1', 0.77, 0.71,
-           # self.something
-       # )
+        # call manage UI function
         self.manage_UI()
 
-    def something(self,*args):
-        print("something")
-
     def manage_widgets_visibility(self, *args):
+        # get variable from connection tab
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()
-
-
+        # create index list of widgets
         self.widgets_index = []
 
+        # take lable index and entry index and combine them
         for var_name, index in self.label_index + self.entry_index:
             if len(index) == 3:
                 self.widgets_index.append((getattr(self, var_name), index[1], index[2]))
             elif len(index) == 2:
                 self.widgets_index.append((getattr(self, var_name), index[0], index[1]))
+
+        # if X3 option selected in connection tab show stuff
         if selected_version == 'X3':
-            #self.widgetTemp.placeOrHide(self.operational_mode_entry_label,0.67,0.0,False)
-           # self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, False)
-            #self.widgetTemp.placeOrHide(self.position_transmitter_entry_label, 0.72, 0.71, False)
-            #self.widgetTemp.placeOrHide(self.position_transmitter_type_dropdown, 0.77, 0.74, False)
+            # show if x3 is selected on drop down menu
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
         else:
-           # self.widgetTemp.placeOrHide(self.operational_mode_entry_label, 0.67, 0.0, True)
-            #self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, True)
-            #self.widgetTemp.placeOrHide(self.position_transmitter_entry_label, 0.72, 0.71, True)
-           # self.widgetTemp.placeOrHide(self.position_transmitter_type_dropdown, 0.77, 0.74, True)
+            # hide if it is not chosen
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, True)
 
     def manage_UI(self, *args):
-
+        # entry index with var name, and coordinates
         self.entry_index =[("current_operational_mode_entry",(0.01,0.1,)),
                         ("operational_status_entry",(0.15,0.1)),
                         ("primary_feedback_position_low_entry",(0.05,0.3)),
@@ -85,13 +70,13 @@ class ModBusProtocolCalibration:
                         ("transmitter_high_entry",(0.84, 0.85)),
                            ("position_transmitter_entry", (0.785, 0.75))
                         ]
-
+        # for loop to create entries
         for var_name, index in self.entry_index:
 
             entry = self.widgetTemp.create_entry(*index, 13, True, preFilledText=None)
             setattr(self, var_name, entry)
 
-
+        # label index with var name, display text, coordinates
         self.label_index=[("analog_input_label",("Analog input",0.03,0.7)),
                        ("feedback_values_label",("Feedback Values",0.35,0.7)),
                        ("primary_feedback_label",("Primary Feedback",0.04,0.23)),
@@ -118,10 +103,14 @@ class ModBusProtocolCalibration:
                        ("transmitter_high_label",("Transmitter High",0.83,0.82)),
                     ("position_transmitter_label", ("Position Transmitter", 0.77, 0.72))
                           ]
+        # for loop for labels
         for  var_name, index in self.label_index:
             label = self.widgetTemp.create_label(*index)
             setattr(self,var_name,label)
+
+    # clear entries
     def clear_entries(self,raw_values,control_command_entry_value,actuator_position_entry_value):
+        # clear all the entries
         for var_name, _ in self.entry_index:
             # Get the corresponding entry widget
             entry = getattr(self, var_name)
@@ -130,13 +119,16 @@ class ModBusProtocolCalibration:
             # Clear the existing text in the entry widget
             entry.delete(0, 'end')
 
+        # call set_entries function
         self.set_entries(raw_values,  control_command_entry_value,actuator_position_entry_value)
 
+        #set all entries back to read only
         for var_name, _ in self.entry_index:
             entry = getattr(self, var_name)
             entry.config(state='readonly')
 
     def set_entries(self, raw_values, control_command_entry_value,actuator_position_entry_value):
+        #sets all the entries and map them out
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
         self.operational_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[15]))
 
@@ -153,11 +145,12 @@ class ModBusProtocolCalibration:
         self.redundant_feedback_position_low_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[121], raw_values[122]), 3))
         self.redundant_feedback_position_high_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[123], raw_values[124]), 3))
 
+        #get the variables from status tab and use it for math here
         #CurrentCsInput Math
         control_command_entry_value = float(control_command_entry_value)
         self.current_cs_input = 0.16 * control_command_entry_value + 4
 
-        #self.current_cs_input = (float(self.signal_low_entry.get())*control_command_entry_value) + (float(self.signal_high_entry.get())*control_command_entry_value)
+
         self.current_cs_input_entry.insert(0,self.current_cs_input)
 
         #Position_transmitter math

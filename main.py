@@ -12,35 +12,31 @@ from Tab4ModBusProtocolDiagnostics import Tab4ModBusProtocolDiagnostics
 
 import atexit
 
-
+#when app is closed, close the connection
 def on_exit():
     modbus_client.close()
-
-
-
 
 root = tk.Tk()  # Root instance for your Tkinter application
 root.geometry("1080x768")  # Size of the tkinter window
 root.configure(bg="gray")  # Background color of the tkinter window
 root.title("Rexa ModbusTCP GUI")  # Set the window title
 root.iconbitmap("Images\Rexa tiny logo.ico")
+
+# Register the on_exit function to be called when the application is exited
 atexit.register(on_exit)
-#root.protocol("WM_DELETE_WINDOW", on_exit)
 
 # Create a Frame for the notebook
 notebook_frame = ttk.Frame(root)
 notebook_frame.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 current_tab = None
 
+#updates whatever tab you are on and relays that to the ModBusProtocolStatus tab instance
 def update_tab(event):
     global current_tab
     new_tab = notebook.tab(notebook.select(), "text")
     if new_tab != current_tab:
         current_tab = new_tab
-        #print(f"Current tab: {current_tab}")
         tab2.ModBusProtocolStatus_widget.update_current_tab(new_tab)
-
-
 
 # Create a custom style for the notebook and set the tab position to 's' (south)
 style = ttk.Style()
@@ -79,9 +75,4 @@ notebook.add(tab6.frame, text='Configuration')
 notebook.pack(fill=tk.BOTH, expand=True)  # Add the notebook to the notebook frame
 notebook.bind("<<NotebookTabChanged>>", update_tab)
 
-
-
 root.mainloop()  # This is the main event loop for the tkinter application.
-#Task to do
-# make it so table only imports once rather than always updating
-# make it so it only updates on the live tab and everything else is static

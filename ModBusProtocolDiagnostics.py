@@ -1,13 +1,9 @@
 #ModBusProtocolDiagnostics.py
 import tkinter as tk
-import json
-from tkinter import filedialog
 from tkinter import messagebox, ttk
-from ratelimiter import RateLimiter
-import threading
 from Names import Names
 from WidgetTemplateCreator import  WidgetTemplateCreator
-from ModBusProtocolStatus import ModBusProtocolStatus
+
 
 
 class ModBusProtocolDiagnostics:
@@ -18,6 +14,7 @@ class ModBusProtocolDiagnostics:
         self.names = Names()
         self.ModBusProtocolConnection = modbus_protocol_connection
         self.widgetTemp = WidgetTemplateCreator(self.root)
+        #create a flag so that info is only imported to the tables once
         self.called = False
 
         # Create a main frame to take up the entire window
@@ -85,7 +82,7 @@ class ModBusProtocolDiagnostics:
 
 
     def create_widgets(self):
-        # Create the Connect
+        # Create the widgets/ gui
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.ModBusProtocolConnection.protocol_type_var.trace('w', self.manage_widgets_visibility)
         self.ModBusProtocolConnection.rexa_version_type_var.trace('w', self.manage_widgets_visibility)
@@ -93,27 +90,33 @@ class ModBusProtocolDiagnostics:
         self.generate_service_report_button = self.widgetTemp.create_button("Generate Service\nReport", 0.65, 0.92, 10, 2, 15, self.clear_data)
         self.view_edit_service_note_button = self.widgetTemp.create_button("View/Edit Service\n Notes", 0.85, 0.92, 10,2, 15, self.clear_data)
 
+        #call manage ui
         self.manage_UI()
 
     def clear_data(self):
+        # clear the table, delete information in table
         print('clear data')
         self.table.delete(*self.table.get_children())
         self.table2.delete(*self.table2.get_children())
+        # set flag back to false
         self.called = False
 
 
 
     def manage_widgets_visibility(self, *args):
+        # get variable from connection tab
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()
 
-
+        # create widgets list
         self.widgets_index = []
 
+        # add entries and labels to widget list
         for var_name, index in self.label_index + self.entry_index:
             if len(index) == 3:
                 self.widgets_index.append((getattr(self, var_name), index[1], index[2]))
             elif len(index) == 2:
                 self.widgets_index.append((getattr(self, var_name), index[0], index[1]))
+        # if version is x3, show widgets
         if selected_version == 'X3':
             self.frame.place(relx=0.01, rely=0.3, anchor="w", relwidth=0.65, relheight=0.3)
             self.frame2.place(relx=0.01, rely=0.65, anchor="w", relwidth=0.65, relheight=0.3)
@@ -122,6 +125,7 @@ class ModBusProtocolDiagnostics:
             self.widgetTemp.placeOrHide(self.view_edit_service_note_button, 0.85, 0.92, False)
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
+        # if not then hide them
         else:
             self.widgetTemp.placeOrHide(self.frame, 0.01, 0.3, True)
             self.widgetTemp.placeOrHide(self.frame2, 0.01, 0.65, True)
@@ -132,6 +136,7 @@ class ModBusProtocolDiagnostics:
                 self.widgetTemp.placeOrHide(*widget, True)
 
     def manage_UI(self, *args):
+        # entry list, var name, coordinates
         self.entry_index =[("current_operational_mode_entry",(0.01,0.1,)),
                         ("operational_status_entry",(0.15,0.1)),
 
@@ -141,13 +146,13 @@ class ModBusProtocolDiagnostics:
                         ("delta_pressure_output_alarm_entry", (0.85, 0.35)),
                         ("last_error_entry", (0.85, 0.55)),
                            ]
-
+        # for loop for entries
         for var_name, index in self.entry_index:
 
             entry = self.widgetTemp.create_entry(*index, 14, True, preFilledText=None)
             setattr(self, var_name, entry)
 
-
+        # label list, var name, display text coordinates
         self.label_index=[
            ("current_operational_mode_label",("Current Operational Mode",0,0.07)),
             ("operational_status_label",("Operational Status",0.14,0.07)),
@@ -159,14 +164,14 @@ class ModBusProtocolDiagnostics:
             ("last_error_label", ("Last Error", 0.68, 0.55)),
 
                        ]
+        # for loop for creating labels
         for  var_name, index in self.label_index:
             label = self.widgetTemp.create_label(*index)
             setattr(self,var_name,label)
 
     def clear_entries(self,raw_values):
 
-
-
+        # clear entries for loop
         for var_name, _ in self.entry_index:
             # Get the corresponding entry widget
             entry = getattr(self, var_name)
@@ -175,13 +180,15 @@ class ModBusProtocolDiagnostics:
             # Clear the existing text in the entry widget
             entry.delete(0, 'end')
 
+        # set entries
         self.set_entries(raw_values)
 
-
+        # for loop to set the entries back to read only
         for var_name, _ in self.entry_index:
             entry = getattr(self, var_name)
             entry.config(state='readonly')
     def set_entries(self, raw_values):
+        # map correct values to entries
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
         self.operational_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[15]))
 
@@ -194,6 +201,8 @@ class ModBusProtocolDiagnostics:
 
 
     def set_table(self,raw_values):
+        # import data into table
+
         # Fault time stamps
         self.table.delete(*self.table.get_children())
         for i in range(329, 368, 4):
@@ -209,6 +218,7 @@ class ModBusProtocolDiagnostics:
                                                  self.modbus_client.translate_value("Epoch 64 bit", raw_values[i - 1],
                                                                                     raw_values[i], raw_values[i + 1],
                                                                                     raw_values[i + 2])))
+        # whole bottom table order goes var name, current, lifetime
         self.table2.delete(*self.table2.get_children())
         for i in range(419, 489):
             self.table2.insert("", "end", values=(

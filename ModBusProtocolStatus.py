@@ -173,7 +173,7 @@ class ModBusProtocolStatus:
                 "PST":[11,13,15] + list(range(159,205)),
                 "Diagnostics":[13,14,15] + list(range(163,172)) + list(range(329,368)) + list(range(379,418))+list(range(419,559)),
                 "Calibration": [0, 1, 2, 3, 428, 429] + list(range(117,163)),
-                "Configuration": list(range(0,581)),
+                "Configuration": list(range(0,205))+ list(range(500,571)),
 
 
             }

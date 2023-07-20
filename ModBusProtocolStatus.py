@@ -20,11 +20,12 @@ class ModBusProtocolStatus:
         self.ModBusProtocolDiagnostics = modbus_protocol_diagnostics
         self.current_tab = current_tab
 
+
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
 
-        self.raw_values = {}
+        self.raw_values = [0]*571
 
     def create_widgets(self):
         # Create the Connect
@@ -45,6 +46,7 @@ class ModBusProtocolStatus:
         self.main_feedback_entry.delete(0,tk.END)
         self.redundant_feedback_entry.config(state='normal')
         self.redundant_feedback_entry.delete(0,tk.END)
+
         for widget, _, _ in self.widgets_index:
             # Skip label widgets
             if isinstance(widget, tk.Label):
@@ -61,8 +63,33 @@ class ModBusProtocolStatus:
             if isinstance(widget, tk.Label):
                 continue
             widget.config(state='readonly')
-            self.main_feedback_entry.config(state='readonly')
-            self.redundant_feedback_entry.config(state='readonly')
+        self.main_feedback_entry.config(state='readonly')
+        self.redundant_feedback_entry.config(state='readonly')
+    def connection_clear_entries(self,raw_values):
+        self.ModBusProtocolConnection.serial_entry.config(state='normal')
+        self.ModBusProtocolConnection.serial_entry.delete(0, tk.END)
+        self.ModBusProtocolConnection.tag_entry.config(state='normal')
+        self.ModBusProtocolConnection.tag_entry.delete(0, tk.END)
+        self.ModBusProtocolConnection.model_entry.config(state='normal')
+        self.ModBusProtocolConnection.model_entry.delete(0, tk.END)
+        self.ModBusProtocolConnection.software_version_entry.config(state='normal')
+        self.ModBusProtocolConnection.software_version_entry.delete(0, tk.END)
+        self.ModBusProtocolConnection.display_version_entry.config(state='normal')
+        self.ModBusProtocolConnection.display_version_entry.delete(0, tk.END)
+
+        self.connection_set_entries(raw_values)
+
+        self.ModBusProtocolConnection.serial_entry.config(state='readonly')
+        self.ModBusProtocolConnection.tag_entry.config(state='readonly')
+        self.ModBusProtocolConnection.model_entry.config(state='readonly')
+        self.ModBusProtocolConnection.software_version_entry.config(state='readonly')
+        self.ModBusProtocolConnection.display_version_entry.config(state='readonly')
+    def connection_set_entries(self,raw_values):
+        self.process_segment(205, 230, self.ModBusProtocolConnection.model_entry, raw_values)
+        self.process_segment(230, 262, self.ModBusProtocolConnection.tag_entry, raw_values)
+        self.process_segment(262, 276, self.ModBusProtocolConnection.serial_entry, raw_values)
+        self.process_segment(276, 290, self.ModBusProtocolConnection.software_version_entry, raw_values)
+        self.process_segment(290, 304, self.ModBusProtocolConnection.display_version_entry, raw_values)
 
     def process_segment(self,range_start, range_end, entry,raw_values):
         character = ""
@@ -77,12 +104,6 @@ class ModBusProtocolStatus:
         entry.configure(state="readonly")
 
     def set_entries(self,raw_values):
-        self.process_segment(205, 230, self.ModBusProtocolConnection.model_entry,raw_values)
-        self.process_segment(230, 262, self.ModBusProtocolConnection.tag_entry,raw_values)
-        self.process_segment(262, 276, self.ModBusProtocolConnection.serial_entry,raw_values)
-        self.process_segment(276, 290, self.ModBusProtocolConnection.software_version_entry,raw_values)
-        self.process_segment(290, 304, self.ModBusProtocolConnection.display_version_entry,raw_values)
-
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
         self.operational_status_entry.insert(0,self.modbus_client.translate_value("Byte",raw_values[15]))
         self.main_feedback_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[16]))
@@ -95,13 +116,16 @@ class ModBusProtocolStatus:
 
         self.control_command_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[0], raw_values[1]), 3))
         self.actuator_position_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[2], raw_values[3]), 3))
+
         self.three_month_average_position_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[25], raw_values[26]),3))
         self.deviation_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[4], raw_values[5]),3))
 
-        self.ModBusProtocolCalibration.clear_entries(self.raw_values,self.control_command_entry.get(),self.actuator_position_entry.get())
-        self.ModBusProtocolConfiguration.clear_entries(self.raw_values)
-        self.ModBusProtocolDiagnostics.clear_entries(self.raw_values)
-        self.ModBusProtocolPST.clear_entries(self.raw_values)
+       # self.ModBusProtocolCalibration.clear_entries(self.raw_values,self.control_command_entry.get(),self.actuator_position_entry.get())
+
+        #self.ModBusProtocolConfiguration.clear_entries(self.raw_values)
+       #self.ModBusProtocolDiagnostics.clear_entries(self.raw_values)
+        #self.ModBusProtocolPST.clear_entries(self.raw_values)
+
         #Position_transmitter math
         self.actuator_position = float(self.actuator_position_entry.get())
         self.position_transmitter = 635*self.actuator_position+500
@@ -117,24 +141,33 @@ class ModBusProtocolStatus:
         # Define the maximum number of requests per second
         print(f"Current tab: ", self.current_tab)
         #call every 1.2 seconds
-        MAX_REQUESTS_PER_SECOND = 100  # Increase this number to increase the polling rate
-        # Retrieve data from the Modbus server
-        # Create a rate limiter
+        MAX_REQUESTS_PER_SECOND = 50  # Increase this number to increase the polling rate
         rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=0.2)
         try:
             unit = self.modbus_client.unit
-            #print(f"This is unit in ModbusMasterClientWidget.py {unit}")
-            count = 571
-            raw_values = []  # Initialize raw_values outside the loop
-            self.raw_values = raw_values
+
+            tab_registers = {
+                "Connection": list(range(205, 230)) + list(range(230, 262)) + list(range(262, 276)) + list(range(276, 290)) + list(range(290, 304)),
+                "Status": list(range(0,27)) + list(range(558,564)),
+                "PST":[11,13,15] + list(range(159,205)),
+                "Diagnostics":[13,14,15] + list(range(163,172)) + list(range(329,368)) + list(range(379,418))+list(range(419,489)),
+                "Calibration": [0, 1, 2, 3, 428, 429] + list(range(117,163)),
+                "Configuration": list(range(0,204)),
+
+
+            }
+            registers = tab_registers[self.current_tab]
+            count = len(registers)
+
+
             self.progress_bar['maximum'] = count
             self.progress_bar['value'] = 0  # Reset the progress bar
-            for address in range(0, count):
+            for address in registers:
                 with rate_limiter:
                     try:
                         result = self.modbus_client.client.read_holding_registers(address, 1 , unit)
                         if not result.isError():
-                            raw_values.append(result.registers[0])
+                            self.raw_values[address] = result.registers[0]
                             self.progress_bar['value'] += 1  # Increment the progress bar
                             self.progress_label['text'] = f"{self.progress_bar['value']}/{count}"  # Update the label text
                             self.root.update_idletasks()  # Update the GUI
@@ -144,7 +177,25 @@ class ModBusProtocolStatus:
                             break;
                     except Exception as e:
                         print(f"Exception while reading register at address {address}: {e}")
-            self.clear_entries(self.raw_values)  # Clear the entries
+            if self.current_tab == "Connection":
+                self.connection_clear_entries(self.raw_values)
+            elif self.current_tab == "Status":
+                self.clear_entries(self.raw_values)  # Clear the entries
+            elif self.current_tab == "PST":
+                self.ModBusProtocolPST.clear_entries(self.raw_values)
+            elif self.current_tab == "Diagnostics":
+                self.ModBusProtocolDiagnostics.clear_entries(self.raw_values)
+                if self.ModBusProtocolDiagnostics.called == False:
+                    print(f"called before: ", self.ModBusProtocolDiagnostics.called)
+                    self.ModBusProtocolDiagnostics.set_table(self.raw_values)
+                    self.ModBusProtocolDiagnostics.called = True
+                    print(f"called after: ", self.ModBusProtocolDiagnostics.called)
+            elif self.current_tab == "Calibration":
+                self.ModBusProtocolCalibration.clear_entries(self.raw_values, self.control_command_entry.get(),self.actuator_position_entry.get())
+            elif self.current_tab == "Configuration":
+                self.ModBusProtocolConfiguration.clear_entries(self.raw_values)
+
+
         except ValueError:
             print("Invalid unit or count value. Please enter a valid number.")
             messagebox.showerror("Error", "Invalid unit or count value. Please enter a valid number.")
@@ -158,7 +209,7 @@ class ModBusProtocolStatus:
 
     def manage_widgets_visibility(self, *args):
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()
-        selected_protocol = self.ModBusProtocolConnection.protocol_type_var.get()
+
 
         self.widgets_index = []
 
@@ -243,8 +294,6 @@ class ModBusProtocolStatus:
         self.manage_widgets_visibility()
 
     def reset_current_odometer(self):
-        # Get the input value, selected type, and selected register, and write the value to the register
-        # input_value = self.entry.get()
         if self.raw_values:
             writables = [self.motor_starts_entry,self.booster_starts_entry,self.accumulator_starts_entry,self.actuator_strokes_entry,self.total_auto_time_entry,self.three_month_average_position_entry]
             for writing in writables:

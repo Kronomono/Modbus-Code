@@ -18,6 +18,7 @@ class ModBusProtocolDiagnostics:
         self.names = Names()
         self.ModBusProtocolConnection = modbus_protocol_connection
         self.widgetTemp = WidgetTemplateCreator(self.root)
+        self.called = False
 
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
@@ -96,6 +97,10 @@ class ModBusProtocolDiagnostics:
 
     def clear_data(self):
         print('clear data')
+        self.table.delete(*self.table.get_children())
+        self.table2.delete(*self.table2.get_children())
+        self.called = False
+
 
 
     def manage_widgets_visibility(self, *args):
@@ -159,7 +164,7 @@ class ModBusProtocolDiagnostics:
             setattr(self,var_name,label)
 
     def clear_entries(self,raw_values):
-        self.raw_data = raw_values
+
 
 
         for var_name, _ in self.entry_index:

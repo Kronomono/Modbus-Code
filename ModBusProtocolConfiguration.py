@@ -22,17 +22,13 @@ class ModBusProtocolConfiguration:
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
-        self.raw_data = {}
+
 
     def create_widgets(self):
         # Create the Connect
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.ModBusProtocolConnection.protocol_type_var.trace('w', self.manage_widgets_visibility)
         self.ModBusProtocolConnection.rexa_version_type_var.trace('w', self.manage_widgets_visibility)
-
-       # self.operational_mode_type_var, self.operational_mode_entry_label, self.operational_mode_type_dropdown = self.widgetTemp.create_dropdown_menu2(
-          #  "Operational Mode", 0.67, ['Auto Mode', 'Set Up Mode', 'Manual Mode'], 'Auto Mode', 0.67, 0.0, self.something
-          #  )
 
         self.manage_UI()
 
@@ -50,8 +46,6 @@ class ModBusProtocolConfiguration:
             elif len(index) == 2:
                 self.widgets_index.append((getattr(self, var_name), index[0], index[1]))
         if selected_version == 'X3':
-            #self.widgetTemp.placeOrHide(self.operational_mode_entry_label,0.67,0.0,False)
-           # self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, False)
 
             self.widgetTemp.placeOrHide(self.fail_safe_entry_2,0.19,0.35,False)
             self.widgetTemp.placeOrHide(self.minimum_modulating_entry_2,0.23,0.4,False)

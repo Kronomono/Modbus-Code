@@ -18,9 +18,10 @@ class ModBusProtocolStatus:
         self.ModBusProtocolConfiguration = modbus_protocol_configuration
         self.ModBusProtocolPST = modbus_protocol_pst
         self.ModBusProtocolDiagnostics = modbus_protocol_diagnostics
-        self.current_tab = current_tab
-        self.retrieve_data()
 
+        self.current_tab = current_tab
+
+        self.retrieve_data()
 
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)

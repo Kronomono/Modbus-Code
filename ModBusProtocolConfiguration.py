@@ -371,5 +371,5 @@ class ModBusProtocolConfiguration:
             elif self.modbus_client.translate_value("Boolean", raw_values[190]) == "True":
                 self.fail_direction_entry.insert(0, "PH")
         #In place
-        if  self.modbus_client.translate_value("Boolean",raw_values[188]) == "True":
+        if self.modbus_client.translate_value("Boolean",raw_values[188]) == "True":
             self.power_fail_entry.insert(0, "In place")

@@ -221,4 +221,4 @@ class ModBusProtocolDiagnostics:
         for i in range(419, 489):
             self.table2.insert("", "end", values=(
             self.names.get_name(i), self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[i - 1]),
-            self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[i + 69])))
+            self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[i + 71])))

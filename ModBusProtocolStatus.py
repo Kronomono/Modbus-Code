@@ -120,6 +120,18 @@ class ModBusProtocolStatus:
         self.main_feedback_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[16]))
         self.redundant_feedback_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[16]))
 
+        self.alarm_status_entry.insert(0,self.modbus_client.translate_value("Byte",raw_values[21]))
+        self.alarm_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[22]))
+        self.alarm_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[23]))
+        self.alarm_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[24]))
+
+        self.warning_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[17]))
+        self.warning_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[18]))
+        self.warning_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[19]))
+        self.warning_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[20]))
+
+
+
         self.accumulator_pressure_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[12]))
 
         self.motor_starts_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 32 bit",raw_values[562],raw_values[563]))
@@ -207,6 +219,7 @@ class ModBusProtocolStatus:
                     self.ModBusProtocolDiagnostics.called = True
 
             elif self.current_tab == "Calibration":
+                self.clear_entries(self.raw_values)
                 self.ModBusProtocolCalibration.clear_entries(self.raw_values, self.control_command_entry.get(),self.actuator_position_entry.get())
             elif self.current_tab == "Configuration":
                 self.ModBusProtocolConfiguration.clear_entries(self.raw_values)

@@ -60,30 +60,36 @@ class ModBusProtocolPST:
 
 
     def create_widgets(self):
-        # Create the Connect
+        # Create the widgets/ gui elements
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
         self.ModBusProtocolConnection.protocol_type_var.trace('w', self.manage_widgets_visibility)
         self.ModBusProtocolConnection.rexa_version_type_var.trace('w', self.manage_widgets_visibility)
 
+        # call manage_UI
         self.manage_UI()
 
     def manage_widgets_visibility(self, *args):
+        # get variable from connect screen
         selected_version = self.ModBusProtocolConnection.rexa_version_type_var.get()
 
-
+        # create list of widgets
         self.widgets_index = []
 
+        # add label and entries to the index
         for var_name, index in self.label_index + self.entry_index:
             if len(index) == 3:
                 self.widgets_index.append((getattr(self, var_name), index[1], index[2]))
             elif len(index) == 2:
                 self.widgets_index.append((getattr(self, var_name), index[0], index[1]))
+
+        # if X3 is selected, show the gui
         if selected_version == 'X3':
             self.frame.place(relx=0.01, rely=0.5, anchor="w", relwidth=0.65, relheight=0.6)
             self.widgetTemp.placeOrHide(self.export_to_excel_button, 0.15, 0.8, False)
             self.widgetTemp.placeOrHide(self.clear_pst_data_button, 0.3, 0.8, False)
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
+        # if hide gui
         else:
             self.widgetTemp.placeOrHide(self.frame,0.01,0.5,True)
             self.widgetTemp.placeOrHide(self.export_to_excel_button, 0.15, 0.8, True)
@@ -92,6 +98,7 @@ class ModBusProtocolPST:
                 self.widgetTemp.placeOrHide(*widget, True)
 
     def manage_UI(self, *args):
+        # index of entries, var name, coordinates
         self.entry_index =[("current_operational_mode_entry",(0.01,0.1,)),
                         ("operational_status_entry",(0.15,0.1)),
                            ("pst_trigger_entry", (0.79, 0.2)),
@@ -105,13 +112,13 @@ class ModBusProtocolPST:
                            ("last_pst_event_entry",(0.3,0.92))
 
                            ]
-
+        # for loop for entries
         for var_name, index in self.entry_index:
 
             entry = self.widgetTemp.create_entry(*index, 14, True, preFilledText=None)
             setattr(self, var_name, entry)
 
-
+        # lable index with var name, display text, coordinates
         self.label_index=[
             ("current_operational_mode_label",("Current Operational Mode",0,0.07)),
             ("operational_status_label",("Operational Status",0.14,0.07)),
@@ -127,21 +134,28 @@ class ModBusProtocolPST:
             ("maximum_target_label", ("Maximum Target", 0.7, 0.85)),
             ("last_pst_event_label",("Last Pst Event", 0.2, 0.92))
                        ]
+        # for loop of index entries
         for  var_name, index in self.label_index:
             label = self.widgetTemp.create_label(*index)
             setattr(self,var_name,label)
+
+        #create buttons
         self.export_to_excel_button = self.widgetTemp.create_button("Export to Excel", 0.15,0.8,10,2,15,self.export_to_excel)
         self.clear_pst_data_button = self.widgetTemp.create_button("Clear PST Data", 0.3, 0.8, 10, 2, 15,self.clear_pst_data)
     def export_to_excel(self):
+        # temp function for export to excel
         print('export excel')
     def clear_pst_data(self):
+        # temp function for clear_pst_data
         print('clear pst data')
 
 
     def clear_entries(self,raw_values):
+        #clear entries
+
         self.raw_data = raw_values
 
-
+        #clear the entries
         for var_name, _ in self.entry_index:
             # Get the corresponding entry widget
             entry = getattr(self, var_name)
@@ -150,13 +164,15 @@ class ModBusProtocolPST:
             # Clear the existing text in the entry widget
             entry.delete(0, 'end')
 
+        # set the entries
         self.set_entries(raw_values)
 
-
+        # set back the entries to read only
         for var_name, _ in self.entry_index:
             entry = getattr(self, var_name)
             entry.config(state='readonly')
     def set_entries(self, raw_values):
+        #map out the entries to the correct values
         #Pst mode contact power
         if self.modbus_client.translate_value("Boolean",raw_values[201]) == "True":
             self.pst_trigger_entry.insert(0, "Contact Pwer")

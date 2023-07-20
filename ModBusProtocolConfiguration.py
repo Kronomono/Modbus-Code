@@ -3,11 +3,9 @@ import tkinter as tk
 import json
 from tkinter import filedialog
 from tkinter import messagebox, ttk
-from ratelimiter import RateLimiter
-import threading
 from Names import Names
 from WidgetTemplateCreator import  WidgetTemplateCreator
-from ModBusProtocolStatus import ModBusProtocolStatus
+
 
 
 class ModBusProtocolConfiguration:

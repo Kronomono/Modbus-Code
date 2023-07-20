@@ -59,7 +59,7 @@ tab4 = Tab4ModBusProtocolDiagnostics(notebook, options, modbus_client, tab1.ModB
 
 tab2 = Tab2ModBusProtocolStatus(notebook, options, modbus_client, tab1.ModBusProtocolConnection_widget,tab5.ModBusProtocolCalibration_widget, tab6.ModBusProtocolConfiguration_widget,tab3.ModBusProtocolPST_widget,tab4.ModBusProtocolDiagnostics_widget,current_tab)
 
-#tab7 = DataTableBeta(notebook, options, modbus_client)
+tab7 = DataTableBeta(notebook, options, modbus_client)
 #tab8 = WriteRegistryBeta(notebook, options, modbus_client)  # Pass any necessary arguments to your tab classes
 
 # Add the frames to the notebook with their respective labels
@@ -69,7 +69,7 @@ notebook.add(tab3.frame, text='PST')
 notebook.add(tab4.frame, text='Diagnostics')
 notebook.add(tab5.frame, text='Calibration')
 notebook.add(tab6.frame, text='Configuration')
-#notebook.add(tab7.frame, text='Data Table')
+notebook.add(tab7.frame, text='Data Table')
 #notebook.add(tab8.frame, text='Writing Registry')
 
 notebook.pack(fill=tk.BOTH, expand=True)  # Add the notebook to the notebook frame

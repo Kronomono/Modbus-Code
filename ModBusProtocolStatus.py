@@ -19,6 +19,7 @@ class ModBusProtocolStatus:
         self.ModBusProtocolPST = modbus_protocol_pst
         self.ModBusProtocolDiagnostics = modbus_protocol_diagnostics
         self.current_tab = current_tab
+        self.retrieve_data()
 
 
         # Create a main frame to take up the entire window
@@ -136,7 +137,9 @@ class ModBusProtocolStatus:
         if self.modbus_client.is_connected():
             threading.Thread(target=self.retrieve_data_thread, daemon=True).start()
         else:
-            messagebox.showerror("Error", "Modbus connection is not open.")
+            #messagebox.showerror("Error", "Modbus connection is not open.")
+            print(f"connection failed. Trying again in 2 seconds")
+            threading.Timer(2, self.retrieve_data).start()
     def retrieve_data_thread(self):
         # Define the maximum number of requests per second
         print(f"Current tab: ", self.current_tab)
@@ -316,7 +319,6 @@ class ModBusProtocolStatus:
               f"total_auto_time_value:{total_auto_time_value}\n"
               f"three_month_average_position_value:{three_month_average_position_value}")
     '''self.modbus_client.write_register(address_value, input_value)'''
-
 
 
 

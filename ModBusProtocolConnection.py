@@ -145,6 +145,7 @@ class ModBusProtocolConnection:
                 if self.modbus_client.connect():
                     self.connection_button["text"] = "Disconnect"
                     messagebox.showinfo("Connected", "Connection successful")
+
                 else:
                     messagebox.showerror("Error", "Failed to establish Modbus connection.")
             else:

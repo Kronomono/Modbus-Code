@@ -21,7 +21,7 @@ class ModBusProtocolStatus:
 
         self.current_tab = current_tab
 
-        #self.retrieve_data()
+        self.retrieve_data()
 
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
@@ -161,8 +161,8 @@ class ModBusProtocolStatus:
     def retrieve_data_thread(self):
         # Define the maximum number of requests per second
         print(f"Current tab: ", self.current_tab)
-        MAX_REQUESTS_PER_SECOND = 50  # Increase this number to increase the polling rate
-        rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=0.2) # change period variable to change amount of time between each request
+        MAX_REQUESTS_PER_SECOND = 100  # Increase this number to increase the polling rate
+        rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=0.15) # change period variable to change amount of time between each request
         try:
             # gets whatever unit it is assign
             unit = self.modbus_client.unit
@@ -171,9 +171,9 @@ class ModBusProtocolStatus:
                 "Connection": list(range(205, 230)) + list(range(230, 262)) + list(range(262, 276)) + list(range(276, 290)) + list(range(290, 304)),
                 "Status": list(range(0,27)) + list(range(558,564)),
                 "PST":[11,13,15] + list(range(159,205)),
-                "Diagnostics":[13,14,15] + list(range(163,172)) + list(range(329,368)) + list(range(379,418))+list(range(419,589)),
+                "Diagnostics":[13,14,15] + list(range(163,172)) + list(range(329,368)) + list(range(379,418))+list(range(419,559)),
                 "Calibration": [0, 1, 2, 3, 428, 429] + list(range(117,163)),
-                "Configuration": list(range(0,204)),
+                "Configuration": list(range(0,581)),
 
 
             }

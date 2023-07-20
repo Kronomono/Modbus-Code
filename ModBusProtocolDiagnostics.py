@@ -217,12 +217,9 @@ class ModBusProtocolDiagnostics:
                                                                                     raw_values[i], raw_values[i + 1],
                                                                                     raw_values[i + 2])))
         # whole bottom table order goes var name, current, lifetime
-        self.table2.delete(*self.table2.get_children())
-        self.table2.insert("", "end", values=(
-            self.names.get_name(431), self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[430]),
-            self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[500])))
 
-        '''for i in range(419, 589):
+
+        for i in range(419, 489):
             self.table2.insert("", "end", values=(
             self.names.get_name(i), self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[i - 1]),
-            self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[i + 69])))'''
+            self.modbus_client.translate_value("Unsigned Int 16 bit", raw_values[i + 69])))

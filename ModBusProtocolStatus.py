@@ -28,7 +28,7 @@ class ModBusProtocolStatus:
         self.main_frame.pack(fill='both', expand=True)
 
         #fill raw values with 571 0s. Change if registers increase or decrease
-        self.raw_values = [0]*571
+        self.raw_values = [96]*571
         # progress bar if u want to visually see registers being updated
 
     '''  def create_progress_bar(self, relx, rely):
@@ -169,11 +169,30 @@ class ModBusProtocolStatus:
             # Define the Modbus registers to read based on the current tab
             tab_registers = {
                 "Connection": list(range(205, 230)) + list(range(230, 262)) + list(range(262, 276)) + list(range(276, 290)) + list(range(290, 304)),
-                "Status": list(range(0,27)) + list(range(558,564)),
-                "PST":[11,13,15] + list(range(159,205)),
-                "Diagnostics":[13,14,15] + list(range(163,172)) + list(range(329,368)) + list(range(379,418))+list(range(419,559)),
-                "Calibration": [0, 1, 2, 3, 428, 429] + list(range(117,163)),
-                "Configuration": list(range(0,205))+ list(range(500,571)),
+                "Status": [0, 1, 2, 3, 4, 5, 12, 13, 15, 16, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 558, 559, 562, 563], #list(range(0,27)) + list(range(558,564)),
+                "PST":[11, 13, 15, 149, 150, 153, 154, 155, 156, 157, 158, 159, 160, 172, 173, 201, 202, 203, 204],   #[11,13,15] + list(range(159,205)),
+                "Diagnostics":[13,15,163,164,171,170,14,
+                               #numbers for fault
+                               328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,
+                               359,360,361,362,363,364,365,366,367,
+                               #numbers for mode time stamp
+                               378,379,380,381,382,383,384,385,386,387,388,389,390,391,392,393,394,395,396,397,398,399,400,401,402,403,404,405,406,407,408,
+                               409,410,411,412,413,414,415,416,417,
+                               #numbers for current
+                               418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435,
+                               436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450, 451, 452, 453,
+                               454, 455, 456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471,
+                               472, 473, 474, 475, 476, 477, 478, 479, 480, 481, 482, 483, 484, 485, 486, 487,
+                               # numbers for historic
+                               488, 489, 490, 491, 492, 493, 494, 495, 496, 497, 498, 499, 500, 501, 502, 503, 504, 505,
+                               506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523,
+                               524, 525, 526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541,
+                               542, 543, 544, 545, 546, 547, 548, 549, 550, 551, 552, 553, 554, 556, 557, 558
+                                ],
+                #[13,14,15] + list(range(163,172)) + list(range(319,559)),#list(range(329,368)) + list(range(379,418))+list(range(419,559)),
+                "Calibration": [0, 1, 2, 3, 13, 15, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 161, 162, 428, 429],#[0, 1, 2, 3, 428, 429] + list(range(117,163)),
+                "Configuration": [0, 1, 13, 15, 129, 130, 131, 132, 133, 134, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 165, 166, 167, 168, 169,
+                                  174, 178, 179, 182, 183, 184, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 197, 558, 559, 562, 563],#list(range(0,205))+ list(range(500,571)),
 
 
             }
@@ -219,8 +238,8 @@ class ModBusProtocolStatus:
                     self.ModBusProtocolDiagnostics.called = True
 
             elif self.current_tab == "Calibration":
-                self.clear_entries(self.raw_values)
-                self.ModBusProtocolCalibration.clear_entries(self.raw_values, self.control_command_entry.get(),self.actuator_position_entry.get())
+
+                self.ModBusProtocolCalibration.clear_entries(self.raw_values)
             elif self.current_tab == "Configuration":
                 self.ModBusProtocolConfiguration.clear_entries(self.raw_values)
         # more error / exception handling

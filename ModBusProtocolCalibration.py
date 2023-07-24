@@ -109,7 +109,7 @@ class ModBusProtocolCalibration:
             setattr(self,var_name,label)
 
     # clear entries
-    def clear_entries(self,raw_values,control_command_entry_value,actuator_position_entry_value):
+    def clear_entries(self,raw_values):
         # clear all the entries
         for var_name, _ in self.entry_index:
             # Get the corresponding entry widget
@@ -120,14 +120,14 @@ class ModBusProtocolCalibration:
             entry.delete(0, 'end')
 
         # call set_entries function
-        self.set_entries(raw_values,  control_command_entry_value,actuator_position_entry_value)
+        self.set_entries(raw_values)
 
         #set all entries back to read only
         for var_name, _ in self.entry_index:
             entry = getattr(self, var_name)
             entry.config(state='readonly')
 
-    def set_entries(self, raw_values, control_command_entry_value,actuator_position_entry_value):
+    def set_entries(self, raw_values):
         #sets all the entries and map them out
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
         self.operational_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[15]))
@@ -145,16 +145,19 @@ class ModBusProtocolCalibration:
         self.redundant_feedback_position_low_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[121], raw_values[122]), 3))
         self.redundant_feedback_position_high_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[123], raw_values[124]), 3))
 
+        self.control_command_entry_value = round(self.modbus_client.translate_value("Float 32 bit", raw_values[0], raw_values[1]), 3)
+        self.actuator_position = round(self.modbus_client.translate_value("Float 32 bit", raw_values[2], raw_values[3]), 3)
+
         #get the variables from status tab and use it for math here
         #CurrentCsInput Math
-        control_command_entry_value = float(control_command_entry_value)
-        self.current_cs_input = 0.16 * control_command_entry_value + 4
+        #control_command_entry_value = float(control_command_entry_value)
+        self.current_cs_input = 0.16 * self.control_command_entry_value + 4
 
 
         self.current_cs_input_entry.insert(0,self.current_cs_input)
 
         #Position_transmitter math
-        self.actuator_position = float(actuator_position_entry_value)
+        #self.actuator_position = float(actuator_position_entry_value)
         self.position_transmitter = 635 * self.actuator_position + 500
 
         self.position_transmitter_entry.insert(0, self.position_transmitter)

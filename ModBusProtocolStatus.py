@@ -30,14 +30,6 @@ class ModBusProtocolStatus:
         #fill raw values with 571 0s. Change if registers increase or decrease
         self.raw_values = ['a']*571
 
-        # progress bar if u want to visually see registers being updated
-
-    '''  def create_progress_bar(self, relx, rely):
-           progress = ttk.Progressbar(self.root, length=200, mode='determinate')
-           progress.place(relx=relx, rely=rely, relwidth=0.8, anchor=tk.CENTER)
-           progress_label = tk.Label(self.root, text="")
-           progress_label.place(relx=0.5, rely=rely - 0.05, anchor=tk.CENTER)
-           return progress, progress_label  # return the created progress bar'''
     def create_widgets(self):
         # Create the GUI widgets for the Modbus Protocol Status tab
         self.widgetTemp.add_image("Images/rexa logo.png", 300, 50, 0.5, 0)
@@ -199,12 +191,6 @@ class ModBusProtocolStatus:
             # match to get whatever tab the user is on and see what registers it needs to get
             registers = tab_registers[self.current_tab]
 
-            #used to get number for progress bar
-            count = len(registers)
-
-            #self.progress_bar['maximum'] = count
-            #self.progress_bar['value'] = 0  # Reset the progress bar
-
             #for loop with 0.2 delay
             for address in registers:
                 with rate_limiter:
@@ -213,8 +199,6 @@ class ModBusProtocolStatus:
                         result = self.modbus_client.client.read_holding_registers(address, 1 , unit)
                         if not result.isError():
                             self.raw_values[address] = result.registers[0]
-                            #self.progress_bar['value'] += 1  # Increment the progress bar
-                            #self.progress_label['text'] = f"{self.progress_bar['value']}/{count}"  # Update the label text
                             self.root.update_idletasks()  # Update the GUI
                         # error / exception handling
                         else:
@@ -271,8 +255,6 @@ class ModBusProtocolStatus:
                 self.widgets_index.append((getattr(self, var_name), index[0], index[1]))
 
         if selected_version == 'X3':
-            #self.progress_label.place(relx=0.5, rely=0.93, anchor=tk.CENTER)
-           # self.progress_bar.place(relx=0.5, rely=0.98, relwidth=0.8, anchor=tk.CENTER)
 
             self.widgetTemp.placeOrHide(self.main_feedback_entry,0.25,0.2,False)
             self.widgetTemp.placeOrHide(self.redundant_feedback_entry, 0.25, 0.23, False)
@@ -282,8 +264,7 @@ class ModBusProtocolStatus:
                 self.widgetTemp.placeOrHide(*widget, False)
 
         else:
-           # self.progress_bar.place_forget()
-            #self.progress_label.place_forget()
+
 
             self.widgetTemp.placeOrHide(self.main_feedback_entry, 0.25, 0.2, True)
             self.widgetTemp.placeOrHide(self.redundant_feedback_entry, 0.25, 0.23, True)
@@ -339,7 +320,6 @@ class ModBusProtocolStatus:
                 readOnly = False
             entry = self.widgetTemp.create_entry(*index, 13, readOnly, preFilledText=None)
             setattr(self, var_name, entry)
-        #self.progress_bar, self.progress_label = self.create_progress_bar(0.5, 0.98)
 
         # create reset_current_odometer button and custom sized entries
         self.reset_current_odometer_btn = self.widgetTemp.create_button('Reset Current Odometer', 0.8, 0.8, 10, 2, 20, self.reset_current_odometer)

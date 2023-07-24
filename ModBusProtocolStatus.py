@@ -21,14 +21,15 @@ class ModBusProtocolStatus:
 
         self.current_tab = current_tab
 
-        self.retrieve_data()
+        #self.retrieve_data()
 
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill='both', expand=True)
 
         #fill raw values with 571 0s. Change if registers increase or decrease
-        self.raw_values = [96]*571
+        self.raw_values = ['a']*571
+
         # progress bar if u want to visually see registers being updated
 
     '''  def create_progress_bar(self, relx, rely):
@@ -250,7 +251,8 @@ class ModBusProtocolStatus:
             print(f"Exception while reading data from Modbus server: {e}")
             messagebox.showerror("Error", f"Exception while reading data from Modbus server: {e}")
         # call itself again every 1.5 seconds and update the entries
-        threading.Timer(1.5, self.retrieve_data).start()
+        print(f"list ", self.raw_values)
+        threading.Timer(1.2, self.retrieve_data).start()
 
     # get variable from main and updates whatever tab user is on
     def update_current_tab(self, new_tab):

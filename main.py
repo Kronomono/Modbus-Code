@@ -9,12 +9,14 @@ from Tab5ModBusProtocolCalibration import Tab5ModBusProtocolCalibration
 from Tab6ModBusProtocolConfiguration import Tab6ModBusProtocolConfiguration
 from Tab3ModBusProtocolPST import Tab3ModBusProtocolPST
 from Tab4ModBusProtocolDiagnostics import Tab4ModBusProtocolDiagnostics
-
+import sys
 import atexit
 
 #when app is closed, close the connection
 def on_exit():
+
     modbus_client.close()
+
 
 root = tk.Tk()  # Root instance for your Tkinter application
 root.geometry("1080x768")  # Size of the tkinter window

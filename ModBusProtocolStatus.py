@@ -21,7 +21,7 @@ class ModBusProtocolStatus:
 
         self.current_tab = current_tab
 
-        #self.retrieve_data()
+        self.retrieve_data()
 
         # Create a main frame to take up the entire window
         self.main_frame = tk.Frame(self.root)
@@ -156,7 +156,6 @@ class ModBusProtocolStatus:
         if self.modbus_client.is_connected():
             threading.Thread(target=self.retrieve_data_thread, daemon=True).start()
         else:
-
             print(f"connection failed. Trying again in 2 seconds")
             threading.Timer(2, self.retrieve_data).start()
     def retrieve_data_thread(self):

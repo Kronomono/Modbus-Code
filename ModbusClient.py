@@ -167,7 +167,7 @@ class ModbusClient:
             # Assuming the values are 4 x 16-bit chunks of a 64-bit epoch timestamp
             binary_data = struct.pack('>HHHH', value1, value2, value3, value4)  # Combine four 16-bit values
             #to use utc. use time.gmtime
-            decoded_value = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(struct.unpack('>Q', binary_data)[0]))
+            decoded_value = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(struct.unpack('>Q', binary_data)[0]))
             return decoded_value
         else:
             return value1

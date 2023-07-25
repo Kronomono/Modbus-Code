@@ -188,7 +188,7 @@ class ModBusProtocolDiagnostics:
     def set_entries(self, raw_values):
         # map correct values to entries
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
-        self.operational_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[15]))
+        self.operational_status_entry.insert(0, self.modbus_client.translate_value(self.names.get_status_name(raw_values[15])))
 
         self.accumulator_recharge_timeout_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[163]))
         self.accumulator_warning_pressure_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[164]))
@@ -206,14 +206,14 @@ class ModBusProtocolDiagnostics:
         for i in range(329, 368, 4):
             row_number = (i - 329) // 4 + 1
             self.table.insert("", "end", values=(str(row_number), self.names.get_name(i),
-                                                 self.modbus_client.translate_value("Epoch 64 bit", raw_values[i - 1],
+                                                 self.modbus_client.translate_value("Epoch 64 bit time", raw_values[i - 1],
                                                                                     raw_values[i], raw_values[i + 1],
                                                                                     raw_values[i + 2])))
         # model_change_time_stamp
         for i in range(379, 418, 4):
             row_number = (i - 379) // 4 + 1
             self.table.insert("", "end", values=(str(row_number), self.names.get_name(i),
-                                                 self.modbus_client.translate_value("Epoch 64 bit", raw_values[i - 1],
+                                                 self.modbus_client.translate_value("Epoch 64 bit time", raw_values[i - 1],
                                                                                     raw_values[i], raw_values[i + 1],
                                                                                     raw_values[i + 2])))
         # whole bottom table order goes var name, current, lifetime

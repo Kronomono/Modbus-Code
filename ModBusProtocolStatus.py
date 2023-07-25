@@ -28,7 +28,7 @@ class ModBusProtocolStatus:
         self.main_frame.pack(fill='both', expand=True)
 
         #fill raw values with 571 0s. Change if registers increase or decrease
-        self.raw_values = ['a']*571
+        self.raw_values = [0]*571
 
     def create_widgets(self):
         # Create the GUI widgets for the Modbus Protocol Status tab
@@ -109,19 +109,15 @@ class ModBusProtocolStatus:
     def set_entries(self,raw_values):
         # Set the entries on the Modbus Protocol Status tab
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
-        self.operational_status_entry.insert(0,self.modbus_client.translate_value("Byte",raw_values[15]))
-        self.main_feedback_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[16]))
-        self.redundant_feedback_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[16]))
+        self.operational_status_entry.insert(0,self.modbus_client.translate_value(self.names.get_status_name(raw_values[15])))
 
-        self.alarm_status_entry.insert(0,self.modbus_client.translate_value("Byte",raw_values[21]))
-        self.alarm_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[22]))
-        self.alarm_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[23]))
-        self.alarm_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[24]))
 
-        self.warning_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[17]))
-        self.warning_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[18]))
-        self.warning_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[19]))
-        self.warning_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[20]))
+
+
+        self.alarm_status_entry.insert(0,self.modbus_client.translate_value("Epoch 64 Bit",raw_values[21],raw_values[22],raw_values[23],raw_values[24]))
+
+        self.warning_status_entry.insert(0, self.modbus_client.translate_value("Epoch 64 Bit", raw_values[17],raw_values[18],raw_values[19],raw_values[20]))
+
 
 
 
@@ -135,6 +131,21 @@ class ModBusProtocolStatus:
 
         self.three_month_average_position_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[25], raw_values[26]),3))
         self.deviation_entry.insert(0,round(self.modbus_client.translate_value("Float 32 bit", raw_values[4], raw_values[5]),3))
+
+
+        self.main_feedback = self.modbus_client.translate_value("Byte", raw_values[16])
+
+        self.redundant_feedback =  self.modbus_client.translate_value("Byte", raw_values[16])
+
+        if self.main_feedback == 0:
+            self.main_feedback_entry.config(bg="green")
+        else:
+            self.main_feedback_entry.config(bg="red")
+
+        if  self.redundant_feedback == 1:
+            self.redundant_feedback_entry.config(bg="green")
+        else:
+            self.redundant_feedback_entry.config(bg="red")
 
 
         #Position_transmitter math
@@ -154,7 +165,7 @@ class ModBusProtocolStatus:
         # Define the maximum number of requests per second
         print(f"Current tab: ", self.current_tab)
         MAX_REQUESTS_PER_SECOND = 100  # Increase this number to increase the polling rate
-        rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=0.15) # change period variable to change amount of time between each request
+        rate_limiter = RateLimiter(max_calls=MAX_REQUESTS_PER_SECOND, period=0.2) # change period variable to change amount of time between each request
         try:
             # gets whatever unit it is assign
             unit = self.modbus_client.unit
@@ -234,8 +245,8 @@ class ModBusProtocolStatus:
             print(f"Exception while reading data from Modbus server: {e}")
             messagebox.showerror("Error", f"Exception while reading data from Modbus server: {e}")
         # call itself again every 1.5 seconds and update the entries
-        print(f"list ", self.raw_values)
-        threading.Timer(1.2, self.retrieve_data).start()
+        #print(f"list ", self.raw_values)
+        threading.Timer(1.5, self.retrieve_data).start()
 
     # get variable from main and updates whatever tab user is on
     def update_current_tab(self, new_tab):

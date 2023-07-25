@@ -282,7 +282,7 @@ class ModBusProtocolConfiguration:
         # maps out entries
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
 
-        self.operational_status_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[15]))
+        self.operational_status_entry.insert(0, self.modbus_client.translate_value(self.names.get_status_name(raw_values[15])))
         self.ESD_trip_signal_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[174]))
 
 
@@ -308,22 +308,29 @@ class ModBusProtocolConfiguration:
 
         self.motor_starts_1k_entry.insert(0, round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[562], raw_values[563]), 3))
         self.strokes_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[558], raw_values[559]),3))
-        self.accumulator_starts_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[562], raw_values[563]),3))
+        #self.accumulator_starts_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[562], raw_values[563]),3))
 
+        # Failsafe logic and power on logic
+        # off
+        if self.modbus_client.translate_value("Boolean",
+                                              raw_values[178]) == False and self.modbus_client.translate_value(
+                "Boolean", raw_values[179]) == False:
+            self.fail_safe_entry_1.insert(0, "Off")
+            self.fail_safe_entry_2.delete(0, 0)
 
-
-        #Failsafe logic and power on logic
-        #Position / power up
-        if self.modbus_client.translate_value("Boolean", raw_values[178]) == "True":
-            self.power_on_entry.insert(0,"Power-up Last")
-            self.fail_safe_entry_1.insert(0,"Position")
-            self.fail_safe_entry_2.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]), 3))
-        #in-place
-        if self.modbus_client.translate_value("Boolean", raw_values[179]) == "True":
+        # in-place
+        elif self.modbus_client.translate_value("Boolean", raw_values[179]) == True:
             self.power_on_entry.insert(0, "Local")
             self.fail_safe_entry_1.insert(0, "In-place")
-            self.fail_safe_entry_2.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]), 3))
+            self.fail_safe_entry_2.insert(0, round(
+                self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]), 3))
 
+        # Position / power up
+        elif self.modbus_client.translate_value("Boolean", raw_values[178]) == True:
+            self.power_on_entry.insert(0, "Power-up Last")
+            self.fail_safe_entry_1.insert(0, "Position")
+            self.fail_safe_entry_2.insert(0, round(
+                self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]), 3))
 
         #Two speed logic
         if self.modbus_client.translate_value("Boolean",raw_values[191]) == "True" and self.modbus_client.translate_value("Boolean", raw_values[192]) == "True":
@@ -344,20 +351,21 @@ class ModBusProtocolConfiguration:
         #Booster motor pump logic
         if self.modbus_client.translate_value("Boolean", raw_values[186]) == "True":
             self.booster_pump_entry.insert(0,"Motor Enabled")
-            #Direction logic
+
+        #Direction logic
                 #if surge is enabled
-            if self.modbus_client.translate_value("Boolean",raw_values[193]) == "True":
-                # if PL & PH enabled
-                if self.modbus_client.translate_value("Boolean",raw_values[194]) == "True" and self.modbus_client.translate_value("Boolean",raw_values[195]) == "True":
-                    self.surge_dir_entry.insert(0,"PL & PH")
-                #if PL only is enabled
-                elif self.modbus_client.translate_value("Boolean",raw_values[194]) == "True":
-                    self.surge_dir_entry.insert(0, "PL")
-                #if PH only is enabled
-                elif self.modbus_client.translate_value("Boolean", raw_values[195]) == "True":
+        if self.modbus_client.translate_value("Boolean",raw_values[193]) == "True":
+            # if PL & PH enabled
+            if self.modbus_client.translate_value("Boolean",raw_values[194]) == "True" and self.modbus_client.translate_value("Boolean",raw_values[195]) == "True":
+                self.surge_dir_entry.insert(0,"PL & PH")
+            #if PL only is enabled
+            elif self.modbus_client.translate_value("Boolean",raw_values[194]) == "True":
+                self.surge_dir_entry.insert(0, "PL")
+            #if PH only is enabled
+            elif self.modbus_client.translate_value("Boolean", raw_values[195]) == "True":
                     self.surge_dir_entry.insert(0, "PH")
-                self.surge_bkpt_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[141], raw_values[142]), 3))
-                self.surge_off_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[143], raw_values[144]), 3))
+            self.surge_bkpt_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[141], raw_values[142]), 3))
+            self.surge_off_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[143], raw_values[144]), 3))
 
         #power fail logic
         # Accumulator

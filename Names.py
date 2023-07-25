@@ -139,6 +139,10 @@ class Names:
         self.index_to_name = {1: "Auto Mode", 2: "Setup Mode",5: "Manual Mode"}
         return self.index_to_name.get(index,'Invalid Value')
 
+    def get_status_name(self, index):
+        self.index_to_name = {0: "Ok", 1: "Warning", 2: "Alarm"}
+        return self.index_to_name.get(index, 'Invalid Value')
+
 
 
 

@@ -77,7 +77,7 @@ class ModbusClient:
         except ModbusIOException as e:
             print(f"Modbus communication error: {e}")
 
-    def write_float(self, address, value):
+    '''def write_float(self, address, value):
         # Default to instance's unit if not provided
         unit = self.unit
         # Convert the float value to a 32-bit integer
@@ -87,9 +87,9 @@ class ModbusClient:
         self.write_register(address, float_as_int >> 16, unit)
 
         # Write the low-order word of the integer value to the next register
-        self.write_register(address + 1, float_as_int & 0xFFFF, unit)
+        self.write_register(address + 1, float_as_int & 0xFFFF, unit)'''
 
-    def write_ascii(self, address, ascii_string):
+    '''def write_ascii(self, address, ascii_string):
         # Default to instance's unit if not provided
         unit = self.unit
         # Attempt to write an ASCII string to a specific register
@@ -102,7 +102,7 @@ class ModbusClient:
             else:
                 print(f"Written ASCII string: {ascii_string} to address: {address}")
         except ModbusIOException as e:
-            print(f"Modbus communication error: {e}")
+            print(f"Modbus communication error: {e}")'''
 
     def translate_value(self, data_type, value1, value2=None,value3=None,value4=None):
         # Translate the value based on the selected data type

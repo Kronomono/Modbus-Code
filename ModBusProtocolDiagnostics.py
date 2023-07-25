@@ -194,6 +194,7 @@ class ModBusProtocolDiagnostics:
         self.accumulator_warning_pressure_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[164]))
         self.delta_pressure_output_warning_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[171]))
         self.delta_pressure_output_alarm_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[170]))
+
         self.last_error_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[14]))
 
 

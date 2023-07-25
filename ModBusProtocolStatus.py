@@ -142,7 +142,7 @@ class ModBusProtocolStatus:
         else:
             self.main_feedback_entry.config(bg="red")
 
-        if  self.redundant_feedback == 1:
+        if self.redundant_feedback == 1:
             self.redundant_feedback_entry.config(bg="green")
         else:
             self.redundant_feedback_entry.config(bg="red")

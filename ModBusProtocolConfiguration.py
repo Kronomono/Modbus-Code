@@ -282,7 +282,8 @@ class ModBusProtocolConfiguration:
         # maps out entries
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
 
-        self.operational_status_entry.insert(0, self.modbus_client.translate_value(self.names.get_status_name(raw_values[15])))
+        self.operational_status_entry.insert(0, self.names.get_status_name(self.modbus_client.translate_value("Byte",raw_values[15])))
+        #self.operational_status_entry.insert(0, self.modbus_client.translate_value(self.names.get_status_name(raw_values[15])))
         self.ESD_trip_signal_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[174]))
 
 
@@ -312,9 +313,7 @@ class ModBusProtocolConfiguration:
 
         # Failsafe logic and power on logic
         # off
-        if self.modbus_client.translate_value("Boolean",
-                                              raw_values[178]) == False and self.modbus_client.translate_value(
-                "Boolean", raw_values[179]) == False:
+        if self.modbus_client.translate_value("Boolean",raw_values[178]) == False and self.modbus_client.translate_value("Boolean", raw_values[179]) == False:
             self.fail_safe_entry_1.insert(0, "Off")
             self.fail_safe_entry_2.delete(0, 0)
 

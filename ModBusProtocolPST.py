@@ -193,14 +193,32 @@ class ModBusProtocolPST:
 
         #Pst mode scheduled/auto
         if self.modbus_client.translate_value("Boolean", raw_values[203]) == "True":
-            self.pst_trigger_entry.insert(0, "Auto")
             self.auto_schedule_entry.insert(0,self.modbus_client.translate_value("Unsigned 16 bit int", raw_values[172]))
-            self.time_entry.insert(0, self.modbus_client.translate_value("Unsigned 16 bit int", raw_values[173]))
-            self.off_point_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[155], raw_values[156]), 3))
-            self.target_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[157], raw_values[158]), 3))
-            self.increment_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[149], raw_values[150]), 3))
-            self.maximum_target_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[159], raw_values[160]), 3))
-            self.last_pst_event_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[11]))
+            self.pst_trigger_entry.insert(0, "Auto")
+            # stop duplicate entry stuff
+            if self.time_entry.get() != self.modbus_client.translate_value("Unsigned 16 bit int", raw_values[173]):
+                self.time_entry.delete(0, 'end')
+                self.time_entry.insert(0, self.modbus_client.translate_value("Unsigned 16 bit int", raw_values[173]))
+
+            if self.off_point_entry.get() != round(self.modbus_client.translate_value("Float 32 bit", raw_values[155], raw_values[156]), 3):
+                self.off_point_entry.delete(0, 'end')
+                self.off_point_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[155], raw_values[156]), 3))
+
+            if self.target_entry.get() != round(self.modbus_client.translate_value("Float 32 bit", raw_values[157], raw_values[158]), 3):
+                self.target_entry.delete(0, 'end')
+                self.target_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[157], raw_values[158]), 3))
+
+            if self.increment_entry.get() != round(self.modbus_client.translate_value("Float 32 bit", raw_values[149], raw_values[150]), 3):
+                self.increment_entry.delete(0, 'end')
+                self.increment_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[149], raw_values[150]), 3))
+
+            if self.maximum_target_entry.get() != round(self.modbus_client.translate_value("Float 32 bit", raw_values[159], raw_values[160]), 3):
+                self.maximum_target_entry.delete(0, 'end')
+                self.maximum_target_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[159], raw_values[160]), 3))
+
+            if self.last_pst_event_entry.get() != self.modbus_client.translate_value("Byte", raw_values[11]):
+                self.last_pst_event_entry.delete(0, 'end')
+                self.last_pst_event_entry.insert(0, self.modbus_client.translate_value("Byte", raw_values[11]))
 
 
         #Pst mode contact unpowered
@@ -217,8 +235,8 @@ class ModBusProtocolPST:
 
 
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
-        self.operational_status_entry.insert(0, self.modbus_client.translate_value(self.names.get_status_name(raw_values[15])))
-
+        #self.operational_status_entry.insert(0, self.modbus_client.translate_value(self.names.get_status_name(raw_values[15])))
+        self.operational_status_entry.insert(0, self.names.get_status_name(self.modbus_client.translate_value("Byte",raw_values[15])))
 
 
 

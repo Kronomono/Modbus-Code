@@ -173,7 +173,9 @@ class ModbusClient:
         elif data_type == "Epoch 64 bit":
             # Assuming the values are 4 x 16-bit chunks of a 64-bit epoch timestamp
             binary_data = struct.pack('>HHHH', value1, value2, value3, value4)  # Combine four 16-bit values
-            decoded_value = struct.unpack('>Q', binary_data)[0]
-            return decoded_value
+
+            # Unpack the binary data without time translation
+            unpacked_values = struct.unpack('>Q', binary_data)
+            return unpacked_values
         else:
             return value1

@@ -175,7 +175,7 @@ class ModbusClient:
             binary_data = struct.pack('>HHHH', value1, value2, value3, value4)  # Combine four 16-bit values
 
             # Unpack the binary data without time translation
-            unpacked_values = struct.unpack('>Q', binary_data)
+            unpacked_values = struct.unpack('>Q', binary_data)[0]
             return unpacked_values
         else:
             return value1

@@ -350,7 +350,9 @@ class ModBusProtocolConfiguration:
 
         #Booster motor pump logic
         if self.modbus_client.translate_value("Boolean", raw_values[186]) == "True":
-            self.booster_pump_entry.insert(0,"Motor Enabled")
+            #self.booster_pump_entry.insert(0,"Motor Enabled")
+            self.booster_pump_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[141], raw_values[142]), 3))
+
 
         #Direction logic
                 #if surge is enabled

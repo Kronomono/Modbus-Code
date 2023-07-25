@@ -140,7 +140,7 @@ class Names:
         return self.index_to_name.get(index,'Invalid Value')
 
     def get_status_name(self, index):
-        self.index_to_name = {0: "Ok", 1: "Warning", 2: "Alarm"}
+        self.index_to_name = {0: "Okay", 1: "Warning", 2: "Alarm"}
         return self.index_to_name.get(index, 'Invalid Value')
     def get_error_name(self, index):
         self.index_to_name = {0:"NO_EVENT", 1:"PSRV_FAULT_EVENT",2:"DSRV_FAULT_EVENT",3:"ASRV_FAULT_EVENT",4:"BSRV_FAULT_EVENT",5:"PSTEP_FAULT_EVENT",

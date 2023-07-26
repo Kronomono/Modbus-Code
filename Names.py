@@ -142,6 +142,11 @@ class Names:
     def get_status_name(self, index):
         self.index_to_name = {0: "Okay", 1: "Warning", 2: "Alarm"}
         return self.index_to_name.get(index, 'Invalid Value')
+
+    def get_trip_name(self, index):
+        self.index_to_name = {0: "Trip_OFF", 1: "TRIP_UNPOWERED_SOL", 2: "TRIP_POWERED_SOL",3:"TRIP_UNPOWERED_MOTOR_PL",
+                              4:"TRIP_POWERED_MOTOR_PL",5:"TRIP_UNPOWERED_MOTOR_PH",6:"TRIP_POWERED_MOTOR_PH"}
+        return self.index_to_name.get(index, 'Invalid Value')
     def get_error_name(self, index):
         self.index_to_name = {0:"NO_EVENT", 1:"PSRV_FAULT_EVENT",2:"DSRV_FAULT_EVENT",3:"ASRV_FAULT_EVENT",4:"BSRV_FAULT_EVENT",5:"PSTEP_FAULT_EVENT",
 6:"DSTEP_FAULT_EVENT",7:"ASTEP_FAULT_EVENT",8:"BINDUC_FAULT_EVENT",9:"DBINDUC_FAULT_EVENT",10:"PINDUC_FAULT_EVENT",11:"MAIN_FB_BAD_EVENT",

@@ -113,20 +113,15 @@ class ModBusProtocolStatus:
     def set_entries(self,raw_values):
         # Set the entries on the Modbus Protocol Status tab
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
-        #self.operational_status_entry.insert(0,self.modbus_client.translate_value(self.names.get_status_name(raw_values[15])))
+
         self.operational_status_entry.insert(0, self.names.get_status_name(self.modbus_client.translate_value("Byte",raw_values[15])))
 
-
-
-        #self.alarm_status_entry.insert(0, self.modbus_client.translate_value("Epoch 64 bit", raw_values[21],raw_values[22], raw_values[23],raw_values[24]))
-
-        #alarm and warning stuff do not have any conditionals yet
         self.alarm = self.modbus_client.translate_value("Epoch 64 bit", raw_values[21],raw_values[22], raw_values[23],raw_values[24])
-        #self.alarm = self.modbus_client.translate_value("Hex", self.alarm)
+
         self.alarm_status_entry.insert(0,self.alarm)
 
         self.warning = self.modbus_client.translate_value("Epoch 64 bit", raw_values[17],raw_values[18],raw_values[19],raw_values[20])
-        #self.warning = self.modbus_client.translate_value("Hex", self.warning)
+
         self.warning_status_entry.insert(0, self.warning)
 
 
@@ -181,8 +176,8 @@ class ModBusProtocolStatus:
             # Define the Modbus registers to read based on the current tab
             tab_registers = {
                 "Connection": list(range(205, 230)) + list(range(230, 262)) + list(range(262, 276)) + list(range(276, 290)) + list(range(290, 304)),
-                "Status": [0, 1, 2, 3, 4, 5, 12, 13, 15, 16, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 558, 559, 562, 563], #list(range(0,27)) + list(range(558,564)),
-                "PST":[11, 13, 15, 149, 150, 153, 154, 155, 156, 157, 158, 159, 160, 172, 173, 201, 202, 203, 204],   #[11,13,15] + list(range(159,205)),
+                "Status": [0, 1, 2, 3, 4, 5, 12, 13, 15, 16, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 558, 559, 562, 563],
+                "PST":[11, 13, 15, 149, 150, 153, 154, 155, 156, 157, 158, 159, 160, 172, 173, 201, 202, 203, 204],
                 "Diagnostics":[13,15,163,164,171,170,14,
                                #numbers for fault
                                328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,
@@ -201,10 +196,10 @@ class ModBusProtocolStatus:
                                524, 525, 526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541,
                                542, 543, 544, 545, 546, 547, 548, 549, 550, 551, 552, 553, 554, 556, 557, 558
                                 ],
-                #[13,14,15] + list(range(163,172)) + list(range(319,559)),#list(range(329,368)) + list(range(379,418))+list(range(419,559)),
-                "Calibration": [0, 1, 2, 3, 13, 15, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 161, 162, 428, 429],#[0, 1, 2, 3, 428, 429] + list(range(117,163)),
+
+                "Calibration": [0, 1, 2, 3, 13, 15, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 161, 162, 428, 429],
                 "Configuration": [0, 1, 13, 15, 129, 130, 131, 132, 133, 134,135,136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 165, 166, 167, 168, 169,
-                                  174, 178, 179,180,181, 182, 183, 184, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 197, 558, 559, 562, 563],#list(range(0,205))+ list(range(500,571)),
+                                  174, 178, 179,180,181, 182, 183, 184, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 197, 558, 559, 562, 563]
 
 
             }
@@ -254,7 +249,7 @@ class ModBusProtocolStatus:
             print(f"Exception while reading data from Modbus server: {e}")
             messagebox.showerror("Error", f"Exception while reading data from Modbus server: {e}")
         # call itself again every 1.5 seconds and update the entries
-        #print(f"list ", self.raw_values)
+
         threading.Timer(1.5, self.retrieve_data).start()
 
     # get variable from main and updates whatever tab user is on

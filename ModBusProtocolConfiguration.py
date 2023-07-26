@@ -313,20 +313,19 @@ class ModBusProtocolConfiguration:
 
         # Failsafe logic and power on logic
         # off
-        if self.modbus_client.translate_value("Boolean",raw_values[178]) == False and self.modbus_client.translate_value("Boolean", raw_values[179]) == False:
+        if raw_values[180] == False and raw_values[181] == False:
             self.fail_safe_entry_1.insert(0, "Off")
             self.fail_safe_entry_2.delete(0, 0)
 
         # in-place
-        elif self.modbus_client.translate_value("Boolean", raw_values[179]) == True:
-            self.power_on_entry.insert(0, "Local")
-            self.fail_safe_entry_1.insert(0, "In-place")
-            self.fail_safe_entry_2.insert(0, round(
-                self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]), 3))
 
+        if raw_values[181] == True:
+            #self.power_on_entry.insert(0, "Local")
+            self.fail_safe_entry_1.insert(0, "In-place")
+        print(raw_values[180])
         # Position / power up
-        elif self.modbus_client.translate_value("Boolean", raw_values[178]) == True:
-            self.power_on_entry.insert(0, "Power-up Last")
+        if raw_values[180] == True:
+            #self.power_on_entry.insert(0, "Power-up Last")
             self.fail_safe_entry_1.insert(0, "Position")
             self.fail_safe_entry_2.insert(0, round(
                 self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]), 3))
@@ -349,7 +348,7 @@ class ModBusProtocolConfiguration:
 
         #Booster motor pump logic
         if self.modbus_client.translate_value("Boolean", raw_values[186]) == "True":
-            #self.booster_pump_entry.insert(0,"Motor Enabled")
+            #self.booster_pump_entry.insert(0,"Motor Enabled") wrong register
             self.booster_pump_entry.insert(0, round(self.modbus_client.translate_value("Float 32 bit", raw_values[141], raw_values[142]), 3))
 
 

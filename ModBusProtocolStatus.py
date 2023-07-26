@@ -28,7 +28,7 @@ class ModBusProtocolStatus:
         self.main_frame.pack(fill='both', expand=True)
 
         #fill raw values with 571 0s. Change if registers increase or decrease
-        self.raw_values = [0]*571
+        self.raw_values = [69]*571
 
     def create_widgets(self):
         # Create the GUI widgets for the Modbus Protocol Status tab
@@ -118,12 +118,12 @@ class ModBusProtocolStatus:
 
         #alarm and warning stuff do not have any conditionals yet
         self.alarm = self.modbus_client.translate_value("Epoch 64 bit", raw_values[21],raw_values[22], raw_values[23],raw_values[24])
-        self.alarm = self.modbus_client.translate_value("Hex", self.alarm)
-        self.alarm_status_entry.insert(0,self.names.get_alarm_name(self.alarm))
+        #self.alarm = self.modbus_client.translate_value("Hex", self.alarm)
+        self.alarm_status_entry.insert(0,self.alarm)
 
         self.warning = self.modbus_client.translate_value("Epoch 64 bit", raw_values[17],raw_values[18],raw_values[19],raw_values[20])
-        self.warning = self.modbus_client.translate_value("Hex", self.warning)
-        self.warning_status_entry.insert(0, self.names.get_warning_name(self.warning))
+        #self.warning = self.modbus_client.translate_value("Hex", self.warning)
+        self.warning_status_entry.insert(0, self.warning)
 
 
         self.accumulator_pressure_entry.insert(0, self.modbus_client.translate_value("Unsigned Int 16 bit",raw_values[12]))
@@ -200,7 +200,7 @@ class ModBusProtocolStatus:
                 #[13,14,15] + list(range(163,172)) + list(range(319,559)),#list(range(329,368)) + list(range(379,418))+list(range(419,559)),
                 "Calibration": [0, 1, 2, 3, 13, 15, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 161, 162, 428, 429],#[0, 1, 2, 3, 428, 429] + list(range(117,163)),
                 "Configuration": [0, 1, 13, 15, 129, 130, 131, 132, 133, 134, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 165, 166, 167, 168, 169,
-                                  174, 178, 179, 182, 183, 184, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 197, 558, 559, 562, 563],#list(range(0,205))+ list(range(500,571)),
+                                  174, 178, 179,180,181, 182, 183, 184, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 197, 558, 559, 562, 563],#list(range(0,205))+ list(range(500,571)),
 
 
             }

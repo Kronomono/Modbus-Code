@@ -114,7 +114,12 @@ class ModBusProtocolStatus:
 
 
 
-        self.alarm_status_entry.insert(0, self.modbus_client.translate_value("Epoch 64 bit", raw_values[21],raw_values[22], raw_values[23],raw_values[24]))
+        #self.alarm_status_entry.insert(0, self.modbus_client.translate_value("Epoch 64 bit", raw_values[21],raw_values[22], raw_values[23],raw_values[24]))
+
+        #self.alarm = self.modbus_client.translate_value("Epoch 64 bit", raw_values[21],raw_values[22], raw_values[23],raw_values[24])
+        self.alarm = self.modbus_client.translate_value("Epoch 64 bit", 16384,0, 0,0)
+        self.alarm = self.modbus_client.translate_value("Hex", self.alarm)
+        self.alarm_status_entry.insert(0,self.names.get_alarm_name(self.alarm))
 
         self.warning_status_entry.insert(0, self.modbus_client.translate_value("Epoch 64 bit", raw_values[17],raw_values[18],raw_values[19],raw_values[20]))
 

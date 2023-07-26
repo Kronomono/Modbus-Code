@@ -177,5 +177,10 @@ class ModbusClient:
             # Unpack the binary data without time translation
             unpacked_values = struct.unpack('>Q', binary_data)[0]
             return unpacked_values
+        elif data_type == "Hex":
+            hex_value = hex(value1)
+            return hex_value
         else:
             return value1
+
+

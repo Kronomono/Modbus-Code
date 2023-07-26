@@ -171,6 +171,20 @@ class Names:
 142:"BSRV_OVERSPEED_EVENT_CLEARED",143:"BSRV_MSHORT_EVENT_CLEARED",144:"BSRV_DREPLACE_EVENT_CLEARED",145:"BSRV_UNUSED_EVENT_CLEARED",146:"COMM_LOSS_EVENT_CLEARED"}
         return self.index_to_name.get(index, 'Invalid Value')
 
+    def get_alarm_name(self, index):
+        self.index_to_name = {'0x0': "NO_ALARM",'0x1': "PSRV_FAULT_ALARM",'0x2': "DSRV_FAULT_ALARM",
+                              '0x4': "PSTEP_FAULT_ALARM",'0x8': "DSTEP_FAULT_ALARM",'0x10': "DBINDUC_FAULT_ALARM",
+                            '0x20': "PINDUC_FAULT_ALARM",'0x40': "MAIN_FB_BAD_ALARM",'0x80': "REDUN_FB_BAD_ALARM",
+                              '0x100': "CS_BAD_ALARM",'0x200': "STALL_ALARM",'0x400': "DIR_ERROR_ALARM",
+                              '0x800': "ACCUM_TIMEOUT_ALARM",'0x1000': "SLC_FB_BAD_ALARM",'0x2000': "OUTPUT_ALARM",
+                              '0x4000': "PSRV_LOW_V_ALARM",'0x8000': "PSRV_MREPLACE_ALARM",'0x10000': "PSRV_MTEMP_ALARM",
+                              '0x20000': "PSRV_RFAULT_ALARM",'0x40000': "PSRV_DTEMP_ALARM",'0x80000': "PSRV_HI_V_ALARM",
+                              '0x100000': "PSRV_OVERSPEED_ALARM",'0x200000': "PSRV_MSHORT_ALARM",'0x400000': "PSRV_DREPLACE_ALARM",
+                              '0x800000': "DSRV_LOW_V_ALARM",'0x1000000': "DSRV_MREPLACE_ALARM",'0x2000000': "DSRV_MTEMP_ALARM",
+                              '0x4000000': "DSRV_RFAULT_ALARM",'0x8000000': "DSRV_DTEMP_ALARM",'0x10000000': "DSRV_HI_V_ALARM",
+                              '0x20000000': "DSRV_OVERSPEED_ALARM",'0x40000000': "DSRV_MSHORT_ALARM",'0x80000000': "DSRV_DREPLACE_ALARM"}
+        return self.index_to_name.get(index, 'Invalid Value')
+
 
 
 

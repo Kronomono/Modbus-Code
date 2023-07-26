@@ -309,11 +309,10 @@ class ModBusProtocolConfiguration:
 
         self.motor_starts_1k_entry.insert(0, round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[562], raw_values[563]), 3))
         self.strokes_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[558], raw_values[559]),3))
-        #self.accumulator_starts_1k_entry.insert(0,round(self.modbus_client.translate_value("Unsigned Int 32 bit", raw_values[562], raw_values[563]),3))
+
 
         #power on logic
-        print(raw_values[178])
-        print(f'adffaf',raw_values[179])
+
         if raw_values[178] == True:
             self.power_on_entry.insert(0,"Last")
         if raw_values[179] == True:
@@ -332,7 +331,7 @@ class ModBusProtocolConfiguration:
 
             self.fail_safe_entry_1.insert(0, "In-place")
 
-        # Position 
+        # Position
         if raw_values[180] == True:
 
             self.fail_safe_entry_1.insert(0, "Position")

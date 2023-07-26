@@ -329,12 +329,12 @@ class ModBusProtocolConfiguration:
         # in-place
 
         if raw_values[181] == True:
-            #self.power_on_entry.insert(0, "Local")
+
             self.fail_safe_entry_1.insert(0, "In-place")
 
-        # Position / power up
+        # Position 
         if raw_values[180] == True:
-            #self.power_on_entry.insert(0, "Power-up Last")
+
             self.fail_safe_entry_1.insert(0, "Position")
             self.fail_safe_entry_2.insert(0, round(
                 self.modbus_client.translate_value("Float 32 bit", raw_values[129], raw_values[130]), 3))

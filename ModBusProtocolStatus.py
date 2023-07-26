@@ -28,7 +28,7 @@ class ModBusProtocolStatus:
         self.main_frame.pack(fill='both', expand=True)
 
         #fill raw values with 571 0s. Change if registers increase or decrease
-        self.raw_values = [69]*571
+        self.raw_values = [0]*571
 
     def create_widgets(self):
         # Create the GUI widgets for the Modbus Protocol Status tab

@@ -44,6 +44,10 @@ class ModBusProtocolStatus:
         self.main_feedback_entry.delete(0,tk.END)
         self.redundant_feedback_entry.config(state='normal')
         self.redundant_feedback_entry.delete(0,tk.END)
+        self.warning_status_entry.config(state='normal')
+        self.warning_status_entry.delete(0, tk.END)
+        self.alarm_status_entry.config(state='normal')
+        self.alarm_status_entry.delete(0, tk.END)
 
         for widget, _, _ in self.widgets_index:
             # Skip label widgets
@@ -61,8 +65,8 @@ class ModBusProtocolStatus:
             if isinstance(widget, tk.Label):
                 continue
             widget.config(state='readonly')
-        #self.main_feedback_entry.config(state='readonly')
-        #self.redundant_feedback_entry.config(state='readonly')
+        self.warning_status_entry.config(state='readonly')
+        self.alarm_status_entry.config(state='readonly')
 
     def connection_clear_entries(self,raw_values):
         #clear entries for connection tab
@@ -275,6 +279,8 @@ class ModBusProtocolStatus:
             self.widgetTemp.placeOrHide(self.main_feedback_entry,0.25,0.2,False)
             self.widgetTemp.placeOrHide(self.redundant_feedback_entry, 0.25, 0.23, False)
             self.widgetTemp.placeOrHide(self.reset_current_odometer_btn,0.8,0.8,False)
+            self.widgetTemp.placeOrHide(self.alarm_status_entry, 0.17, 0.7, False)
+            self.widgetTemp.placeOrHide(self.warning_status_entry, 0, 0.7, False)
 
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, False)
@@ -285,6 +291,8 @@ class ModBusProtocolStatus:
             self.widgetTemp.placeOrHide(self.main_feedback_entry, 0.25, 0.2, True)
             self.widgetTemp.placeOrHide(self.redundant_feedback_entry, 0.25, 0.23, True)
             self.widgetTemp.placeOrHide(self.reset_current_odometer_btn, 0.8, 0.8, True)
+            self.widgetTemp.placeOrHide(self.alarm_status_entry, 0.17, 0.7, True)
+            self.widgetTemp.placeOrHide(self.warning_status_entry, 0.0, 0.7, True)
             for widget in self.widgets_index:
                 self.widgetTemp.placeOrHide(*widget, True)
 
@@ -297,7 +305,7 @@ class ModBusProtocolStatus:
                              ("deviation_label",(self.names.get_name(5),0.24,0.34)),
                              ("position_transmitter_label",("Position Transmitter",0.22,0.57)),
                              ("warning_status_label",("Warning Status",0.005,0.67)),
-                             ("alarm_status_label",("Alarm Status",0.15,0.67)),
+                             ("alarm_status_label",("Alarm Status",0.20,0.67)),
                              ("accumulator_pressure_label",("Accumulator Pressure",0.43,0.67)),
                              ("main_feedback_label",("Main Feedback",0.28,0.2)),
                              ("redundant_feedback_label",("Redundant Feedback",0.28,0.23)),
@@ -319,8 +327,7 @@ class ModBusProtocolStatus:
                            ("actuator_position_entry",(0.15,0.2)),
                            ("deviation_entry",(0.23,0.37)),
                            ("position_transmitter_entry",(0.23,0.6)),
-                           ("warning_status_entry",(0.01,0.7)),
-                           ("alarm_status_entry",(0.15,0.7)),
+
                            ("accumulator_pressure_entry",(0.45,0.7)),
                            ("motor_starts_entry",(0.15,0.84)),
                            ("booster_starts_entry",(0.25,0.84)),
@@ -341,6 +348,9 @@ class ModBusProtocolStatus:
         self.reset_current_odometer_btn = self.widgetTemp.create_button('Reset Current Odometer', 0.8, 0.8, 10, 2, 20, self.reset_current_odometer)
         self.main_feedback_entry = self.widgetTemp.create_entry(0.25,0.2,5,True,preFilledText=None)
         self.redundant_feedback_entry = self.widgetTemp.create_entry(0.25, 0.23, 5, True, preFilledText=None)
+        self.alarm_status_entry = self.widgetTemp.create_entry(0.17,0.7,25,True,preFilledText=None)
+        self.warning_status_entry = self.widgetTemp.create_entry(0.0,0.7,25,True,preFilledText=None)
+
         self.manage_widgets_visibility()
 
     def reset_current_odometer(self):

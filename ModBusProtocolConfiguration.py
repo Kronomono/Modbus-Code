@@ -283,7 +283,7 @@ class ModBusProtocolConfiguration:
         self.current_operational_mode_entry.insert(0, self.names.get_system_name(raw_values[13]))
 
         self.operational_status_entry.insert(0, self.names.get_status_name(self.modbus_client.translate_value("Byte",raw_values[15])))
-        #self.operational_status_entry.insert(0, self.modbus_client.translate_value(self.names.get_status_name(raw_values[15])))
+
         self.ESD_trip_signal_entry.insert(0,  self.names.get_trip_name(self.modbus_client.translate_value("Byte", raw_values[174])))
 
 

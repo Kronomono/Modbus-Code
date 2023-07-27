@@ -60,8 +60,6 @@ class ModBusProtocolConfiguration:
                 self.widgetTemp.placeOrHide(*widget, False)
         # otherwise hide it all
         else:
-            #self.widgetTemp.placeOrHide(self.operational_mode_entry_label, 0.67, 0.0, True)
-            #self.widgetTemp.placeOrHide(self.operational_mode_type_dropdown, 0.67, 0.03, True)
 
             self.widgetTemp.placeOrHide(self.fail_safe_entry_2, 0.19, 0.35, True)
             self.widgetTemp.placeOrHide(self.minimum_modulating_entry_2, 0.23, 0.4, True)
